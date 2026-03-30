@@ -2,8 +2,8 @@
  * PUT — update listing (auth). DELETE — remove (auth).
  * Path: /api/for-sale/item/:id  (avoids conflict with listings.js)
  */
-const store = require("../../../lib/for-sale-store");
-const http = require("../../../lib/for-sale-http");
+const store = require("../../lib/for-sale-store");
+const http = require("../../lib/for-sale-http");
 
 function sanitizeString(s, max) {
   if (s == null) return "";

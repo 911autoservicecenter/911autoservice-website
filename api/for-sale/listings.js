@@ -2,8 +2,8 @@
  * GET — public listings (sorted: available first, then sold).
  * POST — create (auth required). Body: listing fields.
  */
-const store = require("../../lib/for-sale-store");
-const http = require("../../lib/for-sale-http");
+const store = require("../lib/for-sale-store");
+const http = require("../lib/for-sale-http");
 
 function sanitizeString(s, max) {
   if (s == null) return "";
