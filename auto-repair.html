@@ -529,6 +529,14 @@
           }
         }
 
+        function availabilityUrl(monthKeyStr) {
+          var base = window.location.origin;
+          if (!base || base === "null" || window.location.protocol === "file:") {
+            return null;
+          }
+          return base + "/api/availability?month=" + encodeURIComponent(monthKeyStr);
+        }
+
         async function loadMonth() {
           if (calError) {
             calError.hidden = true;
@@ -537,8 +545,21 @@
           if (calLoading) calLoading.hidden = false;
           if (calGrid) calGrid.setAttribute("aria-hidden", "true");
           var mk = monthKey(viewYear, viewMonth);
+
+          if (window.location.protocol === "file:") {
+            calData = null;
+            calError.textContent =
+              "The calendar does not run from a file on your computer. Open the live page: https://www.911autoservice.org/auto-repair.html";
+            calError.hidden = false;
+            if (calHint) calHint.hidden = true;
+            renderCalendar();
+            if (calLoading) calLoading.hidden = true;
+            return;
+          }
+
+          var url = availabilityUrl(mk);
           try {
-            var res = await fetch("/api/availability?month=" + encodeURIComponent(mk));
+            var res = await fetch(url, { credentials: "same-origin" });
             var data = await res.json().catch(function () {
               return {};
             });
@@ -557,9 +578,12 @@
             if (calHint) calHint.hidden = false;
             renderCalendar();
           } catch (err) {
-            calError.textContent = "Could not load the calendar. Please call 517-677-3173.";
-            calError.hidden = false;
             calData = null;
+            calError.textContent =
+              "Could not reach the booking calendar (network or browser blocker). If you opened this page from your PC folder, use the website instead: https://www.911autoservice.org/auto-repair.html — or call 517-677-3173.";
+            calError.hidden = false;
+            if (calHint) calHint.hidden = true;
+            renderCalendar();
           } finally {
             if (calLoading) calLoading.hidden = true;
           }
