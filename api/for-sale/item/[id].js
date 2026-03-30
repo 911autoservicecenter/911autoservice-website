@@ -65,13 +65,14 @@ module.exports = async function handler(req, res) {
         res.status(503).json({
           ok: false,
           message:
-            "Vercel KV is not connected. Link KV in Vercel (Storage) to this project and redeploy.",
+            "Redis is not configured. Connect Upstash (Vercel Integrations / Marketplace) or set UPSTASH_REDIS_REST_URL + UPSTASH_REDIS_REST_TOKEN, then redeploy.",
         });
         return;
       }
+      var emU = e && e.message ? String(e.message) : "";
       var msgUp =
-        e && e.message && String(e.message).indexOf("KV_REST_API") !== -1
-          ? "Vercel KV is not connected. Link KV in your project and redeploy."
+        emU && (emU.indexOf("KV_REST_API") !== -1 || emU.indexOf("UPSTASH_REDIS") !== -1)
+          ? "Redis env vars are missing. Connect Upstash or set UPSTASH_REDIS_* and redeploy."
           : "Could not update listing.";
       res.status(500).json({ ok: false, message: msgUp });
     }
@@ -96,13 +97,14 @@ module.exports = async function handler(req, res) {
         res.status(503).json({
           ok: false,
           message:
-            "Vercel KV is not connected. Link KV in Vercel (Storage) to this project and redeploy.",
+            "Redis is not configured. Connect Upstash or set UPSTASH_REDIS_REST_URL + UPSTASH_REDIS_REST_TOKEN, then redeploy.",
         });
         return;
       }
+      var emD = e && e.message ? String(e.message) : "";
       var msgDel =
-        e && e.message && String(e.message).indexOf("KV_REST_API") !== -1
-          ? "Vercel KV is not connected. Link KV in your project and redeploy."
+        emD && (emD.indexOf("KV_REST_API") !== -1 || emD.indexOf("UPSTASH_REDIS") !== -1)
+          ? "Redis env vars are missing. Connect Upstash or set UPSTASH_REDIS_* and redeploy."
           : "Could not delete listing.";
       res.status(500).json({ ok: false, message: msgDel });
     }

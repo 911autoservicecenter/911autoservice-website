@@ -1,39 +1,61 @@
 /**
- * Listings stored in Vercel KV (key linked in project) or env JSON fallback for reads.
- * Writes require KV — set up: Vercel → Storage → KV → connect to project.
+ * Listings in Upstash Redis (Vercel Marketplace) or legacy Vercel KV env names.
+ * Reads also fall back to FOR_SALE_LISTINGS_JSON. Writes require Redis env.
+ *
+ * Env (either pair works):
+ *   UPSTASH_REDIS_REST_URL + UPSTASH_REDIS_REST_TOKEN  (Upstash / Vercel integration)
+ *   KV_REST_API_URL + KV_REST_API_TOKEN                (older Vercel KV naming)
  */
 const KEY = "for-sale:listings:v1";
 
-/**
- * @vercel/kv throws if you call kv.get/set without KV_REST_API_URL + KV_REST_API_TOKEN.
- * Vercel injects those when KV is linked to the project — check env before touching the client.
- */
-function hasKvEnv() {
-  return !!(process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN);
+function trimEnvValue(s) {
+  if (s == null) return "";
+  var t = String(s).trim();
+  if (
+    (t.charAt(0) === '"' && t.charAt(t.length - 1) === '"') ||
+    (t.charAt(0) === "'" && t.charAt(t.length - 1) === "'")
+  ) {
+    t = t.slice(1, -1).trim();
+  }
+  return t;
 }
 
-function getKv() {
-  if (!hasKvEnv()) {
-    return null;
-  }
+function getRedisUrlToken() {
+  var url = trimEnvValue(
+    process.env.UPSTASH_REDIS_REST_URL || process.env.KV_REST_API_URL
+  );
+  var token = trimEnvValue(
+    process.env.UPSTASH_REDIS_REST_TOKEN || process.env.KV_REST_API_TOKEN
+  );
+  if (!url || !token) return null;
+  return { url: url, token: token };
+}
+
+function hasRedisEnv() {
+  return getRedisUrlToken() != null;
+}
+
+function getRedis() {
+  var cfg = getRedisUrlToken();
+  if (!cfg) return null;
   try {
-    var m = require("@vercel/kv");
-    return m.kv || m.default || null;
+    var Redis = require("@upstash/redis").Redis;
+    return new Redis({ url: cfg.url, token: cfg.token });
   } catch (e) {
     return null;
   }
 }
 
 async function readRaw() {
-  var kv = getKv();
-  if (kv) {
+  var r = getRedis();
+  if (r) {
     try {
-      var v = await kv.get(KEY);
+      var v = await r.get(KEY);
       if (v == null) return "[]";
       if (typeof v === "string") return v;
       return JSON.stringify(v);
     } catch (e) {
-      console.error("KV get error", e);
+      console.error("Redis get error", e);
     }
   }
   var env = process.env.FOR_SALE_LISTINGS_JSON;
@@ -49,13 +71,26 @@ async function readRaw() {
 }
 
 async function writeRaw(jsonString) {
-  var kv = getKv();
-  if (!kv) {
+  var r = getRedis();
+  if (!r) {
+    var u = !!(
+      process.env.UPSTASH_REDIS_REST_URL || process.env.KV_REST_API_URL
+    );
+    var tok = !!(
+      process.env.UPSTASH_REDIS_REST_TOKEN || process.env.KV_REST_API_TOKEN
+    );
+    console.error(
+      "[for-sale-store] Redis unavailable: url=" +
+        u +
+        " token=" +
+        tok +
+        " (need both; check Production env + redeploy)"
+    );
     var err = new Error("KV_NOT_CONFIGURED");
     err.code = "KV_NOT_CONFIGURED";
     throw err;
   }
-  await kv.set(KEY, jsonString);
+  await r.set(KEY, jsonString);
 }
 
 async function getListings() {
@@ -84,5 +119,8 @@ module.exports = {
   getListings,
   saveListings,
   newId,
-  getKv,
+  getRedis,
+  /** @deprecated use getRedis — kept for compatibility */
+  getKv: getRedis,
+  hasRedisEnv,
 };

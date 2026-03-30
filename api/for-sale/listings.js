@@ -80,16 +80,15 @@ module.exports = async function handler(req, res) {
         res.status(503).json({
           ok: false,
           message:
-            "Vercel KV is not connected. In Vercel: Storage → Create KV database → Connect to this project → Redeploy. (Needs KV_REST_API_URL and KV_REST_API_TOKEN.)",
+            "Redis is not configured. Add Upstash from Vercel → Integrations (or Marketplace) and connect it to this project, or set UPSTASH_REDIS_REST_URL and UPSTASH_REDIS_REST_TOKEN (or legacy KV_REST_API_*) in Environment Variables, then redeploy.",
         });
         return;
       }
+      var em = e && e.message ? String(e.message) : "";
       var msg =
-        e && e.message
-          ? String(e.message).indexOf("KV_REST_API") !== -1
-            ? "Vercel KV is not connected. Link KV in your Vercel project (Storage) and redeploy."
-            : e.message
-          : "Could not save listing.";
+        em && (em.indexOf("KV_REST_API") !== -1 || em.indexOf("UPSTASH_REDIS") !== -1)
+          ? "Redis env vars are missing. Connect Upstash to this project or set UPSTASH_REDIS_REST_URL + UPSTASH_REDIS_REST_TOKEN, then redeploy."
+          : em || "Could not save listing.";
       res.status(500).json({ ok: false, message: msg });
     }
     return;
