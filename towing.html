@@ -356,9 +356,16 @@
           if (q.length < 8) {
             throw new Error("Please enter a fuller street address (including city and state).");
           }
-          var url =
+          var proxyUrl =
+            window.location.origin + "/api/geocode?q=" + encodeURIComponent(q);
+          var directUrl =
             "https://photon.komoot.io/api/?limit=1&lang=en&bbox=-91,41,-82,49&q=" + encodeURIComponent(q);
-          var data = await fetchJson(url, 12000);
+          var data;
+          try {
+            data = await fetchJson(proxyUrl, 12000);
+          } catch (e) {
+            data = await fetchJson(directUrl, 12000);
+          }
           if (!data.features || !data.features.length) {
             throw new Error("We could not find that address. Check spelling or call 517-279-2010.");
           }
@@ -372,13 +379,14 @@
 
         async function drivingMiles(a, b) {
           var coordPath = a.lon + "," + a.lat + ";" + b.lon + "," + b.lat;
-          var bases = [
-            "https://router.project-osrm.org/route/v1/driving/",
-            "https://routing.openstreetmap.de/routed-car/route/v1/driving/"
+          var urls = [
+            window.location.origin + "/api/route?path=" + encodeURIComponent(coordPath),
+            "https://router.project-osrm.org/route/v1/driving/" + coordPath + "?overview=false",
+            "https://routing.openstreetmap.de/routed-car/route/v1/driving/" + coordPath + "?overview=false"
           ];
-          for (var i = 0; i < bases.length; i++) {
+          for (var i = 0; i < urls.length; i++) {
             try {
-              var data = await fetchJson(bases[i] + coordPath + "?overview=false", 14000);
+              var data = await fetchJson(urls[i], 14000);
               if (data.code === "Ok" && data.routes && data.routes[0] && data.routes[0].distance != null) {
                 return data.routes[0].distance / METERS_PER_MILE;
               }
