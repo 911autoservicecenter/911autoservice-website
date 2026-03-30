@@ -1,4 +1,5 @@
 User-agent: *
 Allow: /
+Disallow: /admin-for-sale.html
 
 Sitemap: https://911autoservice.org/sitemap.xml

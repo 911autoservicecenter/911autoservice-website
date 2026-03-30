@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Manage for-sale listings | 911 Auto Service Center</title>
+    <meta name="theme-color" content="#0a0a0a" />
+    <link rel="icon" href="images/logo.png" type="image/png" />
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+
+    <header class="site-header">
+      <div class="header-inner">
+        <a class="brand" href="index.html?home=1">
+          <img src="images/logo.png" width="112" height="112" alt="" decoding="async" />
+          <span class="brand-text">
+            <span class="brand-name">911 Auto Service Center</span>
+            <span class="brand-tag">Staff — for sale</span>
+          </span>
+        </a>
+        <nav class="site-nav" aria-label="Main">
+          <a href="index.html?home=1">Home</a>
+          <a href="auto-repair.html">Auto repair</a>
+          <a href="towing.html">Towing</a>
+          <a href="for-sale.html">For sale</a>
+        </nav>
+        <div class="header-cta">
+          <a class="btn btn-ghost" href="for-sale.html">View public page</a>
+        </div>
+      </div>
+    </header>
+
+    <main id="main">
+      <header class="page-hero">
+        <div class="page-hero-inner">
+          <h1>Manage for-sale listings</h1>
+          <p class="lead">Sign in to add, edit, or remove items. Changes appear on the public page right away.</p>
+        </div>
+      </header>
+
+      <section class="section" id="admin-login">
+        <h2>Sign in</h2>
+        <p class="section-intro">
+          Only <strong>approved</strong> emails can access this page. Your owner configures who is approved in Vercel
+          (allowlist or per-user accounts). If you use the shared shop password, you must still sign in with an email
+          on the approved list.
+        </p>
+        <form id="admin-login-form" class="admin-login-form">
+          <div class="scheduler-field scheduler-field--wide" style="max-width: 28rem">
+            <label for="admin-email">Work email</label>
+            <input
+              type="email"
+              id="admin-email"
+              name="email"
+              autocomplete="username"
+              placeholder="you@yourshop.com"
+            />
+          </div>
+          <div class="scheduler-field" style="max-width: 24rem">
+            <label for="admin-password">Password</label>
+            <input type="password" id="admin-password" name="password" required autocomplete="current-password" />
+          </div>
+          <p id="admin-login-error" class="booking-cal-error" hidden role="alert"></p>
+          <button type="submit" class="btn btn-primary">Sign in</button>
+        </form>
+      </section>
+
+      <section class="section admin-panel" id="admin-panel" hidden>
+        <p class="admin-session-meta" id="admin-session-meta" hidden>
+          Signed in as <strong id="admin-session-email"></strong>
+        </p>
+        <div class="admin-panel__head">
+          <h2>Your listings</h2>
+          <div class="admin-panel__actions">
+            <button type="button" class="btn btn-ghost" id="btn-new-listing">New listing</button>
+            <button type="button" class="btn btn-ghost admin-btn-danger" id="admin-logout">Sign out</button>
+          </div>
+        </div>
+
+        <div class="admin-table-wrap">
+          <table class="admin-table" id="admin-listings-table">
+            <thead>
+              <tr>
+                <th scope="col">Title</th>
+                <th scope="col">Price</th>
+                <th scope="col">Status</th>
+                <th scope="col">Actions</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+
+        <h2 id="form-mode-label" class="admin-form-heading">Add a listing</h2>
+        <form id="listing-form" class="admin-listing-form">
+          <div class="scheduler-form__grid">
+            <div class="scheduler-field scheduler-field--wide">
+              <label for="fld-title">Title</label>
+              <input type="text" id="fld-title" required maxlength="200" placeholder="e.g. All-season tires — set of 4" />
+            </div>
+            <div class="scheduler-field">
+              <label for="fld-price">Price</label>
+              <input type="text" id="fld-price" maxlength="40" placeholder="e.g. $320" />
+            </div>
+            <div class="scheduler-field">
+              <label for="fld-price-note">Price note</label>
+              <input type="text" id="fld-price-note" maxlength="120" placeholder="e.g. + tax · OBO" />
+            </div>
+            <div class="scheduler-field scheduler-field--wide">
+              <label for="fld-lede">Short description</label>
+              <textarea id="fld-lede" rows="3" maxlength="2000" placeholder="Brief description for the card"></textarea>
+            </div>
+            <div class="scheduler-field">
+              <label for="fld-condition">Condition</label>
+              <input type="text" id="fld-condition" maxlength="200" />
+            </div>
+            <div class="scheduler-field">
+              <label for="fld-fitment">Fitment / size</label>
+              <input type="text" id="fld-fitment" maxlength="500" />
+            </div>
+            <div class="scheduler-field">
+              <label for="fld-stock">Stock #</label>
+              <input type="text" id="fld-stock" maxlength="80" />
+            </div>
+            <div class="scheduler-field">
+              <label for="fld-warranty">Warranty / notes</label>
+              <input type="text" id="fld-warranty" maxlength="300" />
+            </div>
+            <div class="scheduler-field scheduler-field--wide">
+              <label for="fld-fineprint">Fine print (optional)</label>
+              <input type="text" id="fld-fineprint" maxlength="500" placeholder="e.g. Inspect in person before purchase." />
+            </div>
+            <div class="scheduler-field scheduler-field--wide">
+              <label for="fld-image-url">Photo URL</label>
+              <input type="text" id="fld-image-url" maxlength="2000" placeholder="https://… or images/for-sale/your-photo.jpg" />
+            </div>
+            <div class="scheduler-field scheduler-field--wide">
+              <label for="fld-image-alt">Photo description (alt text)</label>
+              <input type="text" id="fld-image-alt" maxlength="300" />
+            </div>
+            <div class="scheduler-field scheduler-field--wide">
+              <label class="admin-checkbox">
+                <input type="checkbox" id="fld-sold" />
+                Mark as sold
+              </label>
+            </div>
+          </div>
+          <p id="admin-form-status" class="scheduler-form__status" role="status"></p>
+          <button type="submit" class="btn btn-primary">Save listing</button>
+        </form>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="footer-inner">
+        <p class="footer-legal">
+          &copy; <span id="year"></span> 911 Auto Service Center. Staff page — not public.
+        </p>
+      </div>
+    </footer>
+    <script>
+      document.getElementById("year").textContent = new Date().getFullYear();
+    </script>
+    <script src="js/admin-for-sale.js"></script>
+  </body>
+</html>
