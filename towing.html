@@ -165,26 +165,42 @@
             </div>
             <div class="estimate-field">
               <label for="pickup-address">Your vehicle location (pickup address)</label>
-              <textarea
-                id="pickup-address"
-                name="pickup-address"
-                rows="2"
-                maxlength="500"
-                required
-                autocomplete="street-address"
-                placeholder="Street, city, state, ZIP — be as specific as you can"
-              ></textarea>
+              <div class="address-field">
+                <input
+                  type="text"
+                  id="pickup-address"
+                  name="pickup-address"
+                  maxlength="500"
+                  required
+                  autocomplete="off"
+                  autocorrect="off"
+                  spellcheck="false"
+                  aria-autocomplete="list"
+                  aria-controls="pickup-suggestions"
+                  aria-expanded="false"
+                  placeholder="Start typing — pick a suggestion or enter the full address"
+                />
+                <ul class="address-suggestions" id="pickup-suggestions" hidden role="listbox" aria-label="Address suggestions"></ul>
+              </div>
             </div>
             <div class="estimate-field estimate-field--destination" id="destination-field">
               <label for="destination-address">Destination (where we should take the vehicle)</label>
-              <textarea
-                id="destination-address"
-                name="destination-address"
-                rows="2"
-                maxlength="500"
-                autocomplete="street-address"
-                placeholder="Repair shop, home, or other drop-off — full address"
-              ></textarea>
+              <div class="address-field">
+                <input
+                  type="text"
+                  id="destination-address"
+                  name="destination-address"
+                  maxlength="500"
+                  autocomplete="off"
+                  autocorrect="off"
+                  spellcheck="false"
+                  aria-autocomplete="list"
+                  aria-controls="destination-suggestions"
+                  aria-expanded="false"
+                  placeholder="Start typing — pick a suggestion or enter the full address"
+                />
+                <ul class="address-suggestions" id="destination-suggestions" hidden role="listbox" aria-label="Address suggestions"></ul>
+              </div>
             </div>
             <div class="estimate-actions">
               <button type="submit" class="btn btn-primary estimate-submit" id="estimate-submit">Get quote</button>
@@ -321,7 +337,108 @@
           destInput.required = towMode;
           if (!towMode) {
             destInput.value = "";
+            var ds = document.getElementById("destination-suggestions");
+            if (ds) {
+              ds.hidden = true;
+              ds.innerHTML = "";
+            }
           }
+        }
+
+        function fetchAutocompleteJson(q) {
+          var proxyUrl = window.location.origin + "/api/autocomplete?q=" + encodeURIComponent(q);
+          var directUrl =
+            "https://photon.komoot.io/api/?limit=8&lang=en&bbox=-91,41,-82,49&q=" + encodeURIComponent(q);
+          return fetchJson(proxyUrl, 8000).catch(function () {
+            return fetchJson(directUrl, 8000);
+          });
+        }
+
+        function setupAddressAutocomplete(inputEl, listEl) {
+          var debounceTimer = null;
+          var hideTimer = null;
+
+          function hideList() {
+            listEl.hidden = true;
+            listEl.innerHTML = "";
+            inputEl.setAttribute("aria-expanded", "false");
+          }
+
+          function showList() {
+            listEl.hidden = false;
+            inputEl.setAttribute("aria-expanded", "true");
+          }
+
+          function formatFeature(f) {
+            var p = f.properties || {};
+            var streetLine = [p.housenumber, p.street || p.name].filter(Boolean).join(" ").trim();
+            if (!streetLine && p.name) {
+              streetLine = String(p.name);
+            }
+            var cityLine = [p.city, p.state, p.postcode].filter(Boolean).join(" ");
+            var full = [streetLine, cityLine].filter(Boolean).join(", ");
+            return full.trim();
+          }
+
+          inputEl.addEventListener("input", function () {
+            var q = inputEl.value.trim();
+            clearTimeout(debounceTimer);
+            if (q.length < 3) {
+              hideList();
+              return;
+            }
+            debounceTimer = setTimeout(function () {
+              fetchAutocompleteJson(q)
+                .then(function (data) {
+                  var feats = data && data.features ? data.features : [];
+                  listEl.innerHTML = "";
+                  if (!feats.length) {
+                    hideList();
+                    return;
+                  }
+                  feats.forEach(function (f, idx) {
+                    var label = formatFeature(f);
+                    if (!label) {
+                      return;
+                    }
+                    var li = document.createElement("li");
+                    li.setAttribute("role", "option");
+                    li.id = inputEl.id + "-opt-" + idx;
+                    li.textContent = label;
+                    li.addEventListener("mousedown", function (e) {
+                      e.preventDefault();
+                      inputEl.value = label;
+                      hideList();
+                      inputEl.focus();
+                    });
+                    listEl.appendChild(li);
+                  });
+                  if (listEl.children.length) {
+                    showList();
+                  } else {
+                    hideList();
+                  }
+                })
+                .catch(function () {
+                  hideList();
+                });
+            }, 280);
+          });
+
+          inputEl.addEventListener("keydown", function (e) {
+            if (e.key === "Escape") {
+              hideList();
+            }
+          });
+
+          inputEl.addEventListener("blur", function () {
+            clearTimeout(hideTimer);
+            hideTimer = setTimeout(hideList, 200);
+          });
+
+          inputEl.addEventListener("focus", function () {
+            clearTimeout(hideTimer);
+          });
         }
 
         function showPanel() {
@@ -456,6 +573,9 @@
 
         serviceSelect.addEventListener("change", toggleTowFields);
         toggleTowFields();
+
+        setupAddressAutocomplete(pickupInput, document.getElementById("pickup-suggestions"));
+        setupAddressAutocomplete(destInput, document.getElementById("destination-suggestions"));
       })();
     </script>
   </body>
