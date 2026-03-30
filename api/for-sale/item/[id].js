@@ -64,11 +64,16 @@ module.exports = async function handler(req, res) {
       if (e && e.code === "KV_NOT_CONFIGURED") {
         res.status(503).json({
           ok: false,
-          message: "Database not configured. Add Vercel KV to this project.",
+          message:
+            "Vercel KV is not connected. Link KV in Vercel (Storage) to this project and redeploy.",
         });
         return;
       }
-      res.status(500).json({ ok: false, message: "Could not update listing." });
+      var msgUp =
+        e && e.message && String(e.message).indexOf("KV_REST_API") !== -1
+          ? "Vercel KV is not connected. Link KV in your project and redeploy."
+          : "Could not update listing.";
+      res.status(500).json({ ok: false, message: msgUp });
     }
     return;
   }
@@ -88,10 +93,18 @@ module.exports = async function handler(req, res) {
       res.status(200).json({ ok: true, message: "Deleted." });
     } catch (e) {
       if (e && e.code === "KV_NOT_CONFIGURED") {
-        res.status(503).json({ ok: false, message: "Database not configured." });
+        res.status(503).json({
+          ok: false,
+          message:
+            "Vercel KV is not connected. Link KV in Vercel (Storage) to this project and redeploy.",
+        });
         return;
       }
-      res.status(500).json({ ok: false, message: "Could not delete listing." });
+      var msgDel =
+        e && e.message && String(e.message).indexOf("KV_REST_API") !== -1
+          ? "Vercel KV is not connected. Link KV in your project and redeploy."
+          : "Could not delete listing.";
+      res.status(500).json({ ok: false, message: msgDel });
     }
     return;
   }

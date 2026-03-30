@@ -80,11 +80,17 @@ module.exports = async function handler(req, res) {
         res.status(503).json({
           ok: false,
           message:
-            "Database not configured. Add Vercel KV to this project (see FOR_SALE_SETUP in repo comments).",
+            "Vercel KV is not connected. In Vercel: Storage → Create KV database → Connect to this project → Redeploy. (Needs KV_REST_API_URL and KV_REST_API_TOKEN.)",
         });
         return;
       }
-      res.status(500).json({ ok: false, message: "Could not save listing." });
+      var msg =
+        e && e.message
+          ? String(e.message).indexOf("KV_REST_API") !== -1
+            ? "Vercel KV is not connected. Link KV in your Vercel project (Storage) and redeploy."
+            : e.message
+          : "Could not save listing.";
+      res.status(500).json({ ok: false, message: msg });
     }
     return;
   }

@@ -4,7 +4,18 @@
  */
 const KEY = "for-sale:listings:v1";
 
+/**
+ * @vercel/kv throws if you call kv.get/set without KV_REST_API_URL + KV_REST_API_TOKEN.
+ * Vercel injects those when KV is linked to the project — check env before touching the client.
+ */
+function hasKvEnv() {
+  return !!(process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN);
+}
+
 function getKv() {
+  if (!hasKvEnv()) {
+    return null;
+  }
   try {
     var m = require("@vercel/kv");
     return m.kv || m.default || null;
