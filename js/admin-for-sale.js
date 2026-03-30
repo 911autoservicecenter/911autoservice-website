@@ -32,11 +32,32 @@
       opts.headers["Content-Type"] = "application/json";
       opts.body = JSON.stringify(opts.body);
     }
-    return fetch(path, opts).then(function (r) {
-      return r.json().then(function (data) {
-        return { ok: r.ok, status: r.status, data: data };
+    return fetch(path, opts)
+      .then(function (r) {
+        return r.text().then(function (text) {
+          var data = {};
+          if (text && text.trim()) {
+            try {
+              data = JSON.parse(text);
+            } catch (e) {
+              data = {
+                ok: false,
+                message: "Server returned a non-JSON response (" + r.status + "). Try again or check Vercel logs.",
+              };
+            }
+          } else if (!r.ok) {
+            data = { ok: false, message: "Empty response (" + r.status + ")." };
+          }
+          return { ok: r.ok, status: r.status, data: data };
+        });
+      })
+      .catch(function () {
+        return {
+          ok: false,
+          status: 0,
+          data: { ok: false, message: "Network error. Check your connection and that you are on the live https:// site." },
+        };
       });
-    });
   }
 
   function showLogin() {
@@ -242,8 +263,12 @@
           resetForm();
           refreshTable();
         } else {
+          var msg = (res.data && res.data.message) || "Save failed.";
+          if (res.status === 401) {
+            msg = "Session expired or not signed in. Sign in again and try Save.";
+          }
           if (formStatus) {
-            formStatus.textContent = (res.data && res.data.message) || "Save failed.";
+            formStatus.textContent = msg;
           }
         }
       });

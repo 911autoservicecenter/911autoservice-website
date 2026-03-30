@@ -4,7 +4,14 @@ const COOKIE = "for_sale_session";
 const MAX_AGE_SEC = 60 * 60 * 24 * 7;
 
 function readJsonBody(req) {
-  if (req.body && typeof req.body === "object" && !Buffer.isBuffer(req.body)) {
+  if (Buffer.isBuffer(req.body)) {
+    try {
+      return Promise.resolve(JSON.parse(req.body.toString("utf8") || "{}"));
+    } catch (e) {
+      return Promise.resolve({});
+    }
+  }
+  if (req.body && typeof req.body === "object") {
     return Promise.resolve(req.body);
   }
   if (typeof req.body === "string") {
