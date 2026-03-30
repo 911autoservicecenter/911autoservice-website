@@ -6,7 +6,7 @@
     <title>Auto Repair | Full-Service Garage | 911 Auto Service Center — Coldwater, MI</title>
     <meta
       name="description"
-      content="911 Auto Service Center is a full-service garage in Coldwater, MI with licensed mechanics, ASE certified technicians, Yukon Gear &amp; Axle certified master installers, and Jasper Certified Authorized service. Call 517-677-3173."
+      content="911 Auto Service Center is a full-service garage in Coldwater, MI — schedule service online, ASE certified technicians, Yukon Gear &amp; Axle and Jasper. Call 517-677-3173."
     />
     <meta
       name="keywords"
@@ -200,6 +200,63 @@
         </ul>
       </section>
 
+      <section class="section" aria-labelledby="schedule-heading">
+        <h2 id="schedule-heading">Schedule service</h2>
+        <p class="section-intro">
+          Book a time online through Shop Monkey, or send a request and we will follow up to confirm.
+        </p>
+
+        <div class="scheduler-embed-wrap" id="scheduler-embed-wrap" hidden>
+          <iframe
+            id="scheduler-iframe"
+            class="scheduler-iframe"
+            title="Book a service appointment"
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"
+          ></iframe>
+        </div>
+
+        <form class="scheduler-form" id="scheduler-form" novalidate>
+          <p class="scheduler-form__lead">
+            Or request an appointment — include your vehicle and what you need. We will confirm by phone or email.
+          </p>
+          <div class="scheduler-form__grid">
+            <div class="scheduler-field">
+              <label for="sched-first">First name</label>
+              <input type="text" id="sched-first" name="firstName" required maxlength="80" autocomplete="given-name" />
+            </div>
+            <div class="scheduler-field">
+              <label for="sched-last">Last name</label>
+              <input type="text" id="sched-last" name="lastName" required maxlength="80" autocomplete="family-name" />
+            </div>
+            <div class="scheduler-field">
+              <label for="sched-email">Email</label>
+              <input type="email" id="sched-email" name="email" required maxlength="120" autocomplete="email" />
+            </div>
+            <div class="scheduler-field">
+              <label for="sched-phone">Phone</label>
+              <input type="tel" id="sched-phone" name="phone" required maxlength="32" autocomplete="tel" />
+            </div>
+            <div class="scheduler-field scheduler-field--wide">
+              <label for="sched-when">Preferred date &amp; time</label>
+              <input type="datetime-local" id="sched-when" name="startDate" required />
+            </div>
+            <div class="scheduler-field scheduler-field--wide">
+              <label for="sched-vehicle">Vehicle (year, make, model)</label>
+              <input type="text" id="sched-vehicle" name="vehicle" maxlength="200" placeholder="e.g. 2019 Ford F-150" />
+            </div>
+            <div class="scheduler-field scheduler-field--wide">
+              <label for="sched-notes">What do you need?</label>
+              <textarea id="sched-notes" name="notes" rows="3" maxlength="2000" placeholder="Brief description of the problem or service"></textarea>
+            </div>
+          </div>
+          <p class="scheduler-form__status" id="scheduler-status" role="status" aria-live="polite"></p>
+          <div class="scheduler-form__actions">
+            <button type="submit" class="btn btn-primary" id="sched-submit">Submit request</button>
+          </div>
+        </form>
+      </section>
+
       <section class="section" aria-labelledby="services-heading">
         <h2 id="services-heading">What “full service” means here</h2>
         <div class="prose">
@@ -261,6 +318,63 @@
     </footer>
     <script>
       document.getElementById("year").textContent = new Date().getFullYear();
+
+      (function () {
+        /* Paste your embed URL from Shop Monkey → Marketing → Appointment Scheduler (optional). */
+        var SHOP_MONKEY_SCHEDULER_URL = "";
+        var wrap = document.getElementById("scheduler-embed-wrap");
+        var frame = document.getElementById("scheduler-iframe");
+        if (wrap && frame && SHOP_MONKEY_SCHEDULER_URL) {
+          frame.src = SHOP_MONKEY_SCHEDULER_URL;
+          wrap.hidden = false;
+        }
+
+        var form = document.getElementById("scheduler-form");
+        var statusEl = document.getElementById("scheduler-status");
+        var submitBtn = document.getElementById("sched-submit");
+        if (!form || !statusEl) return;
+
+        form.addEventListener("submit", async function (e) {
+          e.preventDefault();
+          statusEl.textContent = "";
+          var when = document.getElementById("sched-when");
+          if (!when || !when.value) {
+            statusEl.textContent = "Please choose a preferred date and time.";
+            return;
+          }
+          var payload = {
+            firstName: document.getElementById("sched-first").value.trim(),
+            lastName: document.getElementById("sched-last").value.trim(),
+            email: document.getElementById("sched-email").value.trim(),
+            phone: document.getElementById("sched-phone").value.trim(),
+            startDate: new Date(when.value).toISOString(),
+            vehicle: document.getElementById("sched-vehicle").value.trim(),
+            notes: document.getElementById("sched-notes").value.trim(),
+          };
+          submitBtn.disabled = true;
+          try {
+            var res = await fetch("/api/book-appointment", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(payload),
+            });
+            var data = await res.json().catch(function () {
+              return {};
+            });
+            if (data.ok) {
+              statusEl.textContent = data.message || "Thanks — we received your request.";
+              form.reset();
+            } else {
+              statusEl.textContent =
+                data.message || "Something went wrong. Please call 517-677-3173.";
+            }
+          } catch (err) {
+            statusEl.textContent = "Could not send your request. Please call 517-677-3173.";
+          } finally {
+            submitBtn.disabled = false;
+          }
+        });
+      })();
     </script>
   </body>
 </html>

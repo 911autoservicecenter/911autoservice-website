@@ -573,3 +573,93 @@ a:focus-visible {
   font-size: 0.8rem;
   color: var(--gray-400);
 }
+
+/* Auto repair — Shop Monkey scheduler */
+.scheduler-embed-wrap {
+  margin-bottom: 2rem;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid var(--gray-700);
+  background: var(--gray-900);
+}
+
+.scheduler-iframe {
+  display: block;
+  width: 100%;
+  min-height: 720px;
+  border: none;
+}
+
+.scheduler-form {
+  margin: 0;
+  padding: 1.25rem 1.35rem;
+  background: var(--gray-900);
+  border: 1px solid var(--gray-700);
+  border-radius: 10px;
+  border-left: 4px solid var(--red);
+}
+
+.scheduler-form__lead {
+  margin: 0 0 1rem;
+  color: var(--gray-400);
+  font-size: 0.95rem;
+  max-width: 55ch;
+}
+
+.scheduler-form__grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 560px) {
+  .scheduler-form__grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .scheduler-field--wide {
+    grid-column: 1 / -1;
+  }
+}
+
+.scheduler-field label {
+  display: block;
+  font-weight: 600;
+  font-size: 0.9rem;
+  margin-bottom: 0.35rem;
+  color: var(--white);
+}
+
+.scheduler-field input,
+.scheduler-field textarea {
+  width: 100%;
+  padding: 0.55rem 0.65rem;
+  border-radius: 6px;
+  border: 1px solid var(--gray-700);
+  background: var(--black);
+  color: var(--white);
+  font-size: 1rem;
+  font-family: inherit;
+}
+
+.scheduler-field textarea {
+  resize: vertical;
+  min-height: 5rem;
+}
+
+.scheduler-field input:focus-visible,
+.scheduler-field textarea:focus-visible {
+  outline: 2px solid var(--red);
+  outline-offset: 2px;
+}
+
+.scheduler-form__status {
+  margin: 1rem 0 0;
+  min-height: 1.4em;
+  font-size: 0.95rem;
+  color: var(--gray-400);
+}
+
+.scheduler-form__actions {
+  margin-top: 1rem;
+}
