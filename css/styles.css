@@ -4,8 +4,12 @@
   --red-dark: #a82825;
   --black: #0a0a0a;
   --gray-900: #141414;
+  --gray-800: #1a1a1a;
   --gray-700: #2a2a2a;
+  --gray-600: #3a3a3a;
+  --gray-500: #6b6b6b;
   --gray-400: #9a9a9a;
+  --gray-300: #c8c8c8;
   --white: #f7f7f7;
   --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 }
@@ -646,60 +650,100 @@ a:focus-visible {
   color: var(--gray-400);
 }
 
+.booking-cal-caption {
+  margin: 0 0 0.5rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--gray-500);
+}
+
+/* Classic calendar “sheet”: grid lines + weekday header row */
+.booking-cal-sheet {
+  margin-bottom: 1rem;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid var(--gray-600);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.35);
+}
+
 .booking-cal-grid {
   display: grid;
   grid-template-columns: repeat(7, minmax(0, 1fr));
-  gap: 0.35rem;
-  margin-bottom: 1rem;
+  gap: 1px;
+  background: var(--gray-600);
 }
 
 .booking-cal-dow {
-  font-size: 0.7rem;
-  font-weight: 600;
+  font-size: 0.68rem;
+  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.04em;
-  color: var(--gray-500);
+  letter-spacing: 0.05em;
+  color: var(--gray-300);
   text-align: center;
-  padding: 0.25rem 0;
+  padding: 0.55rem 0.2rem;
+  background: var(--gray-800);
+  border: none;
 }
 
 .booking-cal-cell--pad {
-  min-height: 2.25rem;
+  min-height: 2.85rem;
+  background: var(--gray-900);
 }
 
 .booking-cal-day {
-  min-height: 2.35rem;
+  min-height: 2.85rem;
   padding: 0.25rem;
-  border-radius: 8px;
-  border: 1px solid var(--gray-700);
+  border: none;
+  border-radius: 0;
   background: var(--black);
   color: var(--white);
-  font-size: 0.95rem;
-  font-weight: 600;
+  font-size: 1rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
   cursor: pointer;
-  transition: border-color 0.15s, background 0.15s;
+  transition: background 0.12s, color 0.12s, box-shadow 0.12s;
 }
 
 .booking-cal-day:hover {
-  border-color: var(--gray-500);
   background: var(--gray-900);
+  color: var(--white);
 }
 
 .booking-cal-day:focus-visible {
   outline: 2px solid var(--red);
-  outline-offset: 2px;
+  outline-offset: -2px;
+  z-index: 1;
+  position: relative;
 }
 
 .booking-cal-day--muted {
   color: var(--gray-500);
+  background: #101010;
+  font-weight: 600;
+}
+
+.booking-cal-day--muted:hover {
   background: var(--gray-900);
-  border-color: var(--gray-800);
+  color: var(--gray-400);
 }
 
 .booking-cal-day--picked {
-  border-color: var(--red);
-  background: rgba(220, 38, 38, 0.2);
+  background: rgba(220, 38, 38, 0.35);
   color: var(--white);
+  box-shadow: inset 0 0 0 2px var(--red);
+}
+
+@media (min-width: 480px) {
+  .booking-cal-day,
+  .booking-cal-cell--pad {
+    min-height: 3.1rem;
+  }
+
+  .booking-cal-day {
+    font-size: 1.05rem;
+  }
 }
 
 .booking-slots {
