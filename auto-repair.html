@@ -216,9 +216,37 @@
           ></iframe>
         </div>
 
+        <div class="booking-calendar-wrap" id="booking-calendar-wrap">
+          <div class="booking-calendar-head">
+            <button type="button" class="btn btn-ghost booking-cal-nav" id="cal-prev" aria-label="Previous month">
+              ←
+            </button>
+            <h3 class="booking-cal-title" id="cal-title">Loading…</h3>
+            <button type="button" class="btn btn-ghost booking-cal-nav" id="cal-next" aria-label="Next month">
+              →
+            </button>
+          </div>
+          <p class="booking-cal-hint" id="cal-hint">
+            Gray days have no open times left or are fully booked. Pick a day, then choose an open time — busy times show
+            as “Unavailable” only (no personal details).
+          </p>
+          <p class="booking-cal-error" id="cal-error" hidden role="alert"></p>
+          <div class="booking-cal-loading" id="cal-loading">Loading calendar…</div>
+          <div class="booking-cal-grid" id="cal-grid" aria-hidden="true"></div>
+          <div class="booking-slots" id="booking-slots" hidden>
+            <p class="booking-slots__label" id="slots-day-label"></p>
+            <p class="booking-slots__sub" id="slots-day-sub"></p>
+            <div class="booking-slots__buttons" id="slots-buttons" role="group" aria-label="Available times"></div>
+          </div>
+        </div>
+
         <form class="scheduler-form" id="scheduler-form" novalidate>
           <p class="scheduler-form__lead">
-            Or request an appointment — include your vehicle and what you need. We will confirm by phone or email.
+            Complete your details below. Your selected time is sent with the request.
+          </p>
+          <input type="hidden" id="sched-slot-start" name="startDate" value="" />
+          <p class="scheduler-selected" id="sched-selected" aria-live="polite">
+            <strong>Selected time:</strong> <span id="sched-selected-text">None — pick a date and time above.</span>
           </p>
           <div class="scheduler-form__grid">
             <div class="scheduler-field">
@@ -236,10 +264,6 @@
             <div class="scheduler-field">
               <label for="sched-phone">Phone</label>
               <input type="tel" id="sched-phone" name="phone" required maxlength="32" autocomplete="tel" />
-            </div>
-            <div class="scheduler-field scheduler-field--wide">
-              <label for="sched-when">Preferred date &amp; time</label>
-              <input type="datetime-local" id="sched-when" name="startDate" required />
             </div>
             <div class="scheduler-field scheduler-field--wide">
               <label for="sched-vehicle">Vehicle (year, make, model)</label>
@@ -334,12 +358,247 @@
         var submitBtn = document.getElementById("sched-submit");
         if (!form || !statusEl) return;
 
+        var calData = null;
+        var calTz = "America/Detroit";
+        var viewYear = new Date().getFullYear();
+        var viewMonth = new Date().getMonth();
+        var selectedDayKey = null;
+        var selectedStartIso = null;
+
+        var calTitle = document.getElementById("cal-title");
+        var calGrid = document.getElementById("cal-grid");
+        var calError = document.getElementById("cal-error");
+        var calLoading = document.getElementById("cal-loading");
+        var calHint = document.getElementById("cal-hint");
+        var slotsPanel = document.getElementById("booking-slots");
+        var slotsDayLabel = document.getElementById("slots-day-label");
+        var slotsDaySub = document.getElementById("slots-day-sub");
+        var slotsButtons = document.getElementById("slots-buttons");
+        var schedSlotStart = document.getElementById("sched-slot-start");
+        var schedSelectedText = document.getElementById("sched-selected-text");
+
+        function monthKey(y, m) {
+          return y + "-" + String(m + 1).padStart(2, "0");
+        }
+
+        function formatSlotTime(iso) {
+          try {
+            return new Date(iso).toLocaleString("en-US", {
+              weekday: "short",
+              month: "short",
+              day: "numeric",
+              hour: "numeric",
+              minute: "2-digit",
+              timeZone: calTz,
+            });
+          } catch (e) {
+            return iso;
+          }
+        }
+
+        function setSelected(iso) {
+          selectedStartIso = iso;
+          if (schedSlotStart) schedSlotStart.value = iso || "";
+          if (schedSelectedText) {
+            schedSelectedText.textContent = iso ? formatSlotTime(iso) : "None — pick a date and time above.";
+          }
+        }
+
+        function dayHasOpen(dayObj) {
+          if (!dayObj || !dayObj.slots) return false;
+          for (var i = 0; i < dayObj.slots.length; i++) {
+            if (dayObj.slots[i].available) return true;
+          }
+          return false;
+        }
+
+        function renderCalendar() {
+          if (!calGrid || !calTitle) return;
+          calGrid.innerHTML = "";
+          calGrid.setAttribute("aria-hidden", "false");
+          var names = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+          for (var n = 0; n < 7; n++) {
+            var hn = document.createElement("div");
+            hn.className = "booking-cal-dow";
+            hn.textContent = names[n];
+            calGrid.appendChild(hn);
+          }
+          var first = new Date(viewYear, viewMonth, 1);
+          var last = new Date(viewYear, viewMonth + 1, 0);
+          var startPad = first.getDay();
+          var daysInMonth = last.getDate();
+          for (var p = 0; p < startPad; p++) {
+            var ph = document.createElement("div");
+            ph.className = "booking-cal-cell booking-cal-cell--pad";
+            calGrid.appendChild(ph);
+          }
+          var days = (calData && calData.days) || {};
+          for (var d = 1; d <= daysInMonth; d++) {
+            var key = monthKey(viewYear, viewMonth) + "-" + String(d).padStart(2, "0");
+            var dayObj = days[key];
+            var hasOpen = dayHasOpen(dayObj);
+            var cell = document.createElement("button");
+            cell.type = "button";
+            cell.className = "booking-cal-day";
+            if (!hasOpen) cell.classList.add("booking-cal-day--muted");
+            if (selectedDayKey === key) cell.classList.add("booking-cal-day--picked");
+            cell.textContent = String(d);
+            cell.setAttribute("aria-label", "Select " + key);
+            (function (dayKey, dObj) {
+              cell.addEventListener("click", function () {
+                selectedDayKey = dayKey;
+                showSlots(dayKey, dObj);
+                renderCalendar();
+              });
+            })(key, dayObj);
+            calGrid.appendChild(cell);
+          }
+          calTitle.textContent = first.toLocaleString("en-US", { month: "long", year: "numeric" });
+        }
+
+        function formatHour12(h) {
+          var am = h >= 12 ? "PM" : "AM";
+          var h12 = h % 12;
+          if (h12 === 0) h12 = 12;
+          return h12 + ":00 " + am;
+        }
+
+        function showSlots(dayKey, dayObj) {
+          if (!slotsPanel || !slotsButtons || !slotsDayLabel) return;
+          slotsButtons.innerHTML = "";
+          if (slotsDaySub) slotsDaySub.textContent = "";
+          if (!dayObj || !dayObj.slots || !dayObj.slots.length) {
+            slotsPanel.hidden = false;
+            slotsDayLabel.textContent = "No time slots for " + dayKey + ".";
+            if (slotsDaySub) slotsDaySub.hidden = true;
+            return;
+          }
+          var parts = dayKey.split("-");
+          var d0 = new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]));
+          var longDate = d0.toLocaleDateString("en-US", {
+            weekday: "long",
+            month: "long",
+            day: "numeric",
+            year: "numeric",
+          });
+          var sh = (calData && calData.shopHours) || { start: 8, end: 17 };
+          var sm = (calData && calData.slotMinutes) || 30;
+          slotsDayLabel.textContent = longDate;
+          if (slotsDaySub) {
+            slotsDaySub.textContent =
+              formatHour12(sh.start) +
+              " – " +
+              formatHour12(sh.end) +
+              " · " +
+              sm +
+              "-minute slots · times in " +
+              calTz.replace(/_/g, " ");
+            slotsDaySub.hidden = false;
+          }
+          for (var i = 0; i < dayObj.slots.length; i++) {
+            var s = dayObj.slots[i];
+            var btn = document.createElement("button");
+            btn.type = "button";
+            var tlabel = formatSlotTime(s.start);
+            if (s.available) {
+              btn.className = "booking-slot-btn booking-slot-btn--open";
+              btn.textContent = tlabel;
+              btn.setAttribute("aria-label", "Book " + tlabel);
+              (function (iso) {
+                btn.addEventListener("click", function () {
+                  setSelected(iso);
+                  var all = slotsButtons.querySelectorAll(".booking-slot-btn--open");
+                  for (var j = 0; j < all.length; j++) all[j].classList.remove("booking-slot-btn--active");
+                  btn.classList.add("booking-slot-btn--active");
+                });
+              })(s.start);
+            } else {
+              btn.className = "booking-slot-btn booking-slot-btn--busy";
+              btn.disabled = true;
+              btn.textContent = tlabel + " — Unavailable";
+              btn.setAttribute("aria-label", "Time unavailable");
+            }
+            slotsButtons.appendChild(btn);
+          }
+          slotsPanel.hidden = false;
+          if (slotsPanel.scrollIntoView) {
+            slotsPanel.scrollIntoView({ behavior: "smooth", block: "nearest" });
+          }
+        }
+
+        async function loadMonth() {
+          if (calError) {
+            calError.hidden = true;
+            calError.textContent = "";
+          }
+          if (calLoading) calLoading.hidden = false;
+          if (calGrid) calGrid.setAttribute("aria-hidden", "true");
+          var mk = monthKey(viewYear, viewMonth);
+          try {
+            var res = await fetch("/api/availability?month=" + encodeURIComponent(mk));
+            var data = await res.json().catch(function () {
+              return {};
+            });
+            if (!data.ok) {
+              calError.textContent =
+                data.message ||
+                "Could not load the calendar. You can still submit a request — call 517-677-3173 to confirm a time.";
+              calError.hidden = false;
+              calData = null;
+              if (calHint) calHint.hidden = true;
+              renderCalendar();
+              return;
+            }
+            calData = data;
+            calTz = data.timezone || "America/Detroit";
+            if (calHint) calHint.hidden = false;
+            renderCalendar();
+          } catch (err) {
+            calError.textContent = "Could not load the calendar. Please call 517-677-3173.";
+            calError.hidden = false;
+            calData = null;
+          } finally {
+            if (calLoading) calLoading.hidden = true;
+          }
+        }
+
+        var prevBtn = document.getElementById("cal-prev");
+        var nextBtn = document.getElementById("cal-next");
+        if (prevBtn) {
+          prevBtn.addEventListener("click", function () {
+            viewMonth--;
+            if (viewMonth < 0) {
+              viewMonth = 11;
+              viewYear--;
+            }
+            selectedDayKey = null;
+            setSelected(null);
+            if (slotsPanel) slotsPanel.hidden = true;
+            loadMonth();
+          });
+        }
+        if (nextBtn) {
+          nextBtn.addEventListener("click", function () {
+            viewMonth++;
+            if (viewMonth > 11) {
+              viewMonth = 0;
+              viewYear++;
+            }
+            selectedDayKey = null;
+            setSelected(null);
+            if (slotsPanel) slotsPanel.hidden = true;
+            loadMonth();
+          });
+        }
+
+        loadMonth();
+
         form.addEventListener("submit", async function (e) {
           e.preventDefault();
           statusEl.textContent = "";
-          var when = document.getElementById("sched-when");
-          if (!when || !when.value) {
-            statusEl.textContent = "Please choose a preferred date and time.";
+          var slotVal = schedSlotStart && schedSlotStart.value;
+          if (!slotVal) {
+            statusEl.textContent = "Please pick an available time on the calendar.";
             return;
           }
           var payload = {
@@ -347,7 +606,7 @@
             lastName: document.getElementById("sched-last").value.trim(),
             email: document.getElementById("sched-email").value.trim(),
             phone: document.getElementById("sched-phone").value.trim(),
-            startDate: new Date(when.value).toISOString(),
+            startDate: slotVal,
             vehicle: document.getElementById("sched-vehicle").value.trim(),
             notes: document.getElementById("sched-notes").value.trim(),
           };
@@ -364,6 +623,10 @@
             if (data.ok) {
               statusEl.textContent = data.message || "Thanks — we received your request.";
               form.reset();
+              setSelected(null);
+              selectedDayKey = null;
+              if (slotsPanel) slotsPanel.hidden = true;
+              loadMonth();
             } else {
               statusEl.textContent =
                 data.message || "Something went wrong. Please call 517-677-3173.";
