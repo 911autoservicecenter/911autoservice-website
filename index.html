@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script>
+      (function () {
+        var KEY = "911asAllowHome";
+        try {
+          var params = new URLSearchParams(window.location.search);
+          if (params.get("home") === "1") {
+            sessionStorage.setItem(KEY, "1");
+            if (window.history.replaceState) {
+              window.history.replaceState(null, "", window.location.pathname + window.location.hash);
+            }
+            return;
+          }
+          if (sessionStorage.getItem(KEY) === "1") return;
+        } catch (e) {}
+        var ua = navigator.userAgent || "";
+        if (/Googlebot|Google-InspectionTool|bingbot|DuckDuckBot|Baiduspider|YandexBot|facebookexternalhit|Twitterbot|LinkedInBot|Slurp/i.test(ua)) {
+          return;
+        }
+        var isMobile =
+          /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Mobile|Tablet|Silk/i.test(ua);
+        if (!isMobile && typeof navigator.maxTouchPoints === "number" && navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1) {
+          isMobile = true;
+        }
+        if (
+          !isMobile &&
+          window.matchMedia("(max-width: 768px)").matches &&
+          window.matchMedia("(pointer: coarse)").matches
+        ) {
+          isMobile = true;
+        }
+        if (!isMobile) return;
+        window.location.replace("towing.html");
+      })();
+    </script>
+    <title>911 Auto Service Center | Towing &amp; Automotive Repair in Coldwater, MI</title>
+    <meta
+      name="description"
+      content="911 Auto Service Center in Coldwater, Michigan — professional automotive repair and 24/7 towing &amp; roadside assistance. Visit us at 22 S Clay St."
+    />
+    <meta
+      name="keywords"
+      content="911 Auto Service Center, auto repair Coldwater MI, towing Coldwater MI, roadside assistance Coldwater, automotive repair Branch County"
+    />
+    <link rel="canonical" href="https://911autoservice.org/" />
+    <meta name="theme-color" content="#0a0a0a" />
+    <meta name="robots" content="index,follow" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:site_name" content="911 Auto Service Center" />
+    <meta property="og:title" content="911 Auto Service Center | Towing &amp; Automotive Repair" />
+    <meta
+      property="og:description"
+      content="Automotive repair and towing &amp; roadside assistance in Coldwater, MI. Call for auto repair or towing."
+    />
+    <meta property="og:url" content="https://911autoservice.org/" />
+    <meta property="og:image" content="https://911autoservice.org/images/logo.png" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="911 Auto Service Center | Towing &amp; Automotive Repair" />
+    <meta
+      name="twitter:description"
+      content="Automotive repair and towing &amp; roadside assistance in Coldwater, MI."
+    />
+    <meta name="twitter:image" content="https://911autoservice.org/images/logo.png" />
+
+    <link rel="icon" href="images/logo.png" type="image/png" />
+    <link rel="apple-touch-icon" href="images/logo.png" />
+    <link rel="stylesheet" href="css/styles.css" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "AutomotiveRepair",
+            "@id": "https://911autoservice.org/#business",
+            "name": "911 Auto Service Center",
+            "url": "https://911autoservice.org/",
+            "image": "https://911autoservice.org/images/logo.png",
+            "telephone": "+1-517-677-3173",
+            "address": {
+              "@type": "PostalAddress",
+              "streetAddress": "22 S Clay St",
+              "addressLocality": "Coldwater",
+              "addressRegion": "MI",
+              "postalCode": "49036",
+              "addressCountry": "US"
+            },
+            "areaServed": {
+              "@type": "AdministrativeArea",
+              "name": "Branch County, Michigan"
+            },
+            "priceRange": "$$"
+          },
+          {
+            "@type": "TowingCompany",
+            "@id": "https://911autoservice.org/#towing",
+            "name": "911 Auto Service Center — Towing & Roadside",
+            "url": "https://911autoservice.org/towing.html",
+            "image": "https://911autoservice.org/images/logo.png",
+            "telephone": "+1-517-279-2010",
+            "address": {
+              "@type": "PostalAddress",
+              "streetAddress": "22 S Clay St",
+              "addressLocality": "Coldwater",
+              "addressRegion": "MI",
+              "postalCode": "49036",
+              "addressCountry": "US"
+            }
+          },
+          {
+            "@type": "WebSite",
+            "@id": "https://911autoservice.org/#website",
+            "url": "https://911autoservice.org/",
+            "name": "911 Auto Service Center",
+            "publisher": { "@id": "https://911autoservice.org/#business" },
+            "inLanguage": "en-US"
+          }
+        ]
+      }
+    </script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+
+    <header class="site-header">
+      <div class="header-inner">
+        <a class="brand" href="index.html">
+          <img
+            src="images/logo.png"
+            width="112"
+            height="112"
+            alt="911 Auto Service Center logo: towing and automotive repair in Coldwater, Michigan"
+            decoding="async"
+          />
+          <span class="brand-text">
+            <span class="brand-name">911 Auto Service Center</span>
+            <span class="brand-tag">Coldwater, MI</span>
+          </span>
+        </a>
+        <nav class="site-nav" aria-label="Main">
+          <a href="index.html" aria-current="page">Home</a>
+          <a href="auto-repair.html">Auto repair</a>
+          <a href="towing.html">Towing</a>
+        </nav>
+        <div class="header-cta">
+          <a class="btn btn-ghost" href="tel:+15176773173">Auto repair: 517-677-3173</a>
+          <a class="btn btn-primary" href="tel:+15172792010">Towing: 517-279-2010</a>
+        </div>
+      </div>
+    </header>
+
+    <main id="main">
+      <section class="hero" aria-labelledby="hero-heading">
+        <div class="hero-inner">
+          <div class="hero-copy">
+            <h1 id="hero-heading">Towing, roadside help, and auto repair you can count on</h1>
+            <p class="lead">
+              911 Auto Service Center serves Coldwater and the surrounding area with professional automotive repair
+              and responsive towing &amp; roadside assistance — all from one trusted shop.
+            </p>
+            <div class="hero-actions">
+              <a class="btn btn-primary" href="tel:+15176773173">Call auto repair</a>
+              <a class="btn btn-ghost" href="tel:+15172792010">Call towing / roadside</a>
+            </div>
+            <p class="hero-badge">Walk-in service at 22 S Clay St — Coldwater, MI 49036</p>
+          </div>
+          <div class="hero-visual">
+            <div class="hero-card">
+              <img
+                src="images/logo.png"
+                width="280"
+                height="280"
+                alt=""
+                role="presentation"
+                decoding="async"
+              />
+              <dl>
+                <div>
+                  <dt>Address</dt>
+                  <dd>
+                    <a
+                      href="https://www.google.com/maps/search/?api=1&amp;query=22%20S%20Clay%20St%20Coldwater%20MI%2049036"
+                      rel="noopener noreferrer"
+                      >22 S Clay St, Coldwater, MI 49036</a
+                    >
+                  </dd>
+                </div>
+                <div>
+                  <dt>Auto repair</dt>
+                  <dd><a href="tel:+15176773173">517-677-3173</a></dd>
+                </div>
+                <div>
+                  <dt>Towing &amp; roadside</dt>
+                  <dd><a href="tel:+15172792010">517-279-2010</a></dd>
+                </div>
+              </dl>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" aria-labelledby="services-heading">
+        <h2 id="services-heading">What we do</h2>
+        <p class="section-intro">
+          Whether you need dependable repairs or help when you are stuck on the road, our team is here for you.
+        </p>
+        <div class="cards">
+          <article class="card">
+            <h3>Automotive repair</h3>
+            <p>Diagnostics, maintenance, and repairs to keep your vehicle safe and reliable.</p>
+            <a class="phone" href="tel:+15176773173">517-677-3173</a>
+            <a class="text-link" href="auto-repair.html">Learn about our shop</a>
+          </article>
+          <article class="card">
+            <h3>Towing &amp; roadside assistance</h3>
+            <p>When you need a tow or roadside help, call our dedicated line for fast assistance.</p>
+            <a class="phone" href="tel:+15172792010">517-279-2010</a>
+            <a class="text-link" href="towing.html">Towing, AAA &amp; estimates</a>
+          </article>
+          <article class="card">
+            <h3>Local service</h3>
+            <p>
+              Conveniently located in Coldwater with service for drivers across Branch County and nearby communities.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <section class="map-strip" aria-labelledby="location-heading">
+        <div class="map-inner">
+          <div>
+            <h2 id="location-heading">Find us</h2>
+            <p>
+              Open the map for directions to <strong>22 S Clay St, Coldwater, MI 49036</strong>. Parking and entrance
+              details may vary — call ahead if you need help locating the shop.
+            </p>
+          </div>
+          <a
+            class="btn btn-primary"
+            href="https://www.google.com/maps/search/?api=1&amp;query=22%20S%20Clay%20St%20Coldwater%20MI%2049036"
+            rel="noopener noreferrer"
+            >Open in Google Maps</a
+          >
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="footer-inner">
+        <div class="footer-brand">
+          <img src="images/logo.png" width="96" height="96" alt="" role="presentation" decoding="async" />
+          <div class="footer-meta">
+            <strong>911 Auto Service Center</strong><br />
+            22 S Clay St · Coldwater, MI 49036<br />
+            Auto repair: <a href="tel:+15176773173">517-677-3173</a><br />
+            Towing &amp; roadside: <a href="tel:+15172792010">517-279-2010</a>
+          </div>
+        </div>
+        <p class="footer-legal">
+          &copy; <span id="year"></span> 911 Auto Service Center. All rights reserved.
+        </p>
+      </div>
+    </footer>
+    <script>
+      document.getElementById("year").textContent = new Date().getFullYear();
+    </script>
+  </body>
+</html>
