@@ -87,8 +87,7 @@
   function render(list) {
     if (loading) loading.remove();
     if (!list || !list.length) {
-      root.innerHTML =
-        '<p class="sale-empty">No listings right now. Call <a href="tel:+15176773173">517-677-3173</a> to ask what we have in the shop.</p>';
+      root.innerHTML = '<p class="sale-empty">There are no listings at this time.</p>';
       return;
     }
     root.innerHTML = list.map(card).join("");
@@ -107,7 +106,6 @@
     })
     .catch(function () {
       if (loading) loading.remove();
-      root.innerHTML =
-        '<p class="sale-empty">Could not load listings. Call <a href="tel:+15176773173">517-677-3173</a>.</p>';
+      root.innerHTML = '<p class="sale-empty">There are no listings at this time.</p>';
     });
 })();

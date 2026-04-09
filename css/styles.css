@@ -516,6 +516,32 @@ a:focus-visible {
   color: var(--white);
 }
 
+.review-screenshot-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 860px) {
+  .review-screenshot-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.review-screenshot-card {
+  margin: 0;
+  background: var(--gray-900);
+  border: 1px solid var(--gray-700);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.review-screenshot-card img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
 .map-strip {
   border-top: 1px solid var(--gray-700);
   border-bottom: 1px solid var(--gray-700);
