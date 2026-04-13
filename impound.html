@@ -39,10 +39,82 @@
         text-decoration-thickness: 2px;
         text-underline-offset: 2px;
       }
+
+      .impound-courtesy-dialog {
+        max-width: min(32rem, calc(100vw - 2rem));
+        width: 100%;
+        margin: auto;
+        padding: 0;
+        border: 1px solid var(--gray-700, #2a2a2a);
+        border-radius: 10px;
+        background: var(--gray-900, #141414);
+        color: var(--white, #f7f7f7);
+        box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55);
+      }
+
+      .impound-courtesy-dialog::backdrop {
+        background: rgba(0, 0, 0, 0.72);
+        backdrop-filter: blur(4px);
+      }
+
+      .impound-courtesy-dialog[open] {
+        display: block;
+      }
+
+      .impound-courtesy-inner {
+        padding: 1.5rem 1.5rem 1.25rem;
+      }
+
+      .impound-courtesy-dialog h2 {
+        margin: 0 0 0.75rem;
+        font-size: 1.2rem;
+        line-height: 1.3;
+        color: var(--white, #f7f7f7);
+      }
+
+      .impound-courtesy-dialog .impound-courtesy-body {
+        margin: 0;
+        font-size: 0.98rem;
+        line-height: 1.65;
+        color: var(--gray-300, #c8c8c8);
+      }
+
+      .impound-courtesy-dialog .impound-courtesy-body + .impound-courtesy-body {
+        margin-top: 1rem;
+      }
+
+      .impound-courtesy-actions {
+        margin-top: 1.35rem;
+        display: flex;
+        justify-content: flex-end;
+      }
     </style>
   </head>
   <body>
     <a class="skip-link" href="#main">Skip to content</a>
+
+    <dialog class="impound-courtesy-dialog" id="impound-courtesy-dialog" aria-labelledby="impound-courtesy-heading">
+      <div class="impound-courtesy-inner">
+        <h2 id="impound-courtesy-heading">Respectful communication</h2>
+        <p class="impound-courtesy-body">
+          We understand that impound situations are stressful, and we want to help you as clearly and quickly as we
+          can. At the same time, it is not part of our staff members’ job duties to accept being yelled at, threatened,
+          or treated with excessive disrespect.
+        </p>
+        <p class="impound-courtesy-body">
+          Our team has been instructed to end a phone call if a caller becomes abusive or hostile. Speaking calmly
+          helps us give you accurate information about release requirements and next steps.
+        </p>
+        <p class="impound-courtesy-body">
+          Requests to speak with a manager will not change established policies, fees, or documentation requirements.
+          Our staff share the same information; the answer you receive from any team member is the same answer you would
+          receive from anyone else here.
+        </p>
+        <div class="impound-courtesy-actions">
+          <button type="button" class="btn btn-primary" id="impound-courtesy-dismiss">Continue to page</button>
+        </div>
+      </div>
+    </dialog>
 
     <header class="site-header">
       <div class="header-inner">
@@ -74,7 +146,7 @@
       </div>
     </header>
 
-    <main id="main">
+    <main id="main" tabindex="-1">
       <header class="page-hero" aria-labelledby="page-heading">
         <div class="page-hero-inner">
           <h1 id="page-heading">Was your vehicle impounded?</h1>
@@ -164,6 +236,32 @@
     </footer>
     <script>
       document.getElementById("year").textContent = new Date().getFullYear();
+
+      (function () {
+        var dlg = document.getElementById("impound-courtesy-dialog");
+        var btn = document.getElementById("impound-courtesy-dismiss");
+        if (!dlg || typeof dlg.showModal !== "function") return;
+
+        function closeDialog() {
+          if (dlg.open) dlg.close();
+        }
+
+        btn.addEventListener("click", closeDialog);
+        dlg.addEventListener("click", function (e) {
+          if (e.target === dlg) closeDialog();
+        });
+
+        dlg.addEventListener("close", function () {
+          document.getElementById("main") && document.getElementById("main").focus();
+        });
+
+        window.addEventListener("DOMContentLoaded", function () {
+          try {
+            dlg.showModal();
+            btn.focus();
+          } catch (e) {}
+        });
+      })();
     </script>
   </body>
 </html>
