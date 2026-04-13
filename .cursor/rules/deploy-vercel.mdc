@@ -1,0 +1,20 @@
+---
+description: How this site goes live — Git push triggers Vercel production deploy
+alwaysApply: true
+---
+
+# Deploy and “push live” (Vercel)
+
+This repo (**911autoservice-website**) is deployed with **[Vercel](https://vercel.com)** connected to **GitHub** (`911autoservicecenter/911autoservice-website`).
+
+## When the user says push live / deploy / ship / go live
+
+1. **Commit** the relevant changes with a clear message.
+2. **Push** to **`origin/main`** (that is what triggers Vercel to build and deploy production).
+3. **State explicitly** that Vercel will pick up the push and deploy automatically — do not imply manual FTP or GitHub Pages unless the user says otherwise.
+4. **Run the commands yourself** in the project directory (do not only tell the user what to run).
+
+## Optional follow-up
+
+- If a push fails (auth, conflicts), fix or report and retry.
+- Do not claim the site is live until the push succeeded; Vercel’s dashboard shows build status if the user needs confirmation.
