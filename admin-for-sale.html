@@ -135,12 +135,18 @@
               <input type="text" id="fld-fineprint" maxlength="500" placeholder="e.g. Inspect in person before purchase." />
             </div>
             <div class="scheduler-field scheduler-field--wide">
-              <label for="fld-image-url">Photo URL</label>
-              <input type="text" id="fld-image-url" maxlength="2000" placeholder="https://… or images/for-sale/your-photo.jpg" />
-            </div>
-            <div class="scheduler-field scheduler-field--wide">
               <label for="fld-image-alt">Photo description (alt text)</label>
               <input type="text" id="fld-image-alt" maxlength="300" />
+            </div>
+            <div class="scheduler-field scheduler-field--wide">
+              <label for="fld-photos-upload">Upload photos</label>
+              <div class="admin-photo-upload">
+                <input type="file" id="fld-photos-upload" accept="image/*" multiple />
+                <button type="button" class="btn btn-ghost btn-sm" id="btn-upload-photos">Upload selected photos</button>
+              </div>
+              <p class="admin-photo-hint">Upload first, then save listing. Reorder by removing + re-uploading.</p>
+              <p id="admin-upload-status" class="scheduler-form__status" role="status"></p>
+              <div id="admin-photo-list" class="admin-photo-list" aria-live="polite"></div>
             </div>
             <div class="scheduler-field scheduler-field--wide">
               <label class="admin-checkbox">

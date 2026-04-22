@@ -25,8 +25,21 @@
   }
 
   function card(item) {
-    var img = item.imageUrl && String(item.imageUrl).trim() ? item.imageUrl : "images/logo.png";
-    var alt = item.imageAlt && String(item.imageAlt).trim() ? item.imageAlt : item.title || "Item photo";
+    var photos = Array.isArray(item.photos) && item.photos.length
+      ? item.photos.filter(function (p) {
+          return p && p.url && String(p.url).trim();
+        })
+      : [];
+    var img = photos.length
+      ? String(photos[0].url).trim()
+      : item.imageUrl && String(item.imageUrl).trim()
+        ? item.imageUrl
+        : "images/logo.png";
+    var alt = photos.length && photos[0].alt && String(photos[0].alt).trim()
+      ? photos[0].alt
+      : item.imageAlt && String(item.imageAlt).trim()
+        ? item.imageAlt
+        : item.title || "Item photo";
     var sold = !!item.sold;
     var priceClass = sold ? "sale-card__price sale-card__price--muted" : "sale-card__price";
     var badge = sold ? '<span class="sale-card__badge" aria-label="Sold">Sold</span>' : "";
@@ -44,6 +57,30 @@
     var ctaClass = sold ? "btn btn-ghost sale-card__cta" : "btn btn-primary sale-card__cta";
     var ctaText = sold ? "Ask about similar" : "Call 517-677-3173";
 
+    var thumbStrip = photos.length > 1
+      ? '<div class="sale-card__thumbs">' +
+        photos
+          .map(function (p, idx) {
+            return (
+              '<button type="button" class="sale-card__thumb' +
+              (idx === 0 ? " is-active" : "") +
+              '" data-photo-idx="' +
+              idx +
+              '" data-photo-src="' +
+              esc(p.url) +
+              '" data-photo-alt="' +
+              esc(p.alt || item.imageAlt || item.title || "Item photo") +
+              '">' +
+              '<img src="' +
+              esc(p.url) +
+              '" alt="" loading="lazy" decoding="async" />' +
+              "</button>"
+            );
+          })
+          .join("") +
+        "</div>"
+      : "";
+
     return (
       '<article class="sale-card' +
       (sold ? " sale-card--sold" : "") +
@@ -53,7 +90,7 @@
       esc(img) +
       '" width="640" height="480" alt="' +
       esc(alt) +
-      '" loading="lazy" decoding="async" />' +
+      '" loading="lazy" decoding="async" class="sale-card__main-photo" />' +
       badge +
       "</figure>" +
       '<div class="sale-card__body">' +
@@ -74,6 +111,7 @@
       '<dl class="sale-card__specs">' +
       specs +
       "</dl>" +
+      thumbStrip +
       fine +
       '<a class="' +
       ctaClass +
@@ -91,6 +129,19 @@
       return;
     }
     root.innerHTML = list.map(card).join("");
+    root.querySelectorAll(".sale-card").forEach(function (cardEl) {
+      var main = cardEl.querySelector(".sale-card__main-photo");
+      if (!main) return;
+      cardEl.addEventListener("click", function (e) {
+        var btn = e.target && e.target.closest ? e.target.closest("[data-photo-src]") : null;
+        if (!btn) return;
+        main.src = btn.getAttribute("data-photo-src") || main.src;
+        main.alt = btn.getAttribute("data-photo-alt") || main.alt;
+        cardEl.querySelectorAll(".sale-card__thumb").forEach(function (thumbEl) {
+          thumbEl.classList.toggle("is-active", thumbEl === btn);
+        });
+      });
+    });
   }
 
   fetch("/api/for-sale/listings", { credentials: "same-origin" })

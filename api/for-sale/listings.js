@@ -4,6 +4,7 @@
  */
 const store = require("../lib/for-sale-store");
 const http = require("../lib/for-sale-http");
+const photosLib = require("../lib/for-sale-photos");
 
 function sanitizeString(s, max) {
   if (s == null) return "";
@@ -13,6 +14,8 @@ function sanitizeString(s, max) {
 }
 
 function validateListing(body) {
+  var photos = photosLib.normalizeListingPhotos(body || {});
+  var primary = photosLib.getListingPrimaryFields(photos, body && body.imageAlt);
   var o = {
     title: sanitizeString(body.title, 200),
     price: sanitizeString(body.price, 40),
@@ -23,8 +26,9 @@ function validateListing(body) {
     stock: sanitizeString(body.stock, 80),
     warranty: sanitizeString(body.warranty, 300),
     fineprint: sanitizeString(body.fineprint, 500),
-    imageUrl: sanitizeString(body.imageUrl, 2000),
-    imageAlt: sanitizeString(body.imageAlt, 300),
+    imageUrl: primary.imageUrl,
+    imageAlt: primary.imageAlt,
+    photos: photos,
     sold: !!body.sold,
   };
   if (!o.title) {

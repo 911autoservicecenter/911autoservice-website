@@ -13,7 +13,65 @@
   var btnNew = document.getElementById("btn-new-listing");
   var sessionMeta = document.getElementById("admin-session-meta");
   var sessionEmailEl = document.getElementById("admin-session-email");
+  var uploadInput = document.getElementById("fld-photos-upload");
+  var uploadBtn = document.getElementById("btn-upload-photos");
+  var uploadStatus = document.getElementById("admin-upload-status");
+  var photoList = document.getElementById("admin-photo-list");
   var editingId = null;
+  var currentPhotos = [];
+
+  function esc(s) {
+    if (s == null) return "";
+    var d = document.createElement("div");
+    d.textContent = String(s);
+    return d.innerHTML;
+  }
+
+  function normalizePhotos(item) {
+    if (item && Array.isArray(item.photos) && item.photos.length) {
+      return item.photos
+        .map(function (p) {
+          return {
+            url: p && p.url ? String(p.url).trim() : "",
+            alt: p && p.alt ? String(p.alt).trim() : "",
+          };
+        })
+        .filter(function (p) {
+          return !!p.url;
+        });
+    }
+    if (item && item.imageUrl && String(item.imageUrl).trim()) {
+      return [
+        {
+          url: String(item.imageUrl).trim(),
+          alt: item.imageAlt ? String(item.imageAlt).trim() : "",
+        },
+      ];
+    }
+    return [];
+  }
+
+  function renderPhotoList() {
+    if (!photoList) return;
+    if (!currentPhotos.length) {
+      photoList.innerHTML = '<p class="admin-photo-list__empty">No uploaded photos yet.</p>';
+      return;
+    }
+    photoList.innerHTML = currentPhotos
+      .map(function (p, idx) {
+        return (
+          '<div class="admin-photo-list__item">' +
+          '<img src="' +
+          esc(p.url) +
+          '" alt="" loading="lazy" decoding="async" />' +
+          '<button type="button" class="btn btn-ghost btn-sm admin-btn-danger" data-remove-photo="' +
+          idx +
+          '">Remove</button>' +
+          "</div>"
+        );
+      })
+      .join("");
+  }
 
   function setSessionDisplay(res) {
     if (res.data && res.data.loggedIn && res.data.email && sessionMeta && sessionEmailEl) {
@@ -80,6 +138,9 @@
     if (!listingForm) return;
     listingForm.reset();
     document.getElementById("fld-sold").checked = false;
+    currentPhotos = [];
+    renderPhotoList();
+    if (uploadStatus) uploadStatus.textContent = "";
     if (formStatus) formStatus.textContent = "";
     var h = document.getElementById("form-mode-label");
     if (h) h.textContent = "Add a listing";
@@ -96,8 +157,10 @@
     document.getElementById("fld-stock").value = item.stock || "";
     document.getElementById("fld-warranty").value = item.warranty || "";
     document.getElementById("fld-fineprint").value = item.fineprint || "";
-    document.getElementById("fld-image-url").value = item.imageUrl || "";
     document.getElementById("fld-image-alt").value = item.imageAlt || "";
+    currentPhotos = normalizePhotos(item);
+    renderPhotoList();
+    if (uploadStatus) uploadStatus.textContent = "";
     document.getElementById("fld-sold").checked = !!item.sold;
     var h = document.getElementById("form-mode-label");
     if (h) h.textContent = "Edit listing";
@@ -224,6 +287,17 @@
   }
 
   if (listingForm) {
+    listingForm.addEventListener("click", function (e) {
+      var target = e.target;
+      if (!target || !target.getAttribute) return;
+      var removeIdx = target.getAttribute("data-remove-photo");
+      if (removeIdx == null || removeIdx === "") return;
+      var idx = Number(removeIdx);
+      if (isNaN(idx) || idx < 0 || idx >= currentPhotos.length) return;
+      currentPhotos.splice(idx, 1);
+      renderPhotoList();
+    });
+
     listingForm.addEventListener("submit", function (e) {
       e.preventDefault();
       if (formStatus) formStatus.textContent = "";
@@ -237,8 +311,13 @@
         stock: document.getElementById("fld-stock").value.trim(),
         warranty: document.getElementById("fld-warranty").value.trim(),
         fineprint: document.getElementById("fld-fineprint").value.trim(),
-        imageUrl: document.getElementById("fld-image-url").value.trim(),
         imageAlt: document.getElementById("fld-image-alt").value.trim(),
+        photos: currentPhotos.map(function (p) {
+          return {
+            url: p.url,
+            alt: p.alt || "",
+          };
+        }),
         sold: document.getElementById("fld-sold").checked,
       };
       if (!payload.title) {
@@ -275,5 +354,37 @@
     });
   }
 
+  if (uploadBtn) {
+    uploadBtn.addEventListener("click", function () {
+      if (!uploadInput || !uploadInput.files || !uploadInput.files.length) {
+        if (uploadStatus) uploadStatus.textContent = "Choose one or more photo files first.";
+        return;
+      }
+      if (uploadStatus) uploadStatus.textContent = "Uploading photo(s)…";
+      var fd = new FormData();
+      Array.prototype.forEach.call(uploadInput.files, function (file) {
+        fd.append("photos", file);
+      });
+      api("/api/for-sale/photos", { method: "POST", body: fd }).then(function (res) {
+        if (res.data && res.data.ok && Array.isArray(res.data.photos)) {
+          var uploaded = res.data.photos.filter(function (p) {
+            return p && p.url;
+          });
+          if (uploaded.length) {
+            currentPhotos = currentPhotos.concat(uploaded);
+            renderPhotoList();
+          }
+          if (uploadStatus) uploadStatus.textContent = "Uploaded " + uploaded.length + " photo(s).";
+          uploadInput.value = "";
+        } else {
+          var msg = (res.data && res.data.message) || "Could not upload photos.";
+          if (res.status === 401) msg = "Session expired. Sign in again and retry upload.";
+          if (uploadStatus) uploadStatus.textContent = msg;
+        }
+      });
+    });
+  }
+
+  renderPhotoList();
   checkSession();
 })();

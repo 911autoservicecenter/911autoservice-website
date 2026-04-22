@@ -4,6 +4,7 @@
  */
 const store = require("../../lib/for-sale-store");
 const http = require("../../lib/for-sale-http");
+const photosLib = require("../../lib/for-sale-photos");
 
 function sanitizeString(s, max) {
   if (s == null) return "";
@@ -38,6 +39,17 @@ module.exports = async function handler(req, res) {
         return;
       }
       var cur = list[idx];
+      var hasPhotosField = body && Object.prototype.hasOwnProperty.call(body, "photos");
+      var nextPhotos = hasPhotosField
+        ? photosLib.sanitizePhotos(body.photos)
+        : body && body.imageUrl != null
+          ? photosLib.normalizeListingPhotos(body)
+          : photosLib.normalizeListingPhotos(cur);
+      var fallbackAlt =
+        body && body.imageAlt != null
+          ? sanitizeString(body.imageAlt, 300)
+          : cur.imageAlt;
+      var primary = photosLib.getListingPrimaryFields(nextPhotos, fallbackAlt);
       var next = Object.assign({}, cur, {
         title: body.title != null ? sanitizeString(body.title, 200) : cur.title,
         price: body.price != null ? sanitizeString(body.price, 40) : cur.price,
@@ -48,8 +60,9 @@ module.exports = async function handler(req, res) {
         stock: body.stock != null ? sanitizeString(body.stock, 80) : cur.stock,
         warranty: body.warranty != null ? sanitizeString(body.warranty, 300) : cur.warranty,
         fineprint: body.fineprint != null ? sanitizeString(body.fineprint, 500) : cur.fineprint,
-        imageUrl: body.imageUrl != null ? sanitizeString(body.imageUrl, 2000) : cur.imageUrl,
-        imageAlt: body.imageAlt != null ? sanitizeString(body.imageAlt, 300) : cur.imageAlt,
+        imageUrl: primary.imageUrl,
+        imageAlt: primary.imageAlt,
+        photos: nextPhotos,
         sold: body.sold != null ? !!body.sold : cur.sold,
         updatedAt: new Date().toISOString(),
       });
@@ -57,8 +70,23 @@ module.exports = async function handler(req, res) {
         res.status(400).json({ ok: false, message: "Title is required." });
         return;
       }
+      var previousPhotos = photosLib.normalizeListingPhotos(cur);
+      var keepUrls = {};
+      nextPhotos.forEach(function (p) {
+        if (p && p.url) keepUrls[p.url] = true;
+      });
+      var removedPhotos = previousPhotos.filter(function (p) {
+        return p && p.url && !keepUrls[p.url];
+      });
       list[idx] = next;
       await store.saveListings(list);
+      if (removedPhotos.length) {
+        try {
+          await photosLib.deletePhotos(removedPhotos);
+        } catch (e) {
+          console.error("Could not delete removed listing photos", e);
+        }
+      }
       res.status(200).json({ ok: true, listing: next });
     } catch (e) {
       if (e && e.code === "KV_NOT_CONFIGURED") {
@@ -83,6 +111,9 @@ module.exports = async function handler(req, res) {
     if (!http.requireAuth(req, res)) return;
     try {
       var list2 = await store.getListings();
+      var removed = list2.find(function (x) {
+        return x.id === id;
+      });
       var filtered = list2.filter(function (x) {
         return x.id !== id;
       });
@@ -91,6 +122,14 @@ module.exports = async function handler(req, res) {
         return;
       }
       await store.saveListings(filtered);
+      try {
+        var removedPhotos2 = photosLib.normalizeListingPhotos(removed || {});
+        if (removedPhotos2.length) {
+          await photosLib.deletePhotos(removedPhotos2);
+        }
+      } catch (e) {
+        console.error("Could not delete listing photos", e);
+      }
       res.status(200).json({ ok: true, message: "Deleted." });
     } catch (e) {
       if (e && e.code === "KV_NOT_CONFIGURED") {
