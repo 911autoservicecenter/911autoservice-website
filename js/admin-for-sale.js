@@ -98,13 +98,23 @@
             try {
               data = JSON.parse(text);
             } catch (e) {
+              var fallback =
+                r.status === 413
+                  ? "Upload too large. Use smaller images or upload fewer at a time."
+                  : "Server returned a non-JSON response (" + r.status + "). Try again or check Vercel logs.";
               data = {
                 ok: false,
-                message: "Server returned a non-JSON response (" + r.status + "). Try again or check Vercel logs.",
+                message: fallback,
               };
             }
           } else if (!r.ok) {
-            data = { ok: false, message: "Empty response (" + r.status + ")." };
+            data = {
+              ok: false,
+              message:
+                r.status === 413
+                  ? "Upload too large. Use smaller images or upload fewer at a time."
+                  : "Empty response (" + r.status + ").",
+            };
           }
           return { ok: r.ok, status: r.status, data: data };
         });
@@ -360,28 +370,59 @@
         if (uploadStatus) uploadStatus.textContent = "Choose one or more photo files first.";
         return;
       }
-      if (uploadStatus) uploadStatus.textContent = "Uploading photo(s)…";
-      var fd = new FormData();
-      Array.prototype.forEach.call(uploadInput.files, function (file) {
-        fd.append("photos", file);
+      var files = Array.prototype.slice.call(uploadInput.files);
+      var maxClientBytes = 4 * 1024 * 1024;
+      var tooLarge = files.find(function (f) {
+        return f && f.size > maxClientBytes;
       });
-      api("/api/for-sale/photos", { method: "POST", body: fd }).then(function (res) {
-        if (res.data && res.data.ok && Array.isArray(res.data.photos)) {
-          var uploaded = res.data.photos.filter(function (p) {
-            return p && p.url;
-          });
-          if (uploaded.length) {
-            currentPhotos = currentPhotos.concat(uploaded);
-            renderPhotoList();
-          }
-          if (uploadStatus) uploadStatus.textContent = "Uploaded " + uploaded.length + " photo(s).";
+      if (tooLarge) {
+        if (uploadStatus) {
+          uploadStatus.textContent =
+            "Each photo must be under 4MB for reliable upload. Resize/compress and try again.";
+        }
+        return;
+      }
+      uploadBtn.disabled = true;
+      var uploadedCount = 0;
+      var stopped = false;
+      if (uploadStatus) uploadStatus.textContent = "Uploading 0/" + files.length + "…";
+
+      function uploadNext(i) {
+        if (stopped) return;
+        if (i >= files.length) {
+          if (uploadStatus) uploadStatus.textContent = "Uploaded " + uploadedCount + " photo(s).";
           uploadInput.value = "";
-        } else {
+          uploadBtn.disabled = false;
+          return;
+        }
+        var fd = new FormData();
+        fd.append("photos", files[i]);
+        api("/api/for-sale/photos", { method: "POST", body: fd }).then(function (res) {
+          if (res.data && res.data.ok && Array.isArray(res.data.photos)) {
+            var uploaded = res.data.photos.filter(function (p) {
+              return p && p.url;
+            });
+            if (uploaded.length) {
+              currentPhotos = currentPhotos.concat(uploaded);
+              renderPhotoList();
+              uploadedCount += uploaded.length;
+            }
+            if (uploadStatus) {
+              uploadStatus.textContent = "Uploading " + Math.min(i + 1, files.length) + "/" + files.length + "…";
+            }
+            uploadNext(i + 1);
+            return;
+          }
+          stopped = true;
           var msg = (res.data && res.data.message) || "Could not upload photos.";
           if (res.status === 401) msg = "Session expired. Sign in again and retry upload.";
+          if (res.status === 413) msg = "Upload too large. Try smaller images.";
           if (uploadStatus) uploadStatus.textContent = msg;
-        }
-      });
+          uploadBtn.disabled = false;
+        });
+      }
+
+      uploadNext(0);
     });
   }
 
