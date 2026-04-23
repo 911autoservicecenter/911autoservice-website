@@ -30,7 +30,7 @@ module.exports = async function handler(req, res) {
     if (!http.requireAuth(req, res)) return;
     try {
       var body = await http.readJsonBody(req);
-      var list = await store.getListings();
+      var list = await store.getListingsEnsuringIds();
       var idx = list.findIndex(function (x) {
         return x.id === id;
       });
@@ -110,7 +110,7 @@ module.exports = async function handler(req, res) {
   if (req.method === "DELETE") {
     if (!http.requireAuth(req, res)) return;
     try {
-      var list2 = await store.getListings();
+      var list2 = await store.getListingsEnsuringIds();
       var removed = list2.find(function (x) {
         return x.id === id;
       });

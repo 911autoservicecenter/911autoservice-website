@@ -46,7 +46,7 @@ module.exports = async function handler(req, res) {
 
   if (req.method === "GET") {
     try {
-      var list = await store.getListings();
+      var list = await store.getListingsEnsuringIds();
       list.sort(function (a, b) {
         if (!!a.sold !== !!b.sold) return a.sold ? 1 : -1;
         var ta = new Date(a.updatedAt || a.createdAt || 0).getTime();
@@ -69,7 +69,7 @@ module.exports = async function handler(req, res) {
         res.status(400).json({ ok: false, message: v.error });
         return;
       }
-      var list = await store.getListings();
+      var list = await store.getListingsEnsuringIds();
       var now = new Date().toISOString();
       var item = Object.assign({}, v.data, {
         id: store.newId(),
