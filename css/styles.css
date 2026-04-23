@@ -1141,6 +1141,42 @@ a:focus-visible {
   align-self: flex-start;
 }
 
+.sale-card__share {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem 0.6rem;
+  margin-top: 0.35rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--gray-800);
+}
+
+.sale-card__share-btn {
+  font-weight: 700;
+}
+
+.sale-card__share-sep {
+  color: var(--gray-600);
+  user-select: none;
+}
+
+.sale-card__share-link {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--gray-400);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.sale-card__share-link:hover {
+  color: var(--red);
+}
+
+.sale-card--highlight {
+  box-shadow: 0 0 0 2px var(--red), 0 0 1.25rem rgba(220, 38, 38, 0.25);
+  transition: box-shadow 0.25s ease;
+}
+
 @media (max-width: 480px) {
   .sale-card__specs > div {
     grid-template-columns: 1fr;

@@ -24,6 +24,18 @@
     );
   }
 
+  function listingShareUrl(listingId) {
+    try {
+      var u = new URL(window.location.href);
+      u.search = "";
+      u.hash = "";
+      u.searchParams.set("item", listingId);
+      return u.toString();
+    } catch (e) {
+      return "";
+    }
+  }
+
   function card(item) {
     var photos = Array.isArray(item.photos) && item.photos.length
       ? item.photos.filter(function (p) {
@@ -57,6 +69,31 @@
     var ctaClass = sold ? "btn btn-ghost sale-card__cta" : "btn btn-primary sale-card__cta";
     var ctaText = sold ? "Ask about similar" : "Call 517-677-3173";
 
+    var listingId = item.id && String(item.id).trim() ? String(item.id).trim() : "";
+    var shareUrl = listingId ? listingShareUrl(listingId) : "";
+    var shareTitle = item.title && String(item.title).trim() ? String(item.title).trim() : "Item for sale — 911 Auto Service";
+    var tweetText = shareTitle + "\n" + shareUrl;
+    var shareBlock =
+      listingId && shareUrl
+        ? '<div class="sale-card__share">' +
+          '<button type="button" class="btn btn-ghost btn-sm sale-card__share-btn" data-share-url="' +
+          esc(shareUrl) +
+          '" data-share-title="' +
+          esc(shareTitle) +
+          '">Share</button>' +
+          '<span class="sale-card__share-sep" aria-hidden="true">·</span>' +
+          '<a class="sale-card__share-link" href="https://www.facebook.com/sharer/sharer.php?u=' +
+          encodeURIComponent(shareUrl) +
+          '" target="_blank" rel="noopener noreferrer">Facebook</a>' +
+          '<a class="sale-card__share-link" href="https://twitter.com/intent/tweet?text=' +
+          encodeURIComponent(tweetText) +
+          '" target="_blank" rel="noopener noreferrer">X</a>' +
+          '<a class="sale-card__share-link" href="https://wa.me/?text=' +
+          encodeURIComponent(shareTitle + " " + shareUrl) +
+          '" target="_blank" rel="noopener noreferrer">WhatsApp</a>' +
+          "</div>"
+        : "";
+
     var thumbStrip = photos.length > 1
       ? '<div class="sale-card__thumbs">' +
         photos
@@ -84,7 +121,9 @@
     return (
       '<article class="sale-card' +
       (sold ? " sale-card--sold" : "") +
-      '">' +
+      '"' +
+      (listingId ? ' id="listing-' + esc(listingId) + '" data-listing-id="' + esc(listingId) + '"' : "") +
+      ">" +
       '<figure class="sale-card__photo">' +
       '<img src="' +
       esc(img) +
@@ -113,6 +152,7 @@
       "</dl>" +
       thumbStrip +
       fine +
+      shareBlock +
       '<a class="' +
       ctaClass +
       '" href="tel:+15176773173">' +
@@ -142,6 +182,58 @@
         });
       });
     });
+    root.querySelectorAll(".sale-card__share-btn").forEach(function (shareBtn) {
+      shareBtn.addEventListener("click", function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        var url = shareBtn.getAttribute("data-share-url") || "";
+        var title = shareBtn.getAttribute("data-share-title") || "";
+        if (!url) return;
+        var text = (title ? title + " — " : "") + "911 Auto Service Center, Coldwater MI";
+        if (navigator.share) {
+          navigator
+            .share({ title: title || "For sale", text: text, url: url })
+            .catch(function () {});
+          return;
+        }
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(url).then(
+            function () {
+              var prev = shareBtn.textContent;
+              shareBtn.textContent = "Link copied";
+              shareBtn.disabled = true;
+              window.setTimeout(function () {
+                shareBtn.textContent = prev;
+                shareBtn.disabled = false;
+              }, 2200);
+            },
+            function () {
+              window.prompt("Copy this link:", url);
+            }
+          );
+        } else {
+          window.prompt("Copy this link:", url);
+        }
+      });
+    });
+    focusListingFromQuery();
+  }
+
+  function focusListingFromQuery() {
+    try {
+      var params = new URLSearchParams(window.location.search);
+      var id = params.get("item");
+      if (!id || !root) return;
+      var el = document.getElementById("listing-" + id);
+      if (!el) return;
+      window.setTimeout(function () {
+        el.scrollIntoView({ behavior: "smooth", block: "center" });
+        el.classList.add("sale-card--highlight");
+        window.setTimeout(function () {
+          el.classList.remove("sale-card--highlight");
+        }, 2600);
+      }, 100);
+    } catch (err) {}
   }
 
   fetch("/api/for-sale/listings", { credentials: "same-origin" })
