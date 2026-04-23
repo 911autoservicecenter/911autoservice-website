@@ -34,7 +34,10 @@
    * Paths without a leading slash get one (e.g. for-sale-media/x.jpg).
    */
   function normalizePhotoUrlInput(raw) {
-    raw = String(raw || "").trim();
+    raw = String(raw || "")
+      .replace(/^\uFEFF/, "")
+      .replace(/[\u200B-\u200D\uFEFF]/g, "")
+      .trim();
     if (!raw) {
       return { url: "", error: "empty" };
     }
