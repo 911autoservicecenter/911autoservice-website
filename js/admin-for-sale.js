@@ -29,6 +29,35 @@
     return d.innerHTML;
   }
 
+  /**
+   * Accepts /path, https://…, or domain/path without scheme (adds https://).
+   * Paths without a leading slash get one (e.g. for-sale-media/x.jpg).
+   */
+  function normalizePhotoUrlInput(raw) {
+    raw = String(raw || "").trim();
+    if (!raw) {
+      return { url: "", error: "empty" };
+    }
+    if (raw.indexOf("//") === 0 && raw.indexOf("///", 0) !== 0) {
+      return { url: "https:" + raw, error: "" };
+    }
+    if (raw.indexOf("/") === 0) {
+      return { url: raw, error: "" };
+    }
+    if (/^https?:\/\//i.test(raw)) {
+      return { url: raw, error: "" };
+    }
+    var slash = raw.indexOf("/");
+    if (slash > 0) {
+      var first = raw.slice(0, slash);
+      if (/^[a-z0-9]([a-z0-9-]*\.)+[a-z]{2,}$/i.test(first)) {
+        return { url: "https://" + raw, error: "" };
+      }
+      return { url: "/" + raw.replace(/^\/+/, ""), error: "" };
+    }
+    return { url: "", error: "format" };
+  }
+
   function normalizePhotos(item) {
     if (item && Array.isArray(item.photos) && item.photos.length) {
       return item.photos
@@ -432,27 +461,23 @@
   if (addPhotoUrlBtn && photoUrlInput) {
     addPhotoUrlBtn.addEventListener("click", function () {
       if (uploadStatus) uploadStatus.textContent = "";
-      var raw = photoUrlInput.value.trim();
-      if (!raw) {
+      var norm = normalizePhotoUrlInput(photoUrlInput.value);
+      if (norm.error === "empty") {
         if (uploadStatus) uploadStatus.textContent = "Enter an image URL or site path.";
+        return;
+      }
+      if (norm.error === "format" || !norm.url) {
+        if (uploadStatus) {
+          uploadStatus.textContent =
+            "Use https://911autoservice.org/for-sale-media/photo.jpg, or /for-sale-media/photo.jpg (include the .jpg).";
+        }
         return;
       }
       if (currentPhotos.length >= 12) {
         if (uploadStatus) uploadStatus.textContent = "Maximum 12 photos per listing.";
         return;
       }
-      var okStart =
-        raw.indexOf("/") === 0 ||
-        raw.indexOf("https://") === 0 ||
-        raw.indexOf("http://") === 0;
-      if (!okStart) {
-        if (uploadStatus) {
-          uploadStatus.textContent =
-            "Use a full URL (https://…) or a path starting with / (e.g. /for-sale-media/photo.jpg).";
-        }
-        return;
-      }
-      currentPhotos.push({ url: raw, alt: "" });
+      currentPhotos.push({ url: norm.url, alt: "" });
       photoUrlInput.value = "";
       renderPhotoList();
       if (uploadStatus) uploadStatus.textContent = "Photo URL added. Save the listing to keep it.";
