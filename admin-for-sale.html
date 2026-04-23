@@ -144,7 +144,24 @@
                 <input type="file" id="fld-photos-upload" accept="image/*" multiple />
                 <button type="button" class="btn btn-ghost btn-sm" id="btn-upload-photos">Upload selected photos</button>
               </div>
-              <p class="admin-photo-hint">Upload first, then save listing. Reorder by removing + re-uploading.</p>
+              <p class="admin-photo-hint">
+                Upload first, then save listing. Reorder by removing + re-uploading. For files larger than a few MB, put
+                them in the <code>for-sale-media</code> folder in this project, deploy, then add the URL below (for
+                example <code>/for-sale-media/your-photo.jpg</code>).
+              </p>
+              <div class="scheduler-field scheduler-field--wide" style="margin-top: 0.75rem">
+                <label for="fld-photo-url">Or add photo by URL</label>
+                <div class="admin-photo-upload">
+                  <input
+                    type="text"
+                    id="fld-photo-url"
+                    maxlength="2000"
+                    placeholder="https://… or /for-sale-media/photo.jpg"
+                    style="flex: 1; min-width: 12rem"
+                  />
+                  <button type="button" class="btn btn-ghost btn-sm" id="btn-add-photo-url">Add URL</button>
+                </div>
+              </div>
               <p id="admin-upload-status" class="scheduler-form__status" role="status"></p>
               <div id="admin-photo-list" class="admin-photo-list" aria-live="polite"></div>
             </div>

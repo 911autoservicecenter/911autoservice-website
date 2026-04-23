@@ -15,6 +15,8 @@
   var sessionEmailEl = document.getElementById("admin-session-email");
   var uploadInput = document.getElementById("fld-photos-upload");
   var uploadBtn = document.getElementById("btn-upload-photos");
+  var photoUrlInput = document.getElementById("fld-photo-url");
+  var addPhotoUrlBtn = document.getElementById("btn-add-photo-url");
   var uploadStatus = document.getElementById("admin-upload-status");
   var photoList = document.getElementById("admin-photo-list");
   var editingId = null;
@@ -149,6 +151,7 @@
     listingForm.reset();
     document.getElementById("fld-sold").checked = false;
     currentPhotos = [];
+    if (photoUrlInput) photoUrlInput.value = "";
     renderPhotoList();
     if (uploadStatus) uploadStatus.textContent = "";
     if (formStatus) formStatus.textContent = "";
@@ -423,6 +426,36 @@
       }
 
       uploadNext(0);
+    });
+  }
+
+  if (addPhotoUrlBtn && photoUrlInput) {
+    addPhotoUrlBtn.addEventListener("click", function () {
+      if (uploadStatus) uploadStatus.textContent = "";
+      var raw = photoUrlInput.value.trim();
+      if (!raw) {
+        if (uploadStatus) uploadStatus.textContent = "Enter an image URL or site path.";
+        return;
+      }
+      if (currentPhotos.length >= 12) {
+        if (uploadStatus) uploadStatus.textContent = "Maximum 12 photos per listing.";
+        return;
+      }
+      var okStart =
+        raw.indexOf("/") === 0 ||
+        raw.indexOf("https://") === 0 ||
+        raw.indexOf("http://") === 0;
+      if (!okStart) {
+        if (uploadStatus) {
+          uploadStatus.textContent =
+            "Use a full URL (https://…) or a path starting with / (e.g. /for-sale-media/photo.jpg).";
+        }
+        return;
+      }
+      currentPhotos.push({ url: raw, alt: "" });
+      photoUrlInput.value = "";
+      renderPhotoList();
+      if (uploadStatus) uploadStatus.textContent = "Photo URL added. Save the listing to keep it.";
     });
   }
 
