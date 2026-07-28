@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Manage auctions | 911 Auto Service Center</title>
+    <meta name="theme-color" content="#0a0a0a" />
+    <link rel="icon" href="images/logo.png" type="image/png" />
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+
+    <header class="site-header">
+      <div class="header-inner">
+        <a class="brand" href="index.html?home=1">
+          <img src="images/logo.png" width="112" height="112" alt="" decoding="async" />
+          <span class="brand-text">
+            <span class="brand-name">911 Auto Service Center</span>
+            <span class="brand-tag">Staff — auctions</span>
+          </span>
+        </a>
+        <nav class="site-nav" aria-label="Main">
+          <a href="index.html?home=1">Home</a>
+          <a href="for-sale.html">For sale</a>
+          <a href="upcoming-auctions.html">Auctions</a>
+          <a href="admin-for-sale.html">For-sale admin</a>
+        </nav>
+        <div class="header-cta">
+          <a class="btn btn-ghost" href="upcoming-auctions.html">View public page</a>
+        </div>
+      </div>
+    </header>
+
+    <main id="main">
+      <header class="page-hero">
+        <div class="page-hero-inner">
+          <h1>Manage auctions</h1>
+          <p class="lead">
+            Sign in to set up an auction, then add vehicles (photos, year, make, model, VIN). Until you create and
+            publish an auction, the public page shows “No upcoming auctions.”
+          </p>
+        </div>
+      </header>
+
+      <section class="section" id="admin-login">
+        <h2>Sign in</h2>
+        <p class="section-intro">
+          Same staff login as the for-sale manager. Only approved emails can access this page.
+        </p>
+        <form id="admin-login-form" class="admin-login-form">
+          <div class="scheduler-field scheduler-field--wide" style="max-width: 28rem">
+            <label for="admin-email">Work email</label>
+            <input
+              type="email"
+              id="admin-email"
+              name="email"
+              autocomplete="username"
+              placeholder="you@yourshop.com"
+            />
+          </div>
+          <div class="scheduler-field" style="max-width: 24rem">
+            <label for="admin-password">Password</label>
+            <input type="password" id="admin-password" name="password" required autocomplete="current-password" />
+          </div>
+          <p id="admin-login-error" class="booking-cal-error" hidden role="alert"></p>
+          <button type="submit" class="btn btn-primary">Sign in</button>
+        </form>
+      </section>
+
+      <section class="section admin-panel" id="admin-panel" hidden>
+        <p class="admin-session-meta" id="admin-session-meta" hidden>
+          Signed in as <strong id="admin-session-email"></strong>
+        </p>
+        <div class="admin-panel__head">
+          <h2>Your auctions</h2>
+          <div class="admin-panel__actions">
+            <button type="button" class="btn btn-ghost" id="btn-new-auction">New auction</button>
+            <button type="button" class="btn btn-ghost admin-btn-danger" id="admin-logout">Sign out</button>
+          </div>
+        </div>
+
+        <div class="admin-table-wrap">
+          <table class="admin-table" id="admin-auctions-table">
+            <thead>
+              <tr>
+                <th scope="col">Title</th>
+                <th scope="col">Date</th>
+                <th scope="col">Vehicles</th>
+                <th scope="col">Status</th>
+                <th scope="col">Actions</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+
+        <h2 id="auction-form-heading" class="admin-form-heading">Add an auction</h2>
+        <form id="auction-form" class="admin-listing-form">
+          <div class="scheduler-form__grid">
+            <div class="scheduler-field scheduler-field--wide">
+              <label for="fld-auction-title">Auction title</label>
+              <input
+                type="text"
+                id="fld-auction-title"
+                required
+                maxlength="200"
+                placeholder="e.g. August vehicle auction"
+              />
+            </div>
+            <div class="scheduler-field">
+              <label for="fld-date-label">Date</label>
+              <input type="text" id="fld-date-label" maxlength="120" placeholder="e.g. Saturday, Aug 15, 2026" />
+            </div>
+            <div class="scheduler-field">
+              <label for="fld-time-label">Time</label>
+              <input type="text" id="fld-time-label" maxlength="80" placeholder="e.g. 10:00 AM" />
+            </div>
+            <div class="scheduler-field scheduler-field--wide">
+              <label for="fld-location">Location</label>
+              <input
+                type="text"
+                id="fld-location"
+                maxlength="300"
+                placeholder="e.g. 22 S Clay St, Coldwater, MI"
+              />
+            </div>
+            <div class="scheduler-field scheduler-field--wide">
+              <label for="fld-auction-notes">Notes (optional)</label>
+              <textarea id="fld-auction-notes" rows="3" maxlength="2000" placeholder="Registration, rules, etc."></textarea>
+            </div>
+            <div class="scheduler-field">
+              <label class="admin-checkbox">
+                <input type="checkbox" id="fld-published" checked />
+                Published (show on public page)
+              </label>
+            </div>
+            <div class="scheduler-field">
+              <label class="admin-checkbox">
+                <input type="checkbox" id="fld-ended" />
+                Mark as ended (hides from upcoming)
+              </label>
+            </div>
+          </div>
+          <p id="auction-form-status" class="scheduler-form__status" role="status"></p>
+          <button type="submit" class="btn btn-primary">Save auction</button>
+        </form>
+
+        <div id="vehicle-section" class="admin-vehicle-section" hidden>
+          <h2 id="vehicle-form-heading" class="admin-form-heading">Vehicles for this auction</h2>
+          <p class="section-intro" id="vehicle-section-intro">
+            Select an auction above (Edit), then add vehicles with photos, year, make, model, and VIN.
+          </p>
+
+          <div class="admin-table-wrap">
+            <table class="admin-table" id="admin-vehicles-table">
+              <thead>
+                <tr>
+                  <th scope="col">Year</th>
+                  <th scope="col">Make</th>
+                  <th scope="col">Model</th>
+                  <th scope="col">VIN</th>
+                  <th scope="col">Actions</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+
+          <h3 id="vehicle-form-mode" class="admin-form-heading">Add a vehicle</h3>
+          <form id="vehicle-form" class="admin-listing-form">
+            <div class="scheduler-form__grid">
+              <div class="scheduler-field">
+                <label for="fld-year">Year</label>
+                <input type="text" id="fld-year" required maxlength="10" placeholder="e.g. 2014" />
+              </div>
+              <div class="scheduler-field">
+                <label for="fld-make">Make</label>
+                <input type="text" id="fld-make" required maxlength="80" placeholder="e.g. Ford" />
+              </div>
+              <div class="scheduler-field">
+                <label for="fld-model">Model</label>
+                <input type="text" id="fld-model" required maxlength="120" placeholder="e.g. F-150" />
+              </div>
+              <div class="scheduler-field">
+                <label for="fld-vin">VIN</label>
+                <input type="text" id="fld-vin" required maxlength="32" placeholder="17-character VIN" />
+              </div>
+              <div class="scheduler-field">
+                <label for="fld-lot">Lot # (optional)</label>
+                <input type="text" id="fld-lot" maxlength="40" />
+              </div>
+              <div class="scheduler-field scheduler-field--wide">
+                <label for="fld-vehicle-notes">Notes (optional)</label>
+                <textarea id="fld-vehicle-notes" rows="2" maxlength="2000"></textarea>
+              </div>
+              <div class="scheduler-field scheduler-field--wide">
+                <label for="fld-image-alt">Photo description (alt text)</label>
+                <input type="text" id="fld-image-alt" maxlength="300" />
+              </div>
+              <div class="scheduler-field scheduler-field--wide">
+                <label for="fld-photos-upload">Upload photos</label>
+                <div class="admin-photo-upload">
+                  <input type="file" id="fld-photos-upload" accept="image/*" multiple />
+                  <button type="button" class="btn btn-ghost btn-sm" id="btn-upload-photos">Upload selected photos</button>
+                </div>
+                <p class="admin-photo-hint">
+                  Upload first, then save the vehicle. For large files, put them in
+                  <code>for-sale-media</code> (or similar), deploy, then add the path below (e.g.
+                  <code>/for-sale-media/your-photo.jpg</code>).
+                </p>
+                <div class="scheduler-field scheduler-field--wide" style="margin-top: 0.75rem">
+                  <label for="fld-photo-url">Or add photo by URL</label>
+                  <div class="admin-photo-upload">
+                    <input
+                      type="text"
+                      id="fld-photo-url"
+                      maxlength="2000"
+                      placeholder="/for-sale-media/your-photo.jpg"
+                      style="flex: 1; min-width: 12rem"
+                    />
+                    <button type="button" class="btn btn-ghost btn-sm" id="btn-add-photo-url">Add URL</button>
+                  </div>
+                </div>
+                <p id="admin-upload-status" class="scheduler-form__status" role="status"></p>
+                <div id="admin-photo-list" class="admin-photo-list" aria-live="polite"></div>
+              </div>
+              <div class="scheduler-field scheduler-field--wide">
+                <label class="admin-checkbox">
+                  <input type="checkbox" id="fld-sold" />
+                  Mark as sold
+                </label>
+              </div>
+            </div>
+            <p id="vehicle-form-status" class="scheduler-form__status" role="status"></p>
+            <div class="admin-panel__actions">
+              <button type="submit" class="btn btn-primary">Save vehicle</button>
+              <button type="button" class="btn btn-ghost" id="btn-new-vehicle">Clear form</button>
+            </div>
+          </form>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="footer-inner">
+        <p class="footer-legal">
+          &copy; <span id="year"></span> 911 Auto Service Center. Staff page — not public.
+        </p>
+      </div>
+    </footer>
+    <script>
+      document.getElementById("year").textContent = new Date().getFullYear();
+    </script>
+    <script src="js/admin-auctions.js"></script>
+  </body>
+</html>

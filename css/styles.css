@@ -482,11 +482,19 @@ a:focus-visible {
   .cards--four {
     grid-template-columns: repeat(2, 1fr);
   }
+
+  .cards--five {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
 @media (min-width: 1100px) {
   .cards--four {
     grid-template-columns: repeat(4, 1fr);
+  }
+
+  .cards--five {
+    grid-template-columns: repeat(3, 1fr);
   }
 }
 
@@ -1201,6 +1209,69 @@ a:focus-visible {
 
 .sale-staff-link a:hover {
   color: var(--red);
+}
+
+.sale-staff-link--after-listings {
+  margin-top: 1.5rem;
+}
+
+/* Upcoming auctions */
+.auction-empty {
+  font-size: 1.05rem;
+  color: var(--gray-300);
+}
+
+.auction-event {
+  margin-bottom: 2.5rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid var(--gray-700);
+}
+
+.auction-event:last-of-type {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.auction-event__header {
+  margin-bottom: 1.25rem;
+}
+
+.auction-event__title {
+  margin: 0 0 0.35rem;
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--white);
+}
+
+.auction-event__when {
+  margin: 0 0 0.35rem;
+  color: var(--red);
+  font-weight: 600;
+}
+
+.auction-event__where,
+.auction-event__notes {
+  margin: 0.25rem 0 0;
+  color: var(--gray-400);
+  font-size: 0.95rem;
+}
+
+.auction-event__vehicles-heading {
+  margin: 0 0 0.85rem;
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--gray-300);
+}
+
+.auction-event__empty-vehicles {
+  margin-bottom: 0;
+}
+
+.admin-vehicle-section {
+  margin-top: 2.5rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--gray-700);
 }
 
 /* Admin — for-sale manager */

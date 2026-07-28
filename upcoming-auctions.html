@@ -3,24 +3,24 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Parts &amp; items for sale | 911 Auto Service Center — Coldwater, MI</title>
+    <title>Upcoming auctions | 911 Auto Service Center — Coldwater, MI</title>
     <meta
       name="description"
-      content="Shop tires, batteries, wheels, tools, and automotive parts for sale at 911 Auto Service Center in Coldwater, Michigan. Call 517-677-3173 to ask about an item."
+      content="Upcoming vehicle auctions at 911 Auto Service Center in Coldwater, Michigan. Browse year, make, model, VIN, and photos when an auction is scheduled."
     />
-    <link rel="canonical" href="https://911autoservice.org/for-sale.html" />
+    <link rel="canonical" href="https://911autoservice.org/upcoming-auctions.html" />
     <meta name="theme-color" content="#0a0a0a" />
     <meta name="robots" content="index,follow" />
 
     <meta property="og:type" content="website" />
     <meta property="og:locale" content="en_US" />
     <meta property="og:site_name" content="911 Auto Service Center" />
-    <meta property="og:title" content="Parts &amp; items for sale | 911 Auto Service Center" />
+    <meta property="og:title" content="Upcoming auctions | 911 Auto Service Center" />
     <meta
       property="og:description"
-      content="Browse parts, tires, batteries, and shop items for sale — Coldwater, MI."
+      content="See scheduled vehicle auctions and listed vehicles — Coldwater, MI."
     />
-    <meta property="og:url" content="https://911autoservice.org/for-sale.html" />
+    <meta property="og:url" content="https://911autoservice.org/upcoming-auctions.html" />
     <meta property="og:image" content="https://911autoservice.org/images/logo.png" />
 
     <link rel="icon" href="images/logo.png" type="image/png" />
@@ -32,9 +32,9 @@
         "@graph": [
           {
             "@type": "WebPage",
-            "@id": "https://911autoservice.org/for-sale.html#webpage",
-            "url": "https://911autoservice.org/for-sale.html",
-            "name": "Parts & items for sale | 911 Auto Service Center",
+            "@id": "https://911autoservice.org/upcoming-auctions.html#webpage",
+            "url": "https://911autoservice.org/upcoming-auctions.html",
+            "name": "Upcoming auctions | 911 Auto Service Center",
             "isPartOf": { "@id": "https://911autoservice.org/#website" },
             "inLanguage": "en-US"
           }
@@ -67,8 +67,8 @@
           <a href="key-services.html">Key services</a>
           <a href="towing.html">Towing</a>
           <a href="impound.html">Impounded?</a>
-          <a href="for-sale.html" aria-current="page">For sale</a>
-          <a href="upcoming-auctions.html">Auctions</a>
+          <a href="for-sale.html">For sale</a>
+          <a href="upcoming-auctions.html" aria-current="page">Auctions</a>
         </nav>
         <div class="header-cta">
           <a class="btn btn-ghost" href="tel:+15176773173">Auto repair (Mon-Thu, 8am-5pm): 517-677-3173</a>
@@ -80,46 +80,42 @@
     <main id="main">
       <header class="page-hero" aria-labelledby="page-heading">
         <div class="page-hero-inner">
-          <h1 id="page-heading">Parts, tires &amp; shop items for sale</h1>
+          <h1 id="page-heading">Upcoming auctions</h1>
           <p class="lead">
-            Browse what we have on the lot. Inventory changes — <strong>call to confirm availability and price</strong>
-            before you make a special trip. First come, first served unless we hold something for you when you call.
+            When we schedule a vehicle auction, the date and vehicles will appear here — each listing includes
+            <strong>photos, year, make, model, and VIN</strong>. Call ahead with questions.
           </p>
         </div>
       </header>
 
       <section class="section section--tight" aria-labelledby="how-heading">
-        <h2 id="how-heading" class="sale-how-heading">How to buy</h2>
+        <h2 id="how-heading" class="sale-how-heading">How auctions work</h2>
         <ul class="sale-how-list">
-          <li>When items are listed, note the <strong>stock number</strong> (if shown).</li>
+          <li>Check this page for the next scheduled auction and the vehicles on the list.</li>
           <li>
-            Call <a href="tel:+15176773173">517-677-3173</a> (auto repair line, Mon-Thu 8am-5pm) — ask for the shop
-            counter.
+            Call <a href="tel:+15176773173">517-677-3173</a> (auto repair line, Mon-Thu 8am-5pm) with questions about a
+            vehicle or the sale.
           </li>
-          <li><strong>Vehicle purchases are cash only</strong> in person.</li>
-          <li>For parts and other shop items, ask when you call — we’ll confirm price and how you can pay.</li>
-          <li>Pickup at <strong>22 S Clay St, Coldwater, MI</strong> during business hours unless we arrange otherwise.</li>
+          <li>Auctions are held at <strong>22 S Clay St, Coldwater, MI</strong> unless noted otherwise.</li>
         </ul>
       </section>
 
-      <section class="section" aria-labelledby="listings-heading">
-        <h2 id="listings-heading">Current listings</h2>
-
-        <div class="sale-grid" id="sale-listings-root" aria-live="polite">
-          <p class="sale-loading" id="sale-loading">Loading listings…</p>
+      <section class="section" aria-labelledby="auctions-heading">
+        <h2 id="auctions-heading">Scheduled auctions</h2>
+        <div id="auctions-root" aria-live="polite">
+          <p class="sale-loading" id="auctions-loading">Loading auctions…</p>
         </div>
         <p class="sale-staff-link sale-staff-link--after-listings">
-          <a href="admin-for-sale.html">Staff — manage listings</a>
+          <a href="admin-auctions.html">Staff — manage auctions</a>
         </p>
       </section>
 
-      <section class="map-strip" aria-labelledby="pickup-heading">
+      <section class="map-strip" aria-labelledby="location-heading">
         <div class="map-inner">
           <div>
-            <h2 id="pickup-heading">Pickup location</h2>
+            <h2 id="location-heading">Auction location</h2>
             <p>
-              Most items are picked up at <strong>22 S Clay St, Coldwater, MI 49036</strong>. Call ahead so we can have
-              your item ready.
+              Unless listed otherwise, auctions are at <strong>22 S Clay St, Coldwater, MI 49036</strong>.
             </p>
           </div>
           <a
@@ -151,6 +147,6 @@
     <script>
       document.getElementById("year").textContent = new Date().getFullYear();
     </script>
-    <script src="js/for-sale-public.js" defer></script>
+    <script src="js/auctions-public.js" defer></script>
   </body>
 </html>
