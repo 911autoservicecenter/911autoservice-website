@@ -915,6 +915,23 @@ a:focus-visible {
   font-family: inherit;
 }
 
+.scheduler-field input[type="date"],
+.scheduler-field input[type="time"] {
+  color-scheme: dark;
+  min-height: 2.75rem;
+  cursor: pointer;
+  display: block;
+}
+
+.scheduler-field input[type="date"]::-webkit-calendar-picker-indicator,
+.scheduler-field input[type="time"]::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+  opacity: 1;
+  filter: invert(1);
+  padding: 0.25rem;
+  margin-left: 0.25rem;
+}
+
 .scheduler-field textarea {
   resize: vertical;
   min-height: 5rem;

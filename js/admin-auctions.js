@@ -460,6 +460,29 @@
     btnNewVehicle.addEventListener("click", resetVehicleForm);
   }
 
+  ["fld-date", "fld-time"].forEach(function (id) {
+    var el = document.getElementById(id);
+    if (!el) return;
+    el.addEventListener("click", function () {
+      if (typeof el.showPicker === "function") {
+        try {
+          el.showPicker();
+        } catch (err) {
+          /* ignore — browser may block if not a user gesture */
+        }
+      }
+    });
+    el.addEventListener("focus", function () {
+      if (typeof el.showPicker === "function") {
+        try {
+          el.showPicker();
+        } catch (err) {
+          /* ignore */
+        }
+      }
+    });
+  });
+
   if (auctionForm) {
     auctionForm.addEventListener("submit", function (e) {
       e.preventDefault();

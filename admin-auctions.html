@@ -111,11 +111,11 @@
             </div>
             <div class="scheduler-field">
               <label for="fld-date">Date</label>
-              <input type="date" id="fld-date" required />
+              <input type="date" id="fld-date" required autocomplete="off" />
             </div>
             <div class="scheduler-field">
               <label for="fld-time">Time</label>
-              <input type="time" id="fld-time" required />
+              <input type="time" id="fld-time" required autocomplete="off" step="60" />
             </div>
             <div class="scheduler-field scheduler-field--wide">
               <label for="fld-location">Location</label>
@@ -253,6 +253,6 @@
     <script>
       document.getElementById("year").textContent = new Date().getFullYear();
     </script>
-    <script src="js/admin-auctions.js?v=2"></script>
+    <script src="js/admin-auctions.js?v=3"></script>
   </body>
 </html>
