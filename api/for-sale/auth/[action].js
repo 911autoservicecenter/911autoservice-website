@@ -1,12 +1,8 @@
 /**
- * POST { "email": "...", "password": "..." }
- *
- * Approved access (configure one approach in Vercel):
- * - FOR_SALE_ADMIN_USERS_JSON — [{"email":"a@b.com","password":"..."}, ...] (per-user passwords)
- * - FOR_SALE_ADMIN_EMAILS + FOR_SALE_ADMIN_PASSWORD — allowlist + shared password
- * - FOR_SALE_ADMIN_PASSWORD only — legacy password-only (no email gate)
- *
- * Always: FOR_SALE_JWT_SECRET (min 16 chars)
+ * Combined for-sale auth routes (one serverless function for Hobby limit).
+ * POST /api/for-sale/auth/login
+ * POST /api/for-sale/auth/logout
+ * GET  /api/for-sale/auth/session
  */
 const http = require("../../lib/for-sale-http");
 
@@ -17,12 +13,7 @@ function isConfigured() {
   return !!(hasUsers || hasAllow || hasPw);
 }
 
-module.exports = async function handler(req, res) {
-  res.setHeader("Content-Type", "application/json");
-  if (req.method === "OPTIONS") {
-    res.status(204).end();
-    return;
-  }
+async function handleLogin(req, res) {
   if (req.method !== "POST") {
     res.status(405).json({ ok: false, message: "Method not allowed" });
     return;
@@ -34,7 +25,8 @@ module.exports = async function handler(req, res) {
   if (!isConfigured()) {
     res.status(503).json({
       ok: false,
-      message: "Admin login is not configured. Set FOR_SALE_ADMIN_USERS_JSON, or FOR_SALE_ADMIN_EMAILS + password, or FOR_SALE_ADMIN_PASSWORD.",
+      message:
+        "Admin login is not configured. Set FOR_SALE_ADMIN_USERS_JSON, or FOR_SALE_ADMIN_EMAILS + password, or FOR_SALE_ADMIN_PASSWORD.",
     });
     return;
   }
@@ -60,4 +52,44 @@ module.exports = async function handler(req, res) {
   } catch (e) {
     res.status(500).json({ ok: false, message: "Could not sign in." });
   }
+}
+
+function handleLogout(req, res) {
+  if (req.method !== "POST") {
+    res.status(405).json({ ok: false, message: "Method not allowed" });
+    return;
+  }
+  http.clearSessionCookie(res);
+  res.status(200).json({ ok: true, message: "Signed out." });
+}
+
+function handleSession(req, res) {
+  if (req.method !== "GET") {
+    res.status(405).json({ ok: false, message: "Method not allowed" });
+    return;
+  }
+  var p = http.getSessionPayload(req);
+  var ok = !!(p && p.role === "admin");
+  res.status(200).json({
+    ok: true,
+    loggedIn: ok,
+    email: ok && p.email ? String(p.email) : null,
+  });
+}
+
+module.exports = async function handler(req, res) {
+  res.setHeader("Content-Type", "application/json");
+  if (req.method === "OPTIONS") {
+    res.status(204).end();
+    return;
+  }
+
+  var action = (req.query && req.query.action) || "";
+  action = String(action).toLowerCase();
+
+  if (action === "login") return handleLogin(req, res);
+  if (action === "logout") return handleLogout(req, res);
+  if (action === "session") return handleSession(req, res);
+
+  res.status(404).json({ ok: false, message: "Not found." });
 };
