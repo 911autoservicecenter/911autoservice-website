@@ -110,12 +110,12 @@
               />
             </div>
             <div class="scheduler-field">
-              <label for="fld-date-label">Date</label>
-              <input type="text" id="fld-date-label" maxlength="120" placeholder="e.g. Saturday, Aug 15, 2026" />
+              <label for="fld-date">Date</label>
+              <input type="date" id="fld-date" required />
             </div>
             <div class="scheduler-field">
-              <label for="fld-time-label">Time</label>
-              <input type="text" id="fld-time-label" maxlength="80" placeholder="e.g. 10:00 AM" />
+              <label for="fld-time">Time</label>
+              <input type="time" id="fld-time" required />
             </div>
             <div class="scheduler-field scheduler-field--wide">
               <label for="fld-location">Location</label>
@@ -253,6 +253,6 @@
     <script>
       document.getElementById("year").textContent = new Date().getFullYear();
     </script>
-    <script src="js/admin-auctions.js"></script>
+    <script src="js/admin-auctions.js?v=2"></script>
   </body>
 </html>

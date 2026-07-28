@@ -27,11 +27,46 @@ function isUpcomingPublic(a) {
   return a && a.published !== false && !a.ended;
 }
 
+function formatDateLabel(isoDate) {
+  if (!isoDate || !/^\d{4}-\d{2}-\d{2}$/.test(isoDate)) return "";
+  var d = new Date(isoDate + "T12:00:00");
+  if (isNaN(d.getTime())) return "";
+  return d.toLocaleDateString("en-US", {
+    weekday: "long",
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
+}
+
+function formatTimeLabel(hhmm) {
+  if (!hhmm || !/^\d{2}:\d{2}$/.test(hhmm)) return "";
+  var parts = hhmm.split(":");
+  var h = parseInt(parts[0], 10);
+  var m = parts[1];
+  if (isNaN(h)) return "";
+  var ampm = h >= 12 ? "PM" : "AM";
+  var h12 = h % 12 || 12;
+  return h12 + ":" + m + " " + ampm;
+}
+
 function validateAuction(body) {
+  var date = sanitizeString(body.date, 10);
+  var time = sanitizeString(body.time, 5);
+  if (date && !/^\d{4}-\d{2}-\d{2}$/.test(date)) {
+    return { error: "Date must be a valid calendar date." };
+  }
+  if (time && !/^\d{2}:\d{2}$/.test(time)) {
+    return { error: "Time must be a valid time." };
+  }
+  var dateLabel = sanitizeString(body.dateLabel, 120) || formatDateLabel(date);
+  var timeLabel = sanitizeString(body.timeLabel, 80) || formatTimeLabel(time);
   var o = {
     title: sanitizeString(body.title, 200),
-    dateLabel: sanitizeString(body.dateLabel, 120),
-    timeLabel: sanitizeString(body.timeLabel, 80),
+    date: date,
+    time: time,
+    dateLabel: dateLabel,
+    timeLabel: timeLabel,
     location: sanitizeString(body.location, 300),
     notes: sanitizeString(body.notes, 2000),
     published: body.published !== false && body.published !== "false",
@@ -39,6 +74,8 @@ function validateAuction(body) {
     vehicles: Array.isArray(body.vehicles) ? body.vehicles : [],
   };
   if (!o.title) return { error: "Auction title is required." };
+  if (!o.date) return { error: "Date is required." };
+  if (!o.time) return { error: "Time is required." };
   return { ok: true, data: o };
 }
 
@@ -142,12 +179,32 @@ async function handleAuctionItem(req, res, id) {
         return;
       }
       var cur = list[idx];
+      var nextDate =
+        body.date != null ? sanitizeString(body.date, 10) : cur.date || "";
+      var nextTime =
+        body.time != null ? sanitizeString(body.time, 5) : cur.time || "";
+      if (nextDate && !/^\d{4}-\d{2}-\d{2}$/.test(nextDate)) {
+        res.status(400).json({ ok: false, message: "Date must be a valid calendar date." });
+        return;
+      }
+      if (nextTime && !/^\d{2}:\d{2}$/.test(nextTime)) {
+        res.status(400).json({ ok: false, message: "Time must be a valid time." });
+        return;
+      }
       var next = Object.assign({}, cur, {
         title: body.title != null ? sanitizeString(body.title, 200) : cur.title,
-        dateLabel:
-          body.dateLabel != null ? sanitizeString(body.dateLabel, 120) : cur.dateLabel,
-        timeLabel:
-          body.timeLabel != null ? sanitizeString(body.timeLabel, 80) : cur.timeLabel,
+        date: nextDate,
+        time: nextTime,
+        dateLabel: nextDate
+          ? formatDateLabel(nextDate)
+          : body.dateLabel != null
+            ? sanitizeString(body.dateLabel, 120)
+            : cur.dateLabel,
+        timeLabel: nextTime
+          ? formatTimeLabel(nextTime)
+          : body.timeLabel != null
+            ? sanitizeString(body.timeLabel, 80)
+            : cur.timeLabel,
         location:
           body.location != null ? sanitizeString(body.location, 300) : cur.location,
         notes: body.notes != null ? sanitizeString(body.notes, 2000) : cur.notes,
@@ -157,6 +214,14 @@ async function handleAuctionItem(req, res, id) {
       });
       if (!next.title) {
         res.status(400).json({ ok: false, message: "Auction title is required." });
+        return;
+      }
+      if (!next.date) {
+        res.status(400).json({ ok: false, message: "Date is required." });
+        return;
+      }
+      if (!next.time) {
+        res.status(400).json({ ok: false, message: "Time is required." });
         return;
       }
       list[idx] = next;

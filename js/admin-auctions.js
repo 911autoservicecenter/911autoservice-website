@@ -172,6 +172,37 @@
     return "Upcoming";
   }
 
+  function formatDateLabel(isoDate) {
+    if (!isoDate || !/^\d{4}-\d{2}-\d{2}$/.test(isoDate)) return "";
+    var d = new Date(isoDate + "T12:00:00");
+    if (isNaN(d.getTime())) return "";
+    return d.toLocaleDateString("en-US", {
+      weekday: "long",
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+    });
+  }
+
+  function formatTimeLabel(hhmm) {
+    if (!hhmm || !/^\d{2}:\d{2}$/.test(hhmm)) return "";
+    var parts = hhmm.split(":");
+    var h = parseInt(parts[0], 10);
+    var m = parts[1];
+    if (isNaN(h)) return "";
+    var ampm = h >= 12 ? "PM" : "AM";
+    var h12 = h % 12 || 12;
+    return h12 + ":" + m + " " + ampm;
+  }
+
+  function displayDate(a) {
+    if (a && a.date) {
+      var label = formatDateLabel(a.date);
+      if (label) return label;
+    }
+    return (a && a.dateLabel) || "—";
+  }
+
   function resetAuctionForm() {
     editingAuctionId = null;
     if (auctionForm) auctionForm.reset();
@@ -187,8 +218,8 @@
   function fillAuctionForm(a) {
     editingAuctionId = a.id;
     document.getElementById("fld-auction-title").value = a.title || "";
-    document.getElementById("fld-date-label").value = a.dateLabel || "";
-    document.getElementById("fld-time-label").value = a.timeLabel || "";
+    document.getElementById("fld-date").value = a.date || "";
+    document.getElementById("fld-time").value = a.time || "";
     document.getElementById("fld-location").value = a.location || "";
     document.getElementById("fld-auction-notes").value = a.notes || "";
     document.getElementById("fld-published").checked = a.published !== false;
@@ -307,7 +338,7 @@
     var title = document.createElement("td");
     title.textContent = a.title || "";
     var date = document.createElement("td");
-    date.textContent = a.dateLabel || "—";
+    date.textContent = displayDate(a);
     var count = document.createElement("td");
     count.textContent = String((a.vehicles && a.vehicles.length) || 0);
     var status = document.createElement("td");
@@ -433,10 +464,14 @@
     auctionForm.addEventListener("submit", function (e) {
       e.preventDefault();
       if (auctionFormStatus) auctionFormStatus.textContent = "";
+      var dateVal = document.getElementById("fld-date").value.trim();
+      var timeVal = document.getElementById("fld-time").value.trim();
       var payload = {
         title: document.getElementById("fld-auction-title").value.trim(),
-        dateLabel: document.getElementById("fld-date-label").value.trim(),
-        timeLabel: document.getElementById("fld-time-label").value.trim(),
+        date: dateVal,
+        time: timeVal,
+        dateLabel: formatDateLabel(dateVal),
+        timeLabel: formatTimeLabel(timeVal),
         location: document.getElementById("fld-location").value.trim(),
         notes: document.getElementById("fld-auction-notes").value.trim(),
         published: document.getElementById("fld-published").checked,
@@ -444,6 +479,14 @@
       };
       if (!payload.title) {
         if (auctionFormStatus) auctionFormStatus.textContent = "Title is required.";
+        return;
+      }
+      if (!payload.date) {
+        if (auctionFormStatus) auctionFormStatus.textContent = "Pick a date.";
+        return;
+      }
+      if (!payload.time) {
+        if (auctionFormStatus) auctionFormStatus.textContent = "Pick a time.";
         return;
       }
       var promise = editingAuctionId
