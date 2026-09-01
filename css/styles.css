@@ -102,7 +102,8 @@ a:focus-visible {
 .site-nav {
   display: flex;
   align-items: center;
-  gap: 1.25rem;
+  flex-wrap: wrap;
+  gap: 1rem 1.25rem;
   font-size: 0.95rem;
   font-weight: 600;
 }
@@ -175,6 +176,136 @@ a:focus-visible {
   flex-wrap: wrap;
   gap: 0.5rem;
   justify-content: flex-end;
+}
+
+.nav-more {
+  position: relative;
+}
+
+.nav-more summary {
+  list-style: none;
+  cursor: pointer;
+  color: var(--white);
+  font-weight: 600;
+}
+
+.nav-more summary::-webkit-details-marker {
+  display: none;
+}
+
+.nav-more summary::after {
+  content: " ▾";
+  font-size: 0.75em;
+  color: var(--gray-400);
+}
+
+.nav-more[open] summary,
+.nav-more summary:hover,
+.nav-more summary:focus-visible {
+  color: var(--red);
+}
+
+.nav-more-panel {
+  position: absolute;
+  top: calc(100% + 0.55rem);
+  left: 0;
+  min-width: 13.5rem;
+  padding: 0.4rem 0;
+  background: var(--gray-900);
+  border: 1px solid var(--gray-700);
+  border-radius: 8px;
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.45);
+  z-index: 60;
+}
+
+.nav-more-panel a {
+  display: block;
+  padding: 0.45rem 0.95rem;
+}
+
+@media (max-width: 720px) {
+  .nav-more {
+    width: 100%;
+  }
+
+  .nav-more-panel {
+    position: static;
+    min-width: 0;
+    margin-top: 0.35rem;
+    padding: 0.15rem 0 0.15rem 0.75rem;
+    background: transparent;
+    border: 0;
+    box-shadow: none;
+  }
+}
+
+.path-cards {
+  display: grid;
+  gap: 0.75rem;
+  margin: 0 0 1rem;
+}
+
+@media (min-width: 540px) {
+  .path-cards {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.path-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  padding: 1.05rem 1.1rem;
+  border-radius: 10px;
+  border: 1px solid var(--gray-700);
+  background: var(--gray-900);
+  color: var(--white);
+  text-decoration: none;
+}
+
+.path-card strong {
+  font-size: 1.2rem;
+}
+
+.path-card span {
+  color: var(--gray-400);
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+.path-card--tow {
+  background: var(--red);
+  border-color: var(--red);
+}
+
+.path-card--tow span {
+  color: rgba(255, 255, 255, 0.88);
+}
+
+.path-card:hover,
+.path-card:focus-visible {
+  text-decoration: none;
+}
+
+.path-card--shop:hover,
+.path-card--shop:focus-visible {
+  border-color: var(--red);
+}
+
+.path-card--tow:hover,
+.path-card--tow:focus-visible {
+  background: var(--red-dark);
+  border-color: var(--red-dark);
+}
+
+.hero-booking {
+  margin: 0 0 0.35rem;
+  font-size: 0.98rem;
+  color: var(--gray-300);
+}
+
+.hero-booking a {
+  font-weight: 700;
 }
 
 .btn {

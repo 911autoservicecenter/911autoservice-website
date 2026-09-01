@@ -8,7 +8,7 @@
       name="description"
       content="Cars, light trucks, washers and dryers, outdoor power, powersports, trailers, and more — 911 Auto Service Center, Coldwater, MI. Call 517-677-3173 to confirm."
     />
-    <link rel="canonical" href="https://911autoservice.org/services.html" />
+    <link rel="canonical" href="https://www.911autoservice.org/services.html" />
     <meta name="theme-color" content="#0a0a0a" />
     <meta name="robots" content="index,follow" />
 
@@ -20,8 +20,8 @@
       property="og:description"
       content="Systems and jobs we take on at our full-service garage — Coldwater, MI."
     />
-    <meta property="og:url" content="https://911autoservice.org/services.html" />
-    <meta property="og:image" content="https://911autoservice.org/images/logo.png" />
+    <meta property="og:url" content="https://www.911autoservice.org/services.html" />
+    <meta property="og:image" content="https://www.911autoservice.org/images/logo.png" />
 
     <link rel="icon" href="images/logo.png" type="image/png" />
     <link rel="apple-touch-icon" href="images/logo.png" />
@@ -32,9 +32,9 @@
         "@graph": [
           {
             "@type": "AutomotiveRepair",
-            "@id": "https://911autoservice.org/#business",
+            "@id": "https://www.911autoservice.org/#business",
             "name": "911 Auto Service Center",
-            "url": "https://911autoservice.org/",
+            "url": "https://www.911autoservice.org/",
             "telephone": "+1-517-677-3173",
             "address": {
               "@type": "PostalAddress",
@@ -47,19 +47,19 @@
           },
           {
             "@type": "WebPage",
-            "@id": "https://911autoservice.org/services.html#webpage",
-            "url": "https://911autoservice.org/services.html",
+            "@id": "https://www.911autoservice.org/services.html#webpage",
+            "url": "https://www.911autoservice.org/services.html",
             "name": "What we work on | 911 Auto Service Center",
-            "isPartOf": { "@id": "https://911autoservice.org/#website" },
-            "about": { "@id": "https://911autoservice.org/#business" },
+            "isPartOf": { "@id": "https://www.911autoservice.org/#website" },
+            "about": { "@id": "https://www.911autoservice.org/#business" },
             "inLanguage": "en-US"
           },
           {
             "@type": "WebSite",
-            "@id": "https://911autoservice.org/#website",
-            "url": "https://911autoservice.org/",
+            "@id": "https://www.911autoservice.org/#website",
+            "url": "https://www.911autoservice.org/",
             "name": "911 Auto Service Center",
-            "publisher": { "@id": "https://911autoservice.org/#business" }
+            "publisher": { "@id": "https://www.911autoservice.org/#business" }
           }
         ]
       }
@@ -70,7 +70,7 @@
 
     <header class="site-header">
       <div class="header-inner">
-        <a class="brand" href="index.html?home=1">
+        <a class="brand" href="index.html">
           <img
             src="images/logo.png"
             width="112"
@@ -84,18 +84,24 @@
           </span>
         </a>
         <nav class="site-nav" aria-label="Main">
-          <a href="index.html?home=1">Home</a>
+          <a href="index.html">Home</a>
           <a href="auto-repair.html">Auto repair</a>
-          <a href="services.html" aria-current="page">What we work on</a>
-          <a href="key-services.html">Key services</a>
+          <a href="auto-repair.html#schedule">Schedule</a>
           <a href="towing.html">Towing</a>
-          <a href="impound.html">Impounded?</a>
-          <a href="for-sale.html">For sale</a>
-          <a href="upcoming-auctions.html">Auctions</a>
+          <details class="nav-more">
+            <summary>More</summary>
+            <div class="nav-more-panel">
+              <a href="services.html" aria-current="page">What we work on</a>
+              <a href="key-services.html">Key services</a>
+              <a href="impound.html">Impounded?</a>
+              <a href="for-sale.html">For sale</a>
+              <a href="upcoming-auctions.html">Auctions</a>
+            </div>
+          </details>
         </nav>
         <div class="header-cta">
-          <a class="btn btn-ghost" href="tel:+15176773173">Auto repair (Mon-Thu, 8am-5pm): 517-677-3173</a>
-          <a class="btn btn-primary" href="tel:+15172792010">Towing &amp; roadside (24/7): 517-279-2010</a>
+          <a class="btn btn-ghost" href="tel:+15176773173" aria-label="Call shop 517-677-3173">Call shop</a>
+          <a class="btn btn-primary" href="tel:+15172792010" aria-label="Call towing 517-279-2010">Call towing</a>
         </div>
       </div>
     </header>
@@ -126,6 +132,7 @@
             <p class="credential-list__text">
               Pads, rotors, calipers, brake lines, ABS concerns, wheel bearings, shocks and struts, ball joints, tie rods,
               rack-and-pinion, and steering or suspension parts that affect how your vehicle stops and tracks straight.
+              <a href="brakes.html">Brake repair in Coldwater</a>
             </p>
           </li>
           <li>
@@ -134,6 +141,7 @@
               Check-engine lights, drivability, fuel and ignition diagnosis, cooling system leaks and overheating, belts
               and pulleys, and engine work including replacement units when that is the right fix. We are a Jasper
               Certified Authorized service center for reman engines and related work.
+              <a href="check-engine.html">Check-engine light diagnosis</a>
             </p>
           </li>
           <li>
@@ -147,6 +155,7 @@
             <strong>Electrical, charging &amp; starting</strong>
             <p class="credential-list__text">
               Batteries, alternators, starters, wiring faults, lights, power accessories, and parasitic drain diagnosis.
+              <a href="battery.html">Battery, alternator, and starting problems</a>
             </p>
           </li>
           <li>
@@ -167,6 +176,7 @@
             <p class="credential-list__text">
               Oil changes, filters, transmission and differential fluids, coolant exchanges, and scheduled maintenance
               packages tailored to your vehicle.
+              <a href="oil-change.html">Oil change in Coldwater</a>
             </p>
           </li>
           <li>

@@ -472,7 +472,7 @@
       if (norm.error === "format" || !norm.url) {
         if (uploadStatus) {
           uploadStatus.textContent =
-            "Use https://911autoservice.org/for-sale-media/photo.jpg, or /for-sale-media/photo.jpg (include the .jpg).";
+            "Use https://www.911autoservice.org/for-sale-media/photo.jpg, or /for-sale-media/photo.jpg (include the .jpg).";
         }
         return;
       }

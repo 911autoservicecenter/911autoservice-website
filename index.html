@@ -4,38 +4,6 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <script>
-      (function () {
-        var KEY = "911asAllowHome";
-        try {
-          var params = new URLSearchParams(window.location.search);
-          if (params.get("home") === "1") {
-            sessionStorage.setItem(KEY, "1");
-            if (window.history.replaceState) {
-              window.history.replaceState(null, "", window.location.pathname + window.location.hash);
-            }
-            return;
-          }
-          if (sessionStorage.getItem(KEY) === "1") return;
-        } catch (e) {}
-        var ua = navigator.userAgent || "";
-        if (/Googlebot|Google-InspectionTool|bingbot|DuckDuckBot|Baiduspider|YandexBot|facebookexternalhit|Twitterbot|LinkedInBot|Slurp/i.test(ua)) {
-          return;
-        }
-        var isMobile =
-          /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Mobile|Tablet|Silk/i.test(ua);
-        if (!isMobile && typeof navigator.maxTouchPoints === "number" && navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1) {
-          isMobile = true;
-        }
-        if (
-          !isMobile &&
-          window.matchMedia("(max-width: 768px)").matches &&
-          window.matchMedia("(pointer: coarse)").matches
-        ) {
-          isMobile = true;
-        }
-        if (!isMobile) return;
-        window.location.replace("towing.html");
-      })();
       try {
         if (localStorage.getItem("911asSchedulePromo") === "dismissed") {
           document.documentElement.classList.add("schedule-promo-dismissed");
@@ -51,7 +19,7 @@
       name="keywords"
       content="911 Auto Service Center, auto repair Coldwater MI, towing Coldwater MI, roadside assistance Coldwater, automotive repair Branch County"
     />
-    <link rel="canonical" href="https://911autoservice.org/" />
+    <link rel="canonical" href="https://www.911autoservice.org/" />
     <meta name="theme-color" content="#0a0a0a" />
     <meta name="robots" content="index,follow" />
 
@@ -63,8 +31,8 @@
       property="og:description"
       content="Automotive repair and towing &amp; roadside assistance in Coldwater, MI. Call for auto repair or towing."
     />
-    <meta property="og:url" content="https://911autoservice.org/" />
-    <meta property="og:image" content="https://911autoservice.org/images/logo.png" />
+    <meta property="og:url" content="https://www.911autoservice.org/" />
+    <meta property="og:image" content="https://www.911autoservice.org/images/logo.png" />
 
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="911 Auto Service Center | Towing &amp; Automotive Repair" />
@@ -72,7 +40,7 @@
       name="twitter:description"
       content="Automotive repair and towing &amp; roadside assistance in Coldwater, MI."
     />
-    <meta name="twitter:image" content="https://911autoservice.org/images/logo.png" />
+    <meta name="twitter:image" content="https://www.911autoservice.org/images/logo.png" />
 
     <link rel="icon" href="images/logo.png" type="image/png" />
     <link rel="apple-touch-icon" href="images/logo.png" />
@@ -83,11 +51,29 @@
         "@graph": [
           {
             "@type": "AutomotiveRepair",
-            "@id": "https://911autoservice.org/#business",
+            "@id": "https://www.911autoservice.org/#business",
             "name": "911 Auto Service Center",
-            "url": "https://911autoservice.org/",
-            "image": "https://911autoservice.org/images/logo.png",
-            "telephone": "+1-517-677-3173",
+            "url": "https://www.911autoservice.org/",
+            "image": "https://www.911autoservice.org/images/logo.png",
+            "telephone": ["+1-517-677-3173", "+1-517-279-2010"],
+            "hasMap": "https://www.google.com/maps/search/?api=1&query=22%20S%20Clay%20St%20Coldwater%20MI%2049036",
+            "geo": {
+              "@type": "GeoCoordinates",
+              "latitude": 41.9404238,
+              "longitude": -85.0054278
+            },
+            "openingHoursSpecification": [
+              {
+                "@type": "OpeningHoursSpecification",
+                "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday"],
+                "opens": "08:00",
+                "closes": "17:00"
+              }
+            ],
+            "sameAs": [
+              "https://www.facebook.com/p/911-Auto-Service-Center-61566446170322/",
+              "https://www.google.com/maps/search/?api=1&query=22%20S%20Clay%20St%20Coldwater%20MI%2049036"
+            ],
             "address": {
               "@type": "PostalAddress",
               "streetAddress": "22 S Clay St",
@@ -104,11 +90,29 @@
           },
           {
             "@type": "TowingCompany",
-            "@id": "https://911autoservice.org/#towing",
+            "@id": "https://www.911autoservice.org/#towing",
             "name": "911 Auto Service Center — Towing & Roadside",
-            "url": "https://911autoservice.org/towing.html",
-            "image": "https://911autoservice.org/images/logo.png",
+            "url": "https://www.911autoservice.org/towing.html",
+            "image": "https://www.911autoservice.org/images/logo.png",
             "telephone": "+1-517-279-2010",
+            "hasMap": "https://www.google.com/maps/search/?api=1&query=22%20S%20Clay%20St%20Coldwater%20MI%2049036",
+            "geo": {
+              "@type": "GeoCoordinates",
+              "latitude": 41.9404238,
+              "longitude": -85.0054278
+            },
+            "openingHoursSpecification": [
+              {
+                "@type": "OpeningHoursSpecification",
+                "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+                "opens": "00:00",
+                "closes": "23:59"
+              }
+            ],
+            "areaServed": {
+              "@type": "AdministrativeArea",
+              "name": "Branch County, Michigan"
+            },
             "address": {
               "@type": "PostalAddress",
               "streetAddress": "22 S Clay St",
@@ -120,10 +124,10 @@
           },
           {
             "@type": "WebSite",
-            "@id": "https://911autoservice.org/#website",
-            "url": "https://911autoservice.org/",
+            "@id": "https://www.911autoservice.org/#website",
+            "url": "https://www.911autoservice.org/",
             "name": "911 Auto Service Center",
-            "publisher": { "@id": "https://911autoservice.org/#business" },
+            "publisher": { "@id": "https://www.911autoservice.org/#business" },
             "inLanguage": "en-US"
           }
         ]
@@ -151,16 +155,22 @@
         <nav class="site-nav" aria-label="Main">
           <a href="index.html" aria-current="page">Home</a>
           <a href="auto-repair.html">Auto repair</a>
-          <a href="services.html">What we work on</a>
-          <a href="key-services.html">Key services</a>
+          <a href="auto-repair.html#schedule">Schedule</a>
           <a href="towing.html">Towing</a>
-          <a href="impound.html">Impounded?</a>
-          <a href="for-sale.html">For sale</a>
-          <a href="upcoming-auctions.html">Auctions</a>
+          <details class="nav-more">
+            <summary>More</summary>
+            <div class="nav-more-panel">
+              <a href="services.html">What we work on</a>
+              <a href="key-services.html">Key services</a>
+              <a href="impound.html">Impounded?</a>
+              <a href="for-sale.html">For sale</a>
+              <a href="upcoming-auctions.html">Auctions</a>
+            </div>
+          </details>
         </nav>
         <div class="header-cta">
-          <a class="btn btn-ghost" href="tel:+15176773173">Auto repair (Mon-Thu, 8am-5pm): 517-677-3173</a>
-          <a class="btn btn-primary" href="tel:+15172792010">Towing &amp; roadside (24/7): 517-279-2010</a>
+          <a class="btn btn-ghost" href="tel:+15176773173" aria-label="Call shop 517-677-3173">Call shop</a>
+          <a class="btn btn-primary" href="tel:+15172792010" aria-label="Call towing 517-279-2010">Call towing</a>
         </div>
       </div>
     </header>
@@ -174,12 +184,22 @@
               911 Auto Service Center serves Coldwater and the surrounding area with professional automotive repair
               and responsive towing &amp; roadside assistance — all from one trusted shop.
             </p>
-            <div class="hero-actions">
-              <a class="btn btn-primary" href="tel:+15176773173">Call auto repair</a>
-              <a class="btn btn-ghost" href="tel:+15172792010">Call towing / roadside</a>
+            <div class="path-cards">
+              <a class="path-card path-card--tow" href="towing.html">
+                <strong>Need a tow</strong>
+                <span>24/7 roadside and wrecker · 517-279-2010</span>
+              </a>
+              <a class="path-card path-card--shop" href="auto-repair.html">
+                <strong>Need the shop</strong>
+                <span>Repair, keys, and maintenance · Mon–Thu 8am–5pm</span>
+              </a>
             </div>
+            <p class="hero-booking">
+              Ready to come in?
+              <a href="auto-repair.html#schedule">Schedule an appointment</a>
+            </p>
             <p class="hero-badge">
-              Shop hours: Mon-Thu, 8am-5pm · Towing &amp; roadside: 24/7 · Walk-in service at 22 S Clay St — Coldwater, MI 49036
+              Shop hours: Mon–Thu, 8am–5pm · Towing &amp; roadside: 24/7 · 22 S Clay St, Coldwater, MI 49036
             </p>
           </div>
           <div class="hero-visual">
@@ -204,12 +224,16 @@
                   </dd>
                 </div>
                 <div>
+                  <dt>Shop hours</dt>
+                  <dd>Mon–Thu, 8am–5pm</dd>
+                </div>
+                <div>
                   <dt>Auto repair</dt>
                   <dd><a href="tel:+15176773173">517-677-3173</a></dd>
                 </div>
                 <div>
                   <dt>Towing &amp; roadside</dt>
-                  <dd><a href="tel:+15172792010">517-279-2010</a></dd>
+                  <dd>24/7 · <a href="tel:+15172792010">517-279-2010</a></dd>
                 </div>
               </dl>
             </div>
@@ -228,6 +252,7 @@
             <p>Diagnostics, maintenance, and repairs to keep your vehicle safe and reliable.</p>
             <a class="phone" href="tel:+15176773173">517-677-3173</a>
             <a class="text-link" href="auto-repair.html">Learn about our shop</a>
+            <a class="text-link" href="auto-repair.html#schedule">Schedule an appointment</a>
             <a class="text-link" href="services.html">What we work on</a>
           </article>
           <article class="card">

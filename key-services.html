@@ -12,7 +12,7 @@
       name="keywords"
       content="key duplication Coldwater MI, car key programming, house keys, business keys, KeyWorks Mobile, 911 Auto Service Center locksmith"
     />
-    <link rel="canonical" href="https://911autoservice.org/key-services.html" />
+    <link rel="canonical" href="https://www.911autoservice.org/key-services.html" />
     <meta name="theme-color" content="#000000" />
     <meta name="robots" content="index,follow" />
 
@@ -24,8 +24,8 @@
       property="og:description"
       content="Partnership announcement: home, auto, and business keys — programming and duplication through KeyWorks Mobile at 911 Auto Service Center."
     />
-    <meta property="og:url" content="https://911autoservice.org/key-services.html" />
-    <meta property="og:image" content="https://911autoservice.org/images/keyworks/logo-hero.png" />
+    <meta property="og:url" content="https://www.911autoservice.org/key-services.html" />
+    <meta property="og:image" content="https://www.911autoservice.org/images/keyworks/logo-hero.png" />
 
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="Key services | 911 Auto + KeyWorks Mobile" />
@@ -33,7 +33,7 @@
       name="twitter:description"
       content="Home, auto, and business key duplication and programming in Coldwater, MI."
     />
-    <meta name="twitter:image" content="https://911autoservice.org/images/keyworks/logo-hero.png" />
+    <meta name="twitter:image" content="https://www.911autoservice.org/images/keyworks/logo-hero.png" />
 
     <link rel="icon" href="images/logo.png" type="image/png" />
     <link rel="apple-touch-icon" href="images/logo.png" />
@@ -45,9 +45,9 @@
         "@graph": [
           {
             "@type": "AutomotiveRepair",
-            "@id": "https://911autoservice.org/#business",
+            "@id": "https://www.911autoservice.org/#business",
             "name": "911 Auto Service Center",
-            "url": "https://911autoservice.org/",
+            "url": "https://www.911autoservice.org/",
             "telephone": "+1-517-677-3173",
             "address": {
               "@type": "PostalAddress",
@@ -60,25 +60,25 @@
           },
           {
             "@type": "WebPage",
-            "@id": "https://911autoservice.org/key-services.html#webpage",
-            "url": "https://911autoservice.org/key-services.html",
+            "@id": "https://www.911autoservice.org/key-services.html#webpage",
+            "url": "https://www.911autoservice.org/key-services.html",
             "name": "Key Services | 911 Auto Service Center + KeyWorks Mobile",
             "description": "911 Auto Service Center partners with KeyWorks Mobile LLC for home, auto, and business key services.",
-            "isPartOf": { "@id": "https://911autoservice.org/#website" },
-            "about": { "@id": "https://911autoservice.org/#business" },
+            "isPartOf": { "@id": "https://www.911autoservice.org/#website" },
+            "about": { "@id": "https://www.911autoservice.org/#business" },
             "inLanguage": "en-US"
           },
           {
             "@type": "WebSite",
-            "@id": "https://911autoservice.org/#website",
-            "url": "https://911autoservice.org/",
+            "@id": "https://www.911autoservice.org/#website",
+            "url": "https://www.911autoservice.org/",
             "name": "911 Auto Service Center",
-            "publisher": { "@id": "https://911autoservice.org/#business" }
+            "publisher": { "@id": "https://www.911autoservice.org/#business" }
           },
           {
             "@type": "Service",
             "name": "Key duplication and programming",
-            "provider": { "@id": "https://911autoservice.org/#business" },
+            "provider": { "@id": "https://www.911autoservice.org/#business" },
             "areaServed": "Coldwater, MI",
             "serviceType": ["Automotive key programming", "Home key duplication", "Business key services"]
           }
@@ -91,7 +91,7 @@
 
     <header class="site-header">
       <div class="header-inner">
-        <a class="brand" href="index.html?home=1">
+        <a class="brand" href="index.html">
           <img
             src="images/logo.png"
             width="112"
@@ -105,18 +105,24 @@
           </span>
         </a>
         <nav class="site-nav" aria-label="Main">
-          <a href="index.html?home=1">Home</a>
+          <a href="index.html">Home</a>
           <a href="auto-repair.html">Auto repair</a>
-          <a href="services.html">What we work on</a>
-          <a href="key-services.html" aria-current="page">Key services</a>
+          <a href="auto-repair.html#schedule">Schedule</a>
           <a href="towing.html">Towing</a>
-          <a href="impound.html">Impounded?</a>
-          <a href="for-sale.html">For sale</a>
-          <a href="upcoming-auctions.html">Auctions</a>
+          <details class="nav-more">
+            <summary>More</summary>
+            <div class="nav-more-panel">
+              <a href="services.html">What we work on</a>
+              <a href="key-services.html" aria-current="page">Key services</a>
+              <a href="impound.html">Impounded?</a>
+              <a href="for-sale.html">For sale</a>
+              <a href="upcoming-auctions.html">Auctions</a>
+            </div>
+          </details>
         </nav>
         <div class="header-cta">
-          <a class="btn btn-ghost" href="tel:+15176773173">Keys &amp; auto repair: 517-677-3173</a>
-          <a class="btn btn-primary" href="tel:+15172792010">Towing &amp; roadside (24/7): 517-279-2010</a>
+          <a class="btn btn-ghost" href="tel:+15176773173" aria-label="Call shop 517-677-3173">Call shop</a>
+          <a class="btn btn-primary" href="tel:+15172792010" aria-label="Call towing 517-279-2010">Call towing</a>
         </div>
       </div>
     </header>

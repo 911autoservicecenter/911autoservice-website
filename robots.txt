@@ -3,4 +3,4 @@ Allow: /
 Disallow: /admin-for-sale.html
 Disallow: /admin-auctions.html
 
-Sitemap: https://911autoservice.org/sitemap.xml
+Sitemap: https://www.911autoservice.org/sitemap.xml

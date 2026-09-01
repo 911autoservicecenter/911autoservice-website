@@ -8,7 +8,7 @@
       name="description"
       content="Upcoming vehicle auctions at 911 Auto Service Center in Coldwater, Michigan. Browse year, make, model, VIN, and photos when an auction is scheduled."
     />
-    <link rel="canonical" href="https://911autoservice.org/upcoming-auctions.html" />
+    <link rel="canonical" href="https://www.911autoservice.org/upcoming-auctions.html" />
     <meta name="theme-color" content="#0a0a0a" />
     <meta name="robots" content="index,follow" />
 
@@ -20,8 +20,8 @@
       property="og:description"
       content="See scheduled vehicle auctions and listed vehicles — Coldwater, MI."
     />
-    <meta property="og:url" content="https://911autoservice.org/upcoming-auctions.html" />
-    <meta property="og:image" content="https://911autoservice.org/images/logo.png" />
+    <meta property="og:url" content="https://www.911autoservice.org/upcoming-auctions.html" />
+    <meta property="og:image" content="https://www.911autoservice.org/images/logo.png" />
 
     <link rel="icon" href="images/logo.png" type="image/png" />
     <link rel="apple-touch-icon" href="images/logo.png" />
@@ -32,10 +32,10 @@
         "@graph": [
           {
             "@type": "WebPage",
-            "@id": "https://911autoservice.org/upcoming-auctions.html#webpage",
-            "url": "https://911autoservice.org/upcoming-auctions.html",
+            "@id": "https://www.911autoservice.org/upcoming-auctions.html#webpage",
+            "url": "https://www.911autoservice.org/upcoming-auctions.html",
             "name": "Upcoming auctions | 911 Auto Service Center",
-            "isPartOf": { "@id": "https://911autoservice.org/#website" },
+            "isPartOf": { "@id": "https://www.911autoservice.org/#website" },
             "inLanguage": "en-US"
           }
         ]
@@ -47,7 +47,7 @@
 
     <header class="site-header">
       <div class="header-inner">
-        <a class="brand" href="index.html?home=1">
+        <a class="brand" href="index.html">
           <img
             src="images/logo.png"
             width="112"
@@ -61,18 +61,24 @@
           </span>
         </a>
         <nav class="site-nav" aria-label="Main">
-          <a href="index.html?home=1">Home</a>
+          <a href="index.html">Home</a>
           <a href="auto-repair.html">Auto repair</a>
-          <a href="services.html">What we work on</a>
-          <a href="key-services.html">Key services</a>
+          <a href="auto-repair.html#schedule">Schedule</a>
           <a href="towing.html">Towing</a>
-          <a href="impound.html">Impounded?</a>
-          <a href="for-sale.html">For sale</a>
-          <a href="upcoming-auctions.html" aria-current="page">Auctions</a>
+          <details class="nav-more">
+            <summary>More</summary>
+            <div class="nav-more-panel">
+              <a href="services.html">What we work on</a>
+              <a href="key-services.html">Key services</a>
+              <a href="impound.html">Impounded?</a>
+              <a href="for-sale.html">For sale</a>
+              <a href="upcoming-auctions.html" aria-current="page">Auctions</a>
+            </div>
+          </details>
         </nav>
         <div class="header-cta">
-          <a class="btn btn-ghost" href="tel:+15176773173">Auto repair (Mon-Thu, 8am-5pm): 517-677-3173</a>
-          <a class="btn btn-primary" href="tel:+15172792010">Towing &amp; roadside (24/7): 517-279-2010</a>
+          <a class="btn btn-ghost" href="tel:+15176773173" aria-label="Call shop 517-677-3173">Call shop</a>
+          <a class="btn btn-primary" href="tel:+15172792010" aria-label="Call towing 517-279-2010">Call towing</a>
         </div>
       </div>
     </header>
