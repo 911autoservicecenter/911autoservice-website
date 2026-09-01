@@ -67,6 +67,18 @@ a:focus-visible {
   z-index: 100;
 }
 
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
 .site-header {
   position: sticky;
   top: 0;
@@ -620,6 +632,38 @@ a:focus-visible {
 .footer-legal {
   font-size: 0.8rem;
   color: var(--gray-400);
+}
+
+.footer-legal a {
+  display: inline-block;
+  margin-top: 0.35rem;
+  font-weight: 600;
+}
+
+.prose.legal {
+  max-width: 72ch;
+}
+
+.section .prose.legal h2 {
+  font-size: 1.2rem;
+  color: var(--white);
+  margin: 2rem 0 0.65rem;
+}
+
+.section .prose.legal h2:first-child {
+  margin-top: 0;
+}
+
+.section .prose.legal h3 {
+  font-size: 1.05rem;
+  color: var(--white);
+  margin: 1.35rem 0 0.5rem;
+}
+
+.legal-updated {
+  margin: 0 0 1.5rem;
+  color: var(--gray-500);
+  font-size: 0.9rem;
 }
 
 /* Auto repair — Shop Monkey scheduler */
