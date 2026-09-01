@@ -763,6 +763,29 @@ a:focus-visible {
   font-weight: 600;
 }
 
+.dispatch-disclaimer {
+  max-width: 65ch;
+  padding: 1rem 1.15rem;
+  border: 1px solid var(--gray-700);
+  border-left: 4px solid var(--red);
+  border-radius: 8px;
+  background: var(--gray-900);
+}
+
+.dispatch-disclaimer h2 {
+  margin: 0 0 0.4rem;
+  font-size: 1.15rem;
+}
+
+.dispatch-disclaimer p {
+  margin: 0;
+  color: var(--gray-300);
+}
+
+.section .dispatch-disclaimer {
+  margin: 0 0 0.5rem;
+}
+
 .hero-card dd .footer-emergency-note {
   margin-top: 0.35rem;
   font-size: 0.88rem;
