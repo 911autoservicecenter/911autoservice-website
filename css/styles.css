@@ -640,6 +640,47 @@ a:focus-visible {
   font-weight: 600;
 }
 
+.schedule-fab {
+  position: fixed;
+  right: 1rem;
+  bottom: calc(1rem + env(safe-area-inset-bottom, 0px));
+  z-index: 40;
+  display: inline-flex;
+  align-items: center;
+  padding: 0.42rem 0.8rem;
+  border-radius: 999px;
+  background: rgba(20, 20, 20, 0.92);
+  color: var(--gray-300);
+  border: 1px solid var(--gray-700);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.4);
+  text-decoration: none;
+  backdrop-filter: blur(8px);
+  max-width: calc(100vw - 2rem);
+}
+
+.schedule-fab:hover,
+.schedule-fab:focus-visible {
+  background: var(--red);
+  border-color: var(--red);
+  color: var(--white);
+  text-decoration: none;
+}
+
+@media (max-width: 720px) {
+  .schedule-fab {
+    right: 0.75rem;
+    font-size: 0.72rem;
+    padding: 0.38rem 0.7rem;
+  }
+}
+
+#schedule {
+  scroll-margin-top: 7rem;
+}
+
 .prose.legal {
   max-width: 72ch;
 }
