@@ -103,7 +103,7 @@
       specs +
       "</dl>" +
       thumbStrip +
-      '<a class="btn btn-primary sale-card__cta" href="tel:+15176773173">Call 517-677-3173</a>' +
+      '<a class="btn btn-primary sale-card__cta" href="tel:+15172792010">Call 517-279-2010</a>' +
       "</div></article>"
     );
   }

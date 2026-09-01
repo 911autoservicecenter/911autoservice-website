@@ -67,7 +67,7 @@
       : "";
 
     var ctaClass = sold ? "btn btn-ghost sale-card__cta" : "btn btn-primary sale-card__cta";
-    var ctaText = sold ? "Ask about similar" : "Call 517-677-3173";
+    var ctaText = sold ? "Ask about similar" : "Call 517-279-2010";
 
     var listingId = item.id && String(item.id).trim() ? String(item.id).trim() : "";
     var shareUrl = listingId ? listingShareUrl(listingId) : "";
@@ -155,7 +155,7 @@
       shareBlock +
       '<a class="' +
       ctaClass +
-      '" href="tel:+15176773173">' +
+      '" href="tel:+15172792010">' +
       ctaText +
       "</a>" +
       "</div></article>"

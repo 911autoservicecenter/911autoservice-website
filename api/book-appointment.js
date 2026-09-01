@@ -83,7 +83,7 @@ module.exports = async function handler(req, res) {
     res.status(503).json({
       ok: false,
       message:
-        "Online booking is not configured. Call 517-677-3173 or use the scheduler above.",
+        "Online booking is not configured. Call 517-279-2010 or use the scheduler above.",
     });
     return;
   }
@@ -143,7 +143,7 @@ module.exports = async function handler(req, res) {
       ok: false,
       message:
         (cr.data && cr.data.message) ||
-        "Could not save your contact info. Please call 517-677-3173.",
+        "Could not save your contact info. Please call 517-279-2010.",
     });
     return;
   }
@@ -177,7 +177,7 @@ module.exports = async function handler(req, res) {
       ok: false,
       message:
         (ar.data && ar.data.message) ||
-        "Could not complete the appointment. Please call 517-677-3173.",
+        "Could not complete the appointment. Please call 517-279-2010.",
     });
     return;
   }
