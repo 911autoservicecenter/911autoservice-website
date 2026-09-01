@@ -645,7 +645,7 @@ a:focus-visible {
   right: 1rem;
   bottom: calc(1rem + env(safe-area-inset-bottom, 0px));
   z-index: 40;
-  display: inline-flex;
+  display: none;
   align-items: center;
   padding: 0.42rem 0.8rem;
   border-radius: 999px;
@@ -659,6 +659,10 @@ a:focus-visible {
   text-decoration: none;
   backdrop-filter: blur(8px);
   max-width: calc(100vw - 2rem);
+}
+
+html.schedule-promo-dismissed .schedule-fab {
+  display: inline-flex;
 }
 
 .schedule-fab:hover,
@@ -675,6 +679,83 @@ a:focus-visible {
     font-size: 0.72rem;
     padding: 0.38rem 0.7rem;
   }
+}
+
+.schedule-promo {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.25rem;
+  background: rgba(0, 0, 0, 0.66);
+}
+
+html.schedule-promo-dismissed .schedule-promo,
+.schedule-promo[hidden] {
+  display: none;
+}
+
+.schedule-promo__card {
+  position: relative;
+  width: min(34rem, 100%);
+  padding: 2.35rem 1.75rem 1.85rem;
+  background: var(--gray-900);
+  border: 1px solid var(--gray-700);
+  border-radius: 14px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55);
+  text-align: center;
+}
+
+.schedule-promo__close {
+  position: absolute;
+  top: 0.55rem;
+  right: 0.55rem;
+  width: 2.4rem;
+  height: 2.4rem;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--gray-400);
+  font-size: 1.7rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.schedule-promo__close:hover,
+.schedule-promo__close:focus-visible {
+  color: var(--white);
+  background: var(--gray-700);
+}
+
+.schedule-promo__kicker {
+  margin: 0 0 0.45rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--red);
+}
+
+.schedule-promo__card h2 {
+  margin: 0 0 0.7rem;
+  font-size: clamp(1.7rem, 4.5vw, 2.25rem);
+  line-height: 1.15;
+  color: var(--white);
+}
+
+.schedule-promo__card p {
+  margin: 0 auto 1.45rem;
+  max-width: 32ch;
+  color: var(--gray-400);
+  font-size: 1.08rem;
+}
+
+.schedule-promo__cta {
+  min-width: 12.5rem;
+  padding: 0.8rem 1.35rem;
+  font-size: 1.08rem;
 }
 
 #schedule {

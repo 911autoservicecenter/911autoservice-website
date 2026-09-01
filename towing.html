@@ -3,6 +3,13 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script>
+      try {
+        if (localStorage.getItem("911asSchedulePromo") === "dismissed") {
+          document.documentElement.classList.add("schedule-promo-dismissed");
+        }
+      } catch (e) {}
+    </script>
     <title>Towing &amp; Roadside | AAA | 911 Auto Service Center — Coldwater, MI</title>
     <meta
       name="description"
@@ -179,7 +186,25 @@
         </p>
       </div>
     </footer>
+    <div
+      class="schedule-promo"
+      id="schedule-promo"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="schedule-promo-title"
+    >
+      <div class="schedule-promo__card">
+        <button type="button" class="schedule-promo__close" data-schedule-promo-close aria-label="Close">
+          ×
+        </button>
+        <p class="schedule-promo__kicker">Auto repair</p>
+        <h2 id="schedule-promo-title">Schedule an appointment</h2>
+        <p>Pick an open time online. We’ll follow up to confirm. Shop hours are Mon–Thu, 8am–5pm.</p>
+        <a class="btn btn-primary schedule-promo__cta" href="auto-repair.html#schedule">Book a time</a>
+      </div>
+    </div>
     <a class="schedule-fab" href="auto-repair.html#schedule">Schedule an appointment</a>
+    <script src="js/schedule-promo.js"></script>
     <script>
       document.getElementById("year").textContent = new Date().getFullYear();
     </script>
