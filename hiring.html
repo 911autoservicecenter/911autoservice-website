@@ -107,6 +107,20 @@
                   <input type="text" id="hire-zip" name="zip" required maxlength="12" autocomplete="postal-code" />
                 </div>
               </div>
+              <div class="job-app__wide">
+                <fieldset class="job-app__choice">
+                  <legend>Are you 18 years of age or older?</legend>
+                  <label><input type="radio" name="over18" value="Yes" required /> Yes</label>
+                  <label><input type="radio" name="over18" value="No" /> No</label>
+                </fieldset>
+              </div>
+              <div class="job-app__wide">
+                <fieldset class="job-app__choice">
+                  <legend>Are you legally authorized to work in the United States?</legend>
+                  <label><input type="radio" name="authorized" value="Yes" required /> Yes</label>
+                  <label><input type="radio" name="authorized" value="No" /> No</label>
+                </fieldset>
+              </div>
             </div>
           </section>
 
@@ -121,9 +135,13 @@
                 <label for="hire-experience">Years of driving experience</label>
                 <input type="text" id="hire-experience" name="drivingExperience" required maxlength="40" />
               </div>
-              <div class="job-app__wide">
+              <div>
+                <label for="hire-license-type">Driver’s license type</label>
+                <input type="text" id="hire-license-type" name="licenseType" required maxlength="80" placeholder="Type it in, such as operator or CDL" />
+              </div>
+              <div>
                 <fieldset class="job-app__choice">
-                  <legend>Do you have a valid chauffeur’s license?</legend>
+                  <legend>Do you have a chauffeur’s license?</legend>
                   <label><input type="radio" name="chauffeurLicense" value="Yes" required /> Yes</label>
                   <label><input type="radio" name="chauffeurLicense" value="No" /> No</label>
                 </fieldset>
@@ -136,22 +154,34 @@
           </section>
 
           <section class="job-app__section">
-            <h2>3. Employment history</h2>
-            <p class="job-app__hint">Start with your most recent job. A second job is optional.</p>
+            <h2>3. Previous employment</h2>
+            <p class="job-app__hint">List your last three jobs, newest first. If you have not had three jobs, write “none” in the extra boxes.</p>
             <div class="job-app__job">
-              <p class="job-app__job-label">Most recent job</p>
+              <p class="job-app__job-label">Employer 1 — most recent</p>
               <div class="job-app__grid">
                 <div>
-                  <label for="hire-employer">Employer</label>
+                  <label for="hire-employer">Company</label>
                   <input type="text" id="hire-employer" name="employer" required maxlength="160" />
+                </div>
+                <div>
+                  <label for="hire-employer-phone">Company phone</label>
+                  <input type="tel" id="hire-employer-phone" name="employerPhone" required maxlength="40" />
                 </div>
                 <div>
                   <label for="hire-title">Job title</label>
                   <input type="text" id="hire-title" name="jobTitle" required maxlength="120" />
                 </div>
-                <div class="job-app__wide">
+                <div>
+                  <label for="hire-supervisor">Supervisor</label>
+                  <input type="text" id="hire-supervisor" name="supervisor" required maxlength="120" />
+                </div>
+                <div>
                   <label for="hire-dates">Dates employed</label>
                   <input type="text" id="hire-dates" name="datesEmployed" required maxlength="80" placeholder="Example: Mar 2022 – present" />
+                </div>
+                <div>
+                  <label for="hire-reason">Reason for leaving</label>
+                  <input type="text" id="hire-reason" name="reason" required maxlength="200" />
                 </div>
                 <div class="job-app__wide">
                   <label for="hire-duties">Duties</label>
@@ -160,30 +190,160 @@
               </div>
             </div>
             <div class="job-app__job">
-              <p class="job-app__job-label">Previous job (optional)</p>
+              <p class="job-app__job-label">Employer 2</p>
               <div class="job-app__grid">
                 <div>
-                  <label for="hire-employer2">Employer</label>
-                  <input type="text" id="hire-employer2" name="employer2" maxlength="160" />
+                  <label for="hire-employer2">Company</label>
+                  <input type="text" id="hire-employer2" name="employer2" required maxlength="160" />
+                </div>
+                <div>
+                  <label for="hire-employer-phone2">Company phone</label>
+                  <input type="tel" id="hire-employer-phone2" name="employerPhone2" required maxlength="40" />
                 </div>
                 <div>
                   <label for="hire-title2">Job title</label>
-                  <input type="text" id="hire-title2" name="jobTitle2" maxlength="120" />
+                  <input type="text" id="hire-title2" name="jobTitle2" required maxlength="120" />
                 </div>
-                <div class="job-app__wide">
+                <div>
+                  <label for="hire-supervisor2">Supervisor</label>
+                  <input type="text" id="hire-supervisor2" name="supervisor2" required maxlength="120" />
+                </div>
+                <div>
                   <label for="hire-dates2">Dates employed</label>
-                  <input type="text" id="hire-dates2" name="datesEmployed2" maxlength="80" />
+                  <input type="text" id="hire-dates2" name="datesEmployed2" required maxlength="80" />
+                </div>
+                <div>
+                  <label for="hire-reason2">Reason for leaving</label>
+                  <input type="text" id="hire-reason2" name="reason2" required maxlength="200" />
                 </div>
                 <div class="job-app__wide">
                   <label for="hire-duties2">Duties</label>
-                  <textarea id="hire-duties2" name="duties2" rows="3" maxlength="1500"></textarea>
+                  <textarea id="hire-duties2" name="duties2" rows="3" required maxlength="1500"></textarea>
+                </div>
+              </div>
+            </div>
+            <div class="job-app__job">
+              <p class="job-app__job-label">Employer 3</p>
+              <div class="job-app__grid">
+                <div>
+                  <label for="hire-employer3">Company</label>
+                  <input type="text" id="hire-employer3" name="employer3" required maxlength="160" />
+                </div>
+                <div>
+                  <label for="hire-employer-phone3">Company phone</label>
+                  <input type="tel" id="hire-employer-phone3" name="employerPhone3" required maxlength="40" />
+                </div>
+                <div>
+                  <label for="hire-title3">Job title</label>
+                  <input type="text" id="hire-title3" name="jobTitle3" required maxlength="120" />
+                </div>
+                <div>
+                  <label for="hire-supervisor3">Supervisor</label>
+                  <input type="text" id="hire-supervisor3" name="supervisor3" required maxlength="120" />
+                </div>
+                <div>
+                  <label for="hire-dates3">Dates employed</label>
+                  <input type="text" id="hire-dates3" name="datesEmployed3" required maxlength="80" />
+                </div>
+                <div>
+                  <label for="hire-reason3">Reason for leaving</label>
+                  <input type="text" id="hire-reason3" name="reason3" required maxlength="200" />
+                </div>
+                <div class="job-app__wide">
+                  <label for="hire-duties3">Duties</label>
+                  <textarea id="hire-duties3" name="duties3" rows="3" required maxlength="1500"></textarea>
                 </div>
               </div>
             </div>
           </section>
 
           <section class="job-app__section">
-            <h2>4. Additional information</h2>
+            <h2>4. Education</h2>
+            <div class="job-app__grid">
+              <div>
+                <label for="hire-hs">High school</label>
+                <input type="text" id="hire-hs" name="highSchool" required maxlength="160" />
+              </div>
+              <div>
+                <fieldset class="job-app__choice">
+                  <legend>Did you graduate?</legend>
+                  <label><input type="radio" name="hsGrad" value="Yes" required /> Yes</label>
+                  <label><input type="radio" name="hsGrad" value="No" /> No</label>
+                </fieldset>
+              </div>
+              <div>
+                <label for="hire-college">College or trade school</label>
+                <input type="text" id="hire-college" name="college" maxlength="160" placeholder="None, if you did not attend" />
+              </div>
+              <div>
+                <label for="hire-degree">Degree or certificate</label>
+                <input type="text" id="hire-degree" name="degree" maxlength="160" placeholder="None, if you do not have one" />
+              </div>
+              <div class="job-app__wide">
+                <label for="hire-training">Other training or licenses</label>
+                <input type="text" id="hire-training" name="training" maxlength="300" />
+              </div>
+            </div>
+          </section>
+
+          <section class="job-app__section">
+            <h2>5. References</h2>
+            <p class="job-app__hint">Three people who are not related to you.</p>
+            <div class="job-app__job">
+              <p class="job-app__job-label">Reference 1</p>
+              <div class="job-app__grid">
+                <div>
+                  <label for="ref1-name">Name</label>
+                  <input type="text" id="ref1-name" name="ref1Name" required maxlength="120" />
+                </div>
+                <div>
+                  <label for="ref1-phone">Phone</label>
+                  <input type="tel" id="ref1-phone" name="ref1Phone" required maxlength="40" />
+                </div>
+                <div class="job-app__wide">
+                  <label for="ref1-rel">How you know them</label>
+                  <input type="text" id="ref1-rel" name="ref1Relation" required maxlength="120" />
+                </div>
+              </div>
+            </div>
+            <div class="job-app__job">
+              <p class="job-app__job-label">Reference 2</p>
+              <div class="job-app__grid">
+                <div>
+                  <label for="ref2-name">Name</label>
+                  <input type="text" id="ref2-name" name="ref2Name" required maxlength="120" />
+                </div>
+                <div>
+                  <label for="ref2-phone">Phone</label>
+                  <input type="tel" id="ref2-phone" name="ref2Phone" required maxlength="40" />
+                </div>
+                <div class="job-app__wide">
+                  <label for="ref2-rel">How you know them</label>
+                  <input type="text" id="ref2-rel" name="ref2Relation" required maxlength="120" />
+                </div>
+              </div>
+            </div>
+            <div class="job-app__job">
+              <p class="job-app__job-label">Reference 3</p>
+              <div class="job-app__grid">
+                <div>
+                  <label for="ref3-name">Name</label>
+                  <input type="text" id="ref3-name" name="ref3Name" required maxlength="120" />
+                </div>
+                <div>
+                  <label for="ref3-phone">Phone</label>
+                  <input type="tel" id="ref3-phone" name="ref3Phone" required maxlength="40" />
+                </div>
+                <div class="job-app__wide">
+                  <label for="ref3-rel">How you know them</label>
+                  <input type="text" id="ref3-rel" name="ref3Relation" required maxlength="120" />
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="job-app__section">
+            <h2>6. Additional information</h2>
             <div class="job-app__grid">
               <div class="job-app__wide">
                 <label for="hire-note">Anything else you want us to know</label>
