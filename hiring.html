@@ -6,7 +6,7 @@
     <title>Now hiring — wrecker driver | 911 Auto Service Center</title>
     <meta
       name="description"
-      content="911 Auto Service Center in Coldwater, Michigan is hiring a wrecker driver. A chauffeur’s license is required. Apply online and attach your resume."
+      content="911 Auto Service Center in Coldwater, Michigan is hiring a wrecker driver. A chauffeur’s license is required. Fill out the application online. A resume is optional."
     />
     <link rel="canonical" href="https://911autoservice.org/hiring.html" />
     <meta name="robots" content="index,follow" />
@@ -64,7 +64,7 @@
           <h1>Now hiring: wrecker driver</h1>
           <p class="lead">
             <strong>911 Auto Service Center</strong> in Coldwater, Michigan is hiring a wrecker driver.
-            A chauffeur’s license is required. Fill out the application below and attach your resume.
+            A chauffeur’s license is required. Fill out this application. A resume is optional.
           </p>
         </div>
       </header>
@@ -84,26 +84,58 @@
               <label for="hire-email">Email</label>
               <input type="email" id="hire-email" name="email" required maxlength="120" autocomplete="email" />
             </div>
+            <div class="scheduler-field scheduler-field--wide">
+              <label for="hire-address">Address</label>
+              <input type="text" id="hire-address" name="address" required maxlength="200" autocomplete="street-address" />
+            </div>
             <div class="scheduler-field">
-              <label for="hire-position">Position</label>
+              <label for="hire-city">City</label>
+              <input type="text" id="hire-city" name="city" required maxlength="80" autocomplete="address-level2" />
+            </div>
+            <div class="scheduler-field">
+              <label for="hire-state">State</label>
+              <input type="text" id="hire-state" name="state" required maxlength="40" autocomplete="address-level1" value="MI" />
+            </div>
+            <div class="scheduler-field">
+              <label for="hire-position">Position applying for</label>
               <input type="text" id="hire-position" name="position" value="Wrecker driver" readonly />
             </div>
             <div class="scheduler-field">
-              <label for="hire-license">Chauffeur’s license</label>
+              <label for="hire-license">Do you have a chauffeur’s license?</label>
               <select id="hire-license" name="chauffeurLicense" required>
                 <option value="">Select</option>
-                <option value="Yes">Yes, I have one</option>
+                <option value="Yes">Yes</option>
                 <option value="No">No</option>
               </select>
             </div>
-            <div class="scheduler-field scheduler-field--wide">
-              <label for="hire-note">Anything else we should know</label>
-              <textarea id="hire-note" name="note" rows="4" maxlength="2000"></textarea>
+            <div class="scheduler-field">
+              <label for="hire-experience">Years of driving experience</label>
+              <input type="text" id="hire-experience" name="drivingExperience" required maxlength="40" />
+            </div>
+            <div class="scheduler-field">
+              <label for="hire-towing">Towing experience</label>
+              <input type="text" id="hire-towing" name="towingExperience" maxlength="120" placeholder="None, or describe it" />
+            </div>
+            <div class="scheduler-field">
+              <label for="hire-start">When can you start?</label>
+              <input type="text" id="hire-start" name="startDate" required maxlength="80" />
             </div>
             <div class="scheduler-field scheduler-field--wide">
-              <label for="hire-resume">Resume</label>
-              <input type="file" id="hire-resume" name="resume" accept=".pdf,.doc,.docx,application/pdf" required />
-              <p class="admin-photo-hint">PDF or Word, 4MB or smaller.</p>
+              <label for="hire-employer">Most recent employer</label>
+              <input type="text" id="hire-employer" name="employer" maxlength="160" />
+            </div>
+            <div class="scheduler-field scheduler-field--wide">
+              <label for="hire-history">Work history</label>
+              <textarea id="hire-history" name="workHistory" rows="5" maxlength="3000" required placeholder="Jobs, dates, and what you did"></textarea>
+            </div>
+            <div class="scheduler-field scheduler-field--wide">
+              <label for="hire-note">Anything else we should know</label>
+              <textarea id="hire-note" name="note" rows="3" maxlength="2000"></textarea>
+            </div>
+            <div class="scheduler-field scheduler-field--wide">
+              <label for="hire-resume">Resume (optional)</label>
+              <input type="file" id="hire-resume" name="resume" accept=".pdf,.doc,.docx,application/pdf" />
+              <p class="admin-photo-hint">You can apply with this form alone, or also attach a PDF or Word resume under 4MB.</p>
             </div>
           </div>
           <p id="hire-status" class="scheduler-form__status" role="status"></p>

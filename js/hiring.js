@@ -9,11 +9,7 @@
     if (status) status.textContent = "";
     var resume = document.getElementById("hire-resume");
     var file = resume && resume.files && resume.files[0];
-    if (!file) {
-      if (status) status.textContent = "Attach your resume.";
-      return;
-    }
-    if (file.size > 4 * 1024 * 1024) {
+    if (file && file.size > 4 * 1024 * 1024) {
       if (status) status.textContent = "Resume must be 4MB or smaller.";
       return;
     }
@@ -35,6 +31,7 @@
         if (res.ok && res.data && res.data.ok) {
           form.reset();
           document.getElementById("hire-position").value = "Wrecker driver";
+          document.getElementById("hire-state").value = "MI";
           if (status) status.textContent = res.data.message || "Application sent.";
         } else if (status) {
           status.textContent = (res.data && res.data.message) || "Could not send the application.";

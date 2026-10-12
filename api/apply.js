@@ -41,7 +41,6 @@ function notifyAddress() {
 }
 
 async function sendViaFormSubmit(application, file, to) {
-  var bytes = fs.readFileSync(file.filepath);
   var form = new FormData();
   form.append("name", application.name);
   form.append("email", application.email);
@@ -50,8 +49,16 @@ async function sendViaFormSubmit(application, file, to) {
   form.append("_captcha", "false");
   form.append("_template", "table");
   form.append("phone", application.phone);
+  form.append("address", application.address);
+  form.append("city", application.city);
+  form.append("state", application.state);
   form.append("position", application.position);
   form.append("chauffeurLicense", application.chauffeurLicense);
+  form.append("drivingExperience", application.drivingExperience);
+  form.append("towingExperience", application.towingExperience);
+  form.append("startDate", application.startDate);
+  form.append("employer", application.employer);
+  form.append("workHistory", application.workHistory);
   form.append(
     "message",
     [
@@ -60,17 +67,30 @@ async function sendViaFormSubmit(application, file, to) {
       "Name: " + application.name,
       "Phone: " + application.phone,
       "Email: " + application.email,
+      "Address: " + application.address + ", " + application.city + ", " + application.state,
       "Chauffeur's license: " + application.chauffeurLicense,
+      "Driving experience: " + application.drivingExperience,
+      "Towing experience: " + (application.towingExperience || "(none listed)"),
+      "Can start: " + application.startDate,
+      "Most recent employer: " + (application.employer || "(none listed)"),
+      "",
+      "Work history:",
+      application.workHistory,
       "",
       "Note:",
       application.note || "(none)",
+      "",
+      file && file.filepath ? "Resume attached." : "No resume attached.",
     ].join("\n")
   );
-  form.append(
-    "attachment",
-    new Blob([bytes], { type: file.mimetype || "application/octet-stream" }),
-    file.originalFilename || "resume"
-  );
+  if (file && file.filepath) {
+    var bytes = fs.readFileSync(file.filepath);
+    form.append(
+      "attachment",
+      new Blob([bytes], { type: file.mimetype || "application/octet-stream" }),
+      file.originalFilename || "resume"
+    );
+  }
   var response = await fetch("https://formsubmit.co/ajax/" + encodeURIComponent(to), {
     method: "POST",
     headers: { Accept: "application/json" },
@@ -112,26 +132,37 @@ async function sendMail(application, file) {
     "Name: " + application.name,
     "Phone: " + application.phone,
     "Email: " + application.email,
+    "Address: " + application.address + ", " + application.city + ", " + application.state,
     "Position: " + application.position,
     "Chauffeur's license: " + application.chauffeurLicense,
+    "Driving experience: " + application.drivingExperience,
+    "Towing experience: " + (application.towingExperience || "(none listed)"),
+    "Can start: " + application.startDate,
+    "Most recent employer: " + (application.employer || "(none listed)"),
+    "",
+    "Work history:",
+    application.workHistory,
     "",
     "Note:",
     application.note || "(none)",
   ].join("\n");
-  await transport.sendMail({
+  var mail = {
     from: user,
     to: to,
     replyTo: application.email,
     subject: "911 Auto application — " + application.name + " — " + application.position,
     text: body,
-    attachments: [
+  };
+  if (file && file.filepath) {
+    mail.attachments = [
       {
         filename: file.originalFilename || "resume",
         content: fs.readFileSync(file.filepath),
         contentType: file.mimetype || "application/octet-stream",
       },
-    ],
-  });
+    ];
+  }
+  await transport.sendMail(mail);
 }
 
 module.exports = async function handler(req, res) {
@@ -150,12 +181,24 @@ module.exports = async function handler(req, res) {
       name: sanitize(field(parsed.fields, "name"), 120),
       phone: sanitize(field(parsed.fields, "phone"), 40),
       email: sanitize(field(parsed.fields, "email"), 120),
+      address: sanitize(field(parsed.fields, "address"), 200),
+      city: sanitize(field(parsed.fields, "city"), 80),
+      state: sanitize(field(parsed.fields, "state"), 40),
       position: "Wrecker driver",
       chauffeurLicense: sanitize(field(parsed.fields, "chauffeurLicense"), 20),
+      drivingExperience: sanitize(field(parsed.fields, "drivingExperience"), 40),
+      towingExperience: sanitize(field(parsed.fields, "towingExperience"), 120),
+      startDate: sanitize(field(parsed.fields, "startDate"), 80),
+      employer: sanitize(field(parsed.fields, "employer"), 160),
+      workHistory: sanitize(field(parsed.fields, "workHistory"), 3000),
       note: sanitize(field(parsed.fields, "note"), 2000),
     };
-    if (!application.name || !application.phone || !application.email) {
-      res.status(400).json({ ok: false, message: "Name, phone, and email are required." });
+    if (!application.name || !application.phone || !application.email || !application.address || !application.city) {
+      res.status(400).json({ ok: false, message: "Name, phone, email, and address are required." });
+      return;
+    }
+    if (!application.drivingExperience || !application.startDate || !application.workHistory) {
+      res.status(400).json({ ok: false, message: "Fill out your driving experience, start date, and work history." });
       return;
     }
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(application.email)) {
@@ -168,10 +211,7 @@ module.exports = async function handler(req, res) {
     }
     var resume = parsed.files.resume;
     if (Array.isArray(resume)) resume = resume[0];
-    if (!resume || !resume.filepath) {
-      res.status(400).json({ ok: false, message: "Attach your resume." });
-      return;
-    }
+    if (resume && !resume.filepath) resume = null;
     await sendMail(application, resume);
     res.status(200).json({
       ok: true,
