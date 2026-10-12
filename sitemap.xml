@@ -61,6 +61,11 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://www.911autoservice.org/hiring.html</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://www.911autoservice.org/privacy-policy.html</loc>
     <changefreq>yearly</changefreq>
     <priority>0.4</priority>

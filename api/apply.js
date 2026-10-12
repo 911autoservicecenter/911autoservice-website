@@ -36,16 +36,68 @@ function parseForm(req) {
   });
 }
 
+function notifyAddress() {
+  return String(process.env.HIRING_NOTIFY_EMAIL || "jimmy5489@gmail.com").trim();
+}
+
+async function sendViaFormSubmit(application, file, to) {
+  var bytes = fs.readFileSync(file.filepath);
+  var form = new FormData();
+  form.append("name", application.name);
+  form.append("email", application.email);
+  form.append("_replyto", application.email);
+  form.append("_subject", "911 Auto application — " + application.name + " — Wrecker driver");
+  form.append("_captcha", "false");
+  form.append("_template", "table");
+  form.append("phone", application.phone);
+  form.append("position", application.position);
+  form.append("chauffeurLicense", application.chauffeurLicense);
+  form.append(
+    "message",
+    [
+      "New wrecker driver application for 911 Auto Service Center",
+      "",
+      "Name: " + application.name,
+      "Phone: " + application.phone,
+      "Email: " + application.email,
+      "Chauffeur's license: " + application.chauffeurLicense,
+      "",
+      "Note:",
+      application.note || "(none)",
+    ].join("\n")
+  );
+  form.append(
+    "attachment",
+    new Blob([bytes], { type: file.mimetype || "application/octet-stream" }),
+    file.originalFilename || "resume"
+  );
+  var response = await fetch("https://formsubmit.co/ajax/" + encodeURIComponent(to), {
+    method: "POST",
+    headers: { Accept: "application/json" },
+    body: form,
+  });
+  var data = {};
+  try {
+    data = await response.json();
+  } catch (e) {
+    data = {};
+  }
+  if (!response.ok || String(data.success) === "false") {
+    var err = new Error((data && data.message) || "Could not email the application.");
+    err.code = "MAIL_FAILED";
+    throw err;
+  }
+}
+
 async function sendMail(application, file) {
-  var to = String(process.env.HIRING_NOTIFY_EMAIL || "").trim();
+  var to = notifyAddress();
   var host = String(process.env.SMTP_HOST || "").trim();
   var user = String(process.env.SMTP_USER || "").trim();
   var pass = process.env.SMTP_PASS != null ? String(process.env.SMTP_PASS) : "";
   var port = parseInt(process.env.SMTP_PORT || "587", 10);
-  if (!to || !host || !user || !pass) {
-    var missing = new Error("MAIL_NOT_CONFIGURED");
-    missing.code = "MAIL_NOT_CONFIGURED";
-    throw missing;
+  if (!host || !user || !pass) {
+    await sendViaFormSubmit(application, file, to);
+    return;
   }
   var nodemailer = require("nodemailer");
   var transport = nodemailer.createTransport({
@@ -126,10 +178,10 @@ module.exports = async function handler(req, res) {
       message: "Application sent. 911 Auto Service Center will review it.",
     });
   } catch (e) {
-    if (e && e.code === "MAIL_NOT_CONFIGURED") {
-      res.status(503).json({
+    if (e && e.code === "MAIL_FAILED") {
+      res.status(502).json({
         ok: false,
-        message: "Applications are not set up to email yet. The shop still needs the email settings turned on.",
+        message: e.message || "Could not email the application.",
       });
       return;
     }
