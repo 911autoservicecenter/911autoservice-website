@@ -67,7 +67,7 @@ async function sendViaFormSubmit(application, file, to) {
       "Name: " + application.name,
       "Phone: " + application.phone,
       "Email: " + application.email,
-      "Address: " + application.address + ", " + application.city + ", " + application.state,
+      "Address: " + application.address + ", " + application.city + ", " + application.state + " " + application.zip,
       "Chauffeur's license: " + application.chauffeurLicense,
       "Driving experience: " + application.drivingExperience,
       "Towing experience: " + (application.towingExperience || "(none listed)"),
@@ -132,7 +132,7 @@ async function sendMail(application, file) {
     "Name: " + application.name,
     "Phone: " + application.phone,
     "Email: " + application.email,
-    "Address: " + application.address + ", " + application.city + ", " + application.state,
+    "Address: " + application.address + ", " + application.city + ", " + application.state + " " + application.zip,
     "Position: " + application.position,
     "Chauffeur's license: " + application.chauffeurLicense,
     "Driving experience: " + application.drivingExperience,
@@ -184,21 +184,42 @@ module.exports = async function handler(req, res) {
       address: sanitize(field(parsed.fields, "address"), 200),
       city: sanitize(field(parsed.fields, "city"), 80),
       state: sanitize(field(parsed.fields, "state"), 40),
+      zip: sanitize(field(parsed.fields, "zip"), 12),
       position: "Wrecker driver",
       chauffeurLicense: sanitize(field(parsed.fields, "chauffeurLicense"), 20),
       drivingExperience: sanitize(field(parsed.fields, "drivingExperience"), 40),
-      towingExperience: sanitize(field(parsed.fields, "towingExperience"), 120),
+      towingExperience: sanitize(field(parsed.fields, "towingExperience"), 160),
       startDate: sanitize(field(parsed.fields, "startDate"), 80),
       employer: sanitize(field(parsed.fields, "employer"), 160),
-      workHistory: sanitize(field(parsed.fields, "workHistory"), 3000),
+      jobTitle: sanitize(field(parsed.fields, "jobTitle"), 120),
+      datesEmployed: sanitize(field(parsed.fields, "datesEmployed"), 80),
+      duties: sanitize(field(parsed.fields, "duties"), 1500),
+      employer2: sanitize(field(parsed.fields, "employer2"), 160),
+      jobTitle2: sanitize(field(parsed.fields, "jobTitle2"), 120),
+      datesEmployed2: sanitize(field(parsed.fields, "datesEmployed2"), 80),
+      duties2: sanitize(field(parsed.fields, "duties2"), 1500),
       note: sanitize(field(parsed.fields, "note"), 2000),
     };
-    if (!application.name || !application.phone || !application.email || !application.address || !application.city) {
-      res.status(400).json({ ok: false, message: "Name, phone, email, and address are required." });
+    application.workHistory = [
+      [application.employer, application.jobTitle, application.datesEmployed, application.duties]
+        .filter(Boolean)
+        .join(" — "),
+      [application.employer2, application.jobTitle2, application.datesEmployed2, application.duties2]
+        .filter(Boolean)
+        .join(" — "),
+    ]
+      .filter(Boolean)
+      .join("\n");
+    if (!application.name || !application.phone || !application.email || !application.address || !application.city || !application.zip) {
+      res.status(400).json({ ok: false, message: "Name, phone, email, and full address are required." });
       return;
     }
-    if (!application.drivingExperience || !application.startDate || !application.workHistory) {
-      res.status(400).json({ ok: false, message: "Fill out your driving experience, start date, and work history." });
+    if (!application.drivingExperience || !application.startDate || !application.employer || !application.jobTitle || !application.datesEmployed || !application.duties) {
+      res.status(400).json({ ok: false, message: "Fill out the position section and your most recent job." });
+      return;
+    }
+    if (field(parsed.fields, "certified") !== "Yes") {
+      res.status(400).json({ ok: false, message: "Check the box certifying this application is true." });
       return;
     }
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(application.email)) {

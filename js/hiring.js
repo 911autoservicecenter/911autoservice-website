@@ -30,8 +30,10 @@
       .then(function (res) {
         if (res.ok && res.data && res.data.ok) {
           form.reset();
-          document.getElementById("hire-position").value = "Wrecker driver";
-          document.getElementById("hire-state").value = "MI";
+          var position = document.getElementById("hire-position");
+          var state = document.getElementById("hire-state");
+          if (position) position.value = "Wrecker driver";
+          if (state) state.value = "MI";
           if (status) status.textContent = res.data.message || "Application sent.";
         } else if (status) {
           status.textContent = (res.data && res.data.message) || "Could not send the application.";

@@ -1808,6 +1808,227 @@ html.schedule-promo-dismissed .schedule-promo,
   text-decoration: none;
 }
 
-.hire-form {
-  max-width: 46rem;
+.job-app {
+  max-width: 52rem;
+  margin: 0 auto;
+  background: #f6f3ec;
+  color: #161616;
+  border: 1px solid #d5cfc3;
+  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.45);
+}
+
+.job-app__mast {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: flex-end;
+  padding: 1.35rem 1.5rem 1.1rem;
+  background: #fff;
+  border-bottom: 5px solid var(--red);
+}
+
+.job-app__kicker,
+.job-app__shop,
+.job-app__hint,
+.job-app__job-label {
+  margin: 0;
+}
+
+.job-app__kicker {
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--red);
+}
+
+.job-app__mast h1 {
+  margin: 0.15rem 0 0.35rem;
+  font-size: clamp(1.6rem, 3vw, 2.1rem);
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: #111;
+}
+
+.job-app__shop,
+.job-app__hint {
+  color: #5c564c;
+  font-size: 0.92rem;
+}
+
+.job-app__position {
+  min-width: 9rem;
+  padding: 0.55rem 0.75rem;
+  border: 1px solid #111;
+  text-align: right;
+}
+
+.job-app__position span {
+  display: block;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #5c564c;
+}
+
+.job-app__position strong {
+  font-size: 1.05rem;
+}
+
+.job-app__section {
+  padding: 1.15rem 1.5rem 0.35rem;
+}
+
+.job-app__section h2 {
+  margin: 0 0 0.85rem;
+  padding-bottom: 0.35rem;
+  border-bottom: 1px solid #d8d1c4;
+  font-size: 0.78rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--red-dark);
+}
+
+.job-app__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.9rem 1.25rem;
+}
+
+.job-app__wide {
+  grid-column: 1 / -1;
+}
+
+.job-app__split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.9rem;
+}
+
+.job-app label {
+  display: block;
+  margin-bottom: 0.2rem;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #3d3832;
+}
+
+.job-app input[type="text"],
+.job-app input[type="tel"],
+.job-app input[type="email"],
+.job-app textarea {
+  width: 100%;
+  border: none;
+  border-bottom: 1px solid #6f685e;
+  border-radius: 0;
+  background: transparent;
+  color: #111;
+  font: inherit;
+  font-size: 1rem;
+  padding: 0.3rem 0.1rem 0.4rem;
+}
+
+.job-app textarea {
+  resize: vertical;
+  min-height: 4.5rem;
+}
+
+.job-app input:focus-visible,
+.job-app textarea:focus-visible {
+  outline: none;
+  border-bottom-color: var(--red);
+}
+
+.job-app__choice {
+  margin: 0;
+  padding: 0;
+  border: none;
+}
+
+.job-app__choice legend {
+  padding: 0;
+  margin-bottom: 0.45rem;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.job-app__choice label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-right: 1.25rem;
+  text-transform: none;
+  letter-spacing: 0;
+  font-size: 1rem;
+}
+
+.job-app__choice input {
+  width: 1rem;
+  height: 1rem;
+  accent-color: var(--red);
+}
+
+.job-app__job {
+  margin: 0 0 1.1rem;
+  padding: 0.85rem 0.9rem 1rem;
+  background: #fff;
+  border: 1px solid #e2dcd1;
+}
+
+.job-app__job-label {
+  margin-bottom: 0.7rem;
+  font-weight: 800;
+}
+
+.job-app__file {
+  width: 100%;
+  margin-top: 0.25rem;
+  color: #111;
+}
+
+.job-app__sign {
+  padding-bottom: 1.4rem;
+}
+
+.job-app__cert {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  margin: 0.4rem 0 1rem;
+  text-transform: none;
+  letter-spacing: 0;
+  font-size: 0.98rem;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.job-app__cert input {
+  width: 1.05rem;
+  height: 1.05rem;
+  margin-top: 0.2rem;
+  accent-color: var(--red);
+}
+
+.job-app__status {
+  min-height: 1.3em;
+  margin: 0 0 0.8rem;
+  color: #3d3832;
+}
+
+@media (max-width: 700px) {
+  .job-app__mast,
+  .job-app__grid,
+  .job-app__split {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .job-app__position {
+    text-align: left;
+  }
 }
