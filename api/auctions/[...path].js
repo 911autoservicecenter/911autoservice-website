@@ -5,9 +5,9 @@
  * POST /api/auctions/vehicles
  * PUT/DELETE /api/auctions/vehicle/:id
  */
-const store = require("../lib/auctions-store");
-const http = require("../lib/for-sale-http");
-const photosLib = require("../lib/for-sale-photos");
+const store = require("../../lib/auctions-store");
+const http = require("../../lib/for-sale-http");
+const photosLib = require("../../lib/for-sale-photos");
 
 function sanitizeString(s, max) {
   if (s == null) return "";

@@ -1232,7 +1232,8 @@ html.schedule-promo-dismissed .schedule-promo,
 }
 
 .scheduler-field input,
-.scheduler-field textarea {
+.scheduler-field textarea,
+.scheduler-field select {
   width: 100%;
   padding: 0.55rem 0.65rem;
   border-radius: 6px;
@@ -1266,7 +1267,8 @@ html.schedule-promo-dismissed .schedule-promo,
 }
 
 .scheduler-field input:focus-visible,
-.scheduler-field textarea:focus-visible {
+.scheduler-field textarea:focus-visible,
+.scheduler-field select:focus-visible {
   outline: 2px solid var(--red);
   outline-offset: 2px;
 }
@@ -1763,4 +1765,49 @@ html.schedule-promo-dismissed .schedule-promo,
   margin: 0;
   color: var(--gray-500);
   font-size: 0.9rem;
+}
+
+.hire-banner {
+  background: var(--red);
+  color: var(--white);
+  border-bottom: 1px solid var(--red-dark);
+}
+
+.hire-banner__inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0.7rem 1.25rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.65rem 1rem;
+}
+
+.hire-banner p {
+  margin: 0;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.hire-banner a {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.4rem 0.85rem;
+  border-radius: 6px;
+  background: var(--black);
+  color: var(--white);
+  font-weight: 700;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.hire-banner a:hover,
+.hire-banner a:focus-visible {
+  background: var(--gray-900);
+  text-decoration: none;
+}
+
+.hire-form {
+  max-width: 40rem;
 }

@@ -4,7 +4,7 @@
  * POST /api/for-sale/auth/logout
  * GET  /api/for-sale/auth/session
  */
-const http = require("../../lib/for-sale-http");
+const http = require("../../../lib/for-sale-http");
 
 function isConfigured() {
   var hasUsers = process.env.FOR_SALE_ADMIN_USERS_JSON && process.env.FOR_SALE_ADMIN_USERS_JSON.trim();

@@ -2,8 +2,8 @@
  * POST multipart/form-data (auth) with one or more `photos` files.
  */
 const formidable = require("formidable");
-const http = require("../lib/for-sale-http");
-const photosLib = require("../lib/for-sale-photos");
+const http = require("../../lib/for-sale-http");
+const photosLib = require("../../lib/for-sale-photos");
 
 function parseForm(req) {
   var form = formidable({
