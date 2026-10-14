@@ -61,17 +61,19 @@ async function sendViaFormSubmit(application, file, pdfBytes, pdfName, to) {
       application.phone +
       ". The full application is attached as a PDF."
   );
-  form.append("attachment", new Blob([pdfBytes], { type: "application/pdf" }), pdfName);
+  form.append("attachment", new File([pdfBytes], pdfName, { type: "application/pdf" }));
   if (file && file.filepath) {
     var bytes = fs.readFileSync(file.filepath);
     form.append(
       "attachment",
-      new Blob([bytes], { type: file.mimetype || "application/octet-stream" }),
-      file.originalFilename || "resume"
+      new File([bytes], file.originalFilename || "resume", {
+        type: file.mimetype || "application/octet-stream",
+      })
     );
   }
-  var response = await fetch("https://formsubmit.co/ajax/" + encodeURIComponent(to), {
+  var response = await fetch("https://formsubmit.co/" + encodeURIComponent(to), {
     method: "POST",
+    redirect: "manual",
     headers: {
       Accept: "application/json",
       Referer: "https://911autoservice.org/hiring.html",
@@ -79,16 +81,28 @@ async function sendViaFormSubmit(application, file, pdfBytes, pdfName, to) {
     },
     body: form,
   });
-  var data = {};
+  var text = await response.text();
+  var data = null;
   try {
-    data = await response.json();
+    data = JSON.parse(text);
   } catch (e) {
-    data = {};
+    data = null;
   }
-  if (!response.ok || String(data.success) !== "true") {
-    var err = new Error(applicantMailError(data && data.message));
+  if (data && String(data.success) === "false") {
+    var err = new Error(applicantMailError(data.message));
     err.code = "MAIL_FAILED";
     throw err;
+  }
+  if (data && String(data.success) === "true") return;
+  if (/activ/i.test(text)) {
+    var activation = new Error(applicantMailError(text));
+    activation.code = "MAIL_FAILED";
+    throw activation;
+  }
+  if (response.status < 200 || response.status >= 400) {
+    var failed = new Error("Could not email the application.");
+    failed.code = "MAIL_FAILED";
+    throw failed;
   }
 }
 
