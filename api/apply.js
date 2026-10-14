@@ -1,13 +1,11 @@
 /**
  * POST multipart — 911 Auto Service Center job application.
- * Emails the form plus resume to HIRING_NOTIFY_EMAIL.
- *
- * Required env:
- *   HIRING_NOTIFY_EMAIL
- *   SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS
+ * Emails a PDF of the application to HIRING_NOTIFY_EMAIL (default jimmy5489@gmail.com).
+ * Uses SMTP when SMTP_HOST, SMTP_USER, and SMTP_PASS are set. Otherwise FormSubmit.
  */
 const fs = require("fs");
 const formidable = require("formidable");
+const pdfLib = require("../lib/application-pdf");
 
 function sanitize(value, max) {
   var text = String(value == null ? "" : value).trim();
@@ -22,7 +20,8 @@ function field(fields, name) {
 }
 
 function parseForm(req) {
-  var form = formidable({
+  var factory = typeof formidable === "function" ? formidable : formidable.formidable || formidable.default;
+  var form = factory({
     multiples: false,
     maxFiles: 1,
     maxFileSize: 4 * 1024 * 1024,
@@ -40,74 +39,29 @@ function notifyAddress() {
   return String(process.env.HIRING_NOTIFY_EMAIL || "jimmy5489@gmail.com").trim();
 }
 
-function jobBlock(label, job) {
-  return [
-    label,
-    "Company: " + job.company,
-    "Phone: " + job.phone,
-    "Title: " + job.title,
-    "Supervisor: " + job.supervisor,
-    "Dates: " + job.dates,
-    "Reason for leaving: " + job.reason,
-    "Duties: " + job.duties,
-  ].join("\n");
+function applicantMailError(raw) {
+  var text = String(raw || "");
+  if (/activ/i.test(text)) {
+    return "The application could not be emailed yet. Please call the shop at 517-279-2010.";
+  }
+  return "Could not email the application.";
 }
 
-function applicationText(application, file) {
-  return [
-    "Employment application — 911 Auto Service Center",
-    "Position: Wrecker driver",
-    "",
-    "PERSONAL INFORMATION",
-    "Name: " + application.name,
-    "Phone: " + application.phone,
-    "Email: " + application.email,
-    "Address: " + application.address + ", " + application.city + ", " + application.state + " " + application.zip,
-    "18 or older: " + application.over18,
-    "Authorized to work in the US: " + application.authorized,
-    "",
-    "JOB",
-    "Date available: " + application.startDate,
-    "Years of driving experience: " + application.drivingExperience,
-    "Driver's license type: " + application.licenseType,
-    "Chauffeur's license: " + application.chauffeurLicense,
-    "Towing experience: " + (application.towingExperience || "(none listed)"),
-    "",
-    "PREVIOUS EMPLOYMENT",
-    jobBlock("Employer 1", application.job1),
-    "",
-    jobBlock("Employer 2", application.job2),
-    "",
-    jobBlock("Employer 3", application.job3),
-    "",
-    "EDUCATION",
-    "High school: " + application.highSchool,
-    "Graduated: " + application.hsGrad,
-    "College or trade school: " + (application.college || "(none)"),
-    "Degree or certificate: " + (application.degree || "(none)"),
-    "Other training or licenses: " + (application.training || "(none)"),
-    "",
-    "REFERENCES",
-    "1. " + application.ref1Name + " — " + application.ref1Phone + " — " + application.ref1Relation,
-    "2. " + application.ref2Name + " — " + application.ref2Phone + " — " + application.ref2Relation,
-    "3. " + application.ref3Name + " — " + application.ref3Phone + " — " + application.ref3Relation,
-    "",
-    "Note:",
-    application.note || "(none)",
-    "",
-    file && file.filepath ? "Resume attached." : "No resume attached.",
-  ].join("\n");
-}
-
-async function sendViaFormSubmit(application, file, to) {
+async function sendViaFormSubmit(application, file, pdfBytes, pdfName, to) {
   var form = new FormData();
   form.append("name", application.name);
   form.append("email", application.email);
   form.append("_replyto", application.email);
-  form.append("_subject", "911 Auto application — " + application.name + " — Wrecker driver");
+  form.append("_subject", "911 Auto application - " + application.name + " - Wrecker driver");
   form.append("_captcha", "false");
-  form.append("_template", "table");
-  form.append("message", applicationText(application, file));
+  form.append(
+    "message",
+    application.name +
+      " applied for wrecker driver. Phone " +
+      application.phone +
+      ". The full application is attached as a PDF."
+  );
+  form.append("attachment", new Blob([pdfBytes], { type: "application/pdf" }), pdfName);
   if (file && file.filepath) {
     var bytes = fs.readFileSync(file.filepath);
     form.append(
@@ -118,7 +72,11 @@ async function sendViaFormSubmit(application, file, to) {
   }
   var response = await fetch("https://formsubmit.co/ajax/" + encodeURIComponent(to), {
     method: "POST",
-    headers: { Accept: "application/json" },
+    headers: {
+      Accept: "application/json",
+      Referer: "https://911autoservice.org/hiring.html",
+      Origin: "https://911autoservice.org",
+    },
     body: form,
   });
   var data = {};
@@ -127,8 +85,8 @@ async function sendViaFormSubmit(application, file, to) {
   } catch (e) {
     data = {};
   }
-  if (!response.ok || String(data.success) === "false") {
-    var err = new Error((data && data.message) || "Could not email the application.");
+  if (!response.ok || String(data.success) !== "true") {
+    var err = new Error(applicantMailError(data && data.message));
     err.code = "MAIL_FAILED";
     throw err;
   }
@@ -136,12 +94,14 @@ async function sendViaFormSubmit(application, file, to) {
 
 async function sendMail(application, file) {
   var to = notifyAddress();
+  var pdfName = pdfLib.pdfFileName(application.name);
+  var pdfBytes = await pdfLib.buildApplicationPdf(application);
   var host = String(process.env.SMTP_HOST || "").trim();
   var user = String(process.env.SMTP_USER || "").trim();
   var pass = process.env.SMTP_PASS != null ? String(process.env.SMTP_PASS) : "";
   var port = parseInt(process.env.SMTP_PORT || "587", 10);
   if (!host || !user || !pass) {
-    await sendViaFormSubmit(application, file, to);
+    await sendViaFormSubmit(application, file, pdfBytes, pdfName, to);
     return;
   }
   var nodemailer = require("nodemailer");
@@ -151,22 +111,30 @@ async function sendMail(application, file) {
     secure: port === 465,
     auth: { user: user, pass: pass },
   });
-  var body = applicationText(application, file);
   var mail = {
     from: user,
     to: to,
     replyTo: application.email,
-    subject: "911 Auto application — " + application.name + " — " + application.position,
-    text: body,
+    subject: "911 Auto application - " + application.name + " - " + application.position,
+    text:
+      application.name +
+      " applied for wrecker driver. Phone " +
+      application.phone +
+      ". The full application is attached as a PDF.",
+    attachments: [
+      {
+        filename: pdfName,
+        content: pdfBytes,
+        contentType: "application/pdf",
+      },
+    ],
   };
   if (file && file.filepath) {
-    mail.attachments = [
-      {
-        filename: file.originalFilename || "resume",
-        content: fs.readFileSync(file.filepath),
-        contentType: file.mimetype || "application/octet-stream",
-      },
-    ];
+    mail.attachments.push({
+      filename: file.originalFilename || "resume",
+      content: fs.readFileSync(file.filepath),
+      contentType: file.mimetype || "application/octet-stream",
+    });
   }
   await transport.sendMail(mail);
 }
@@ -288,7 +256,8 @@ module.exports = async function handler(req, res) {
     }
     var resume = parsed.files.resume;
     if (Array.isArray(resume)) resume = resume[0];
-    if (resume && !resume.filepath) resume = null;
+    if (resume && (!resume.filepath || !resume.size)) resume = null;
+    application.resumeAttached = Boolean(resume);
     await sendMail(application, resume);
     res.status(200).json({
       ok: true,
@@ -306,6 +275,7 @@ module.exports = async function handler(req, res) {
       res.status(413).json({ ok: false, message: "Resume must be 4MB or smaller." });
       return;
     }
+    console.error("apply failed", e);
     res.status(500).json({ ok: false, message: "Could not send the application." });
   }
 };

@@ -6,7 +6,8 @@ const http = require("../../lib/for-sale-http");
 const photosLib = require("../../lib/for-sale-photos");
 
 function parseForm(req) {
-  var form = formidable({
+  var factory = typeof formidable === "function" ? formidable : formidable.formidable || formidable.default;
+  var form = factory({
     multiples: true,
     maxFiles: 12,
     maxFileSize: 10 * 1024 * 1024,
