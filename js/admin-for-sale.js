@@ -162,13 +162,13 @@
       });
   }
 
-  function showLogin() {
-    if (loginSection) loginSection.hidden = false;
-    if (adminSection) adminSection.hidden = true;
-    if (sessionMeta) sessionMeta.hidden = true;
+  function goToStaffLogin() {
+    window.location.replace("staff.html?next=" + encodeURIComponent("admin-for-sale.html"));
   }
 
   function showAdmin() {
+    var gate = document.getElementById("admin-gate");
+    if (gate) gate.hidden = true;
     if (loginSection) loginSection.hidden = true;
     if (adminSection) adminSection.hidden = false;
     api("/api/for-sale/auth/session", { method: "GET" }).then(function (res) {
@@ -274,53 +274,23 @@
   }
 
   function checkSession() {
-    api("/api/for-sale/auth/session", { method: "GET" }).then(function (res) {
+    api("/api/staff/session", { method: "GET" }).then(function (res) {
       setSessionDisplay(res);
       if (res.data && res.data.loggedIn) {
-        if (loginSection) loginSection.hidden = true;
+        var gate = document.getElementById("admin-gate");
+        if (gate) gate.hidden = true;
         if (adminSection) adminSection.hidden = false;
         refreshTable();
       } else {
-        showLogin();
+        goToStaffLogin();
       }
-    });
-  }
-
-  if (loginForm) {
-    loginForm.addEventListener("submit", function (e) {
-      e.preventDefault();
-      if (loginError) {
-        loginError.textContent = "";
-        loginError.hidden = true;
-      }
-      var pw = document.getElementById("admin-password");
-      var em = document.getElementById("admin-email");
-      var val = pw ? pw.value : "";
-      api("/api/for-sale/auth/login", {
-        method: "POST",
-        body: {
-          email: em ? em.value.trim() : "",
-          password: val,
-        },
-      }).then(function (res) {
-        if (res.data && res.data.ok) {
-          if (pw) pw.value = "";
-          showAdmin();
-        } else {
-          if (loginError) {
-            loginError.textContent = (res.data && res.data.message) || "Login failed.";
-            loginError.hidden = false;
-          }
-        }
-      });
     });
   }
 
   if (logoutBtn) {
     logoutBtn.addEventListener("click", function () {
-      api("/api/for-sale/auth/logout", { method: "POST" }).then(function () {
-        resetForm();
-        showLogin();
+      api("/api/staff/logout", { method: "POST" }).then(function () {
+        goToStaffLogin();
       });
     });
   }

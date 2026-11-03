@@ -27,9 +27,12 @@
           <a href="services.html">What we work on</a>
           <a href="key-services.html">Key services</a>
           <a href="towing.html">Towing</a>
-          <a href="for-sale.html">For sale</a>
+          <a href="staff.html">Staff</a>
+          <a href="shop.html">Shop</a>
+              <a href="for-sale.html">For sale</a>
           <a href="upcoming-auctions.html">Auctions</a>
           <a href="admin-auctions.html">Auctions admin</a>
+          <a href="admin-shop.html">Shop admin</a>
         </nav>
         <div class="header-cta">
           <a class="btn btn-ghost" href="for-sale.html">View public page</a>
@@ -41,35 +44,12 @@
       <header class="page-hero">
         <div class="page-hero-inner">
           <h1>Manage for-sale listings</h1>
-          <p class="lead">Sign in to add, edit, or remove items. Changes appear on the public page right away.</p>
+          <p class="lead">Add, edit, or remove items. Changes appear on the public page right away.</p>
         </div>
       </header>
 
-      <section class="section" id="admin-login">
-        <h2>Sign in</h2>
-        <p class="section-intro">
-          Only <strong>approved</strong> emails can access this page. Your owner configures who is approved in Vercel
-          (allowlist or per-user accounts). If you use the shared shop password, you must still sign in with an email
-          on the approved list.
-        </p>
-        <form id="admin-login-form" class="admin-login-form">
-          <div class="scheduler-field scheduler-field--wide" style="max-width: 28rem">
-            <label for="admin-email">Work email</label>
-            <input
-              type="email"
-              id="admin-email"
-              name="email"
-              autocomplete="username"
-              placeholder="you@yourshop.com"
-            />
-          </div>
-          <div class="scheduler-field" style="max-width: 24rem">
-            <label for="admin-password">Password</label>
-            <input type="password" id="admin-password" name="password" required autocomplete="current-password" />
-          </div>
-          <p id="admin-login-error" class="booking-cal-error" hidden role="alert"></p>
-          <button type="submit" class="btn btn-primary">Sign in</button>
-        </form>
+      <section class="section" id="admin-gate">
+        <p class="sale-loading">Checking your sign-in…</p>
       </section>
 
       <section class="section admin-panel" id="admin-panel" hidden>
@@ -79,6 +59,7 @@
         <div class="admin-panel__head">
           <h2>Your listings</h2>
           <div class="admin-panel__actions">
+            <a class="btn btn-ghost" href="staff.html">Staff home</a>
             <button type="button" class="btn btn-ghost" id="btn-new-listing">New listing</button>
             <button type="button" class="btn btn-ghost admin-btn-danger" id="admin-logout">Sign out</button>
           </div>

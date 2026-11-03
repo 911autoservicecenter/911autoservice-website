@@ -7,6 +7,7 @@
     "formidable": "^3.5.4",
     "luxon": "^3.5.0",
     "nodemailer": "^7.0.6",
-    "pdf-lib": "^1.17.1"
+    "pdf-lib": "^1.17.1",
+    "stripe": "^23.0.0"
   }
 }

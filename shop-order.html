@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Order | 911 Auto Service Center</title>
+    <meta name="theme-color" content="#0a0a0a" />
+    <link rel="icon" href="images/logo.png" type="image/png" />
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <header class="site-header">
+      <div class="header-inner">
+        <a class="brand" href="index.html">
+          <img src="images/logo.png" width="112" height="112" alt="" decoding="async" />
+          <span class="brand-text">
+            <span class="brand-name">911 Auto Service Center</span>
+            <span class="brand-tag">Coldwater, MI</span>
+          </span>
+        </a>
+        <nav class="site-nav" aria-label="Main">
+          <a href="index.html">Home</a>
+          <a href="shop.html">Shop</a>
+        </nav>
+        <div class="header-cta">
+          <a class="btn btn-ghost" href="tel:+15172792010">Call shop</a>
+        </div>
+      </div>
+    </header>
+    <main id="main">
+      <header class="page-hero">
+        <div class="page-hero-inner">
+          <h1>Order</h1>
+          <p class="lead" id="order-lead">Checking this order…</p>
+        </div>
+      </header>
+      <section class="section">
+        <div id="order-root"></div>
+        <p><a class="text-link" href="shop.html">Back to the shop</a></p>
+      </section>
+    </main>
+    <footer class="site-footer">
+      <div class="footer-inner">
+        <p class="footer-legal">&copy; <span id="year"></span> 911 Auto Service Center. All rights reserved.</p>
+      </div>
+    </footer>
+    <script>
+      document.getElementById("year").textContent = new Date().getFullYear();
+    </script>
+    <script src="js/shop-cart.js"></script>
+    <script src="js/shop-order.js"></script>
+  </body>
+</html>

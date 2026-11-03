@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Manage shop | 911 Auto Service Center</title>
+    <meta name="theme-color" content="#0a0a0a" />
+    <link rel="icon" href="images/logo.png" type="image/png" />
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <header class="site-header">
+      <div class="header-inner">
+        <a class="brand" href="index.html">
+          <img src="images/logo.png" width="112" height="112" alt="" decoding="async" />
+          <span class="brand-text">
+            <span class="brand-name">911 Auto Service Center</span>
+            <span class="brand-tag">Staff — shop</span>
+          </span>
+        </a>
+        <nav class="site-nav" aria-label="Main">
+          <a href="staff.html">Staff</a>
+          <a href="shop.html">Shop</a>
+          <a href="admin-for-sale.html">For-sale admin</a>
+          <a href="admin-auctions.html">Auctions admin</a>
+        </nav>
+        <div class="header-cta">
+          <a class="btn btn-ghost" href="shop.html">View public page</a>
+        </div>
+      </div>
+    </header>
+    <main id="main">
+      <header class="page-hero">
+        <div class="page-hero-inner">
+          <h1>Manage the shop</h1>
+          <p class="lead">Add a product when you are ready to sell it. The public shop stays empty until one is listed.</p>
+        </div>
+      </header>
+      <section class="section" id="admin-gate">
+        <p class="sale-loading">Checking your sign-in…</p>
+      </section>
+      <section class="section admin-panel" id="admin-panel" hidden>
+        <p class="admin-session-meta" id="admin-session-meta" hidden>
+          Signed in as <strong id="admin-session-email"></strong>
+        </p>
+        <p id="shop-setup" class="shop-banner"></p>
+
+        <h2>Pickup and shipping</h2>
+        <form id="settings-form" class="admin-listing-form">
+          <div class="scheduler-form__grid">
+            <div class="scheduler-field scheduler-field--wide">
+              <label class="admin-checkbox"><input type="checkbox" id="set-pickup" checked /> Pickup at the shop</label>
+            </div>
+            <div class="scheduler-field scheduler-field--wide">
+              <label class="admin-checkbox"><input type="checkbox" id="set-shipping" /> Offer shipping</label>
+            </div>
+            <div class="scheduler-field">
+              <label for="set-ship-price">Flat shipping price</label>
+              <input type="text" id="set-ship-price" inputmode="decimal" placeholder="0.00" />
+            </div>
+          </div>
+          <p id="settings-status" class="scheduler-form__status" role="status"></p>
+          <button type="submit" class="btn btn-primary">Save pickup and shipping</button>
+        </form>
+
+        <div class="admin-panel__head">
+          <h2>Products</h2>
+          <div class="admin-panel__actions">
+            <a class="btn btn-ghost" href="staff.html">Staff home</a>
+            <button type="button" class="btn btn-ghost" id="btn-new-product">New product</button>
+            <button type="button" class="btn btn-ghost admin-btn-danger" id="admin-logout">Sign out</button>
+          </div>
+        </div>
+        <div class="admin-table-wrap">
+          <table class="admin-table" id="product-table">
+            <thead>
+              <tr>
+                <th scope="col">Title</th>
+                <th scope="col">Price</th>
+                <th scope="col">On hand</th>
+                <th scope="col">Listed</th>
+                <th scope="col"></th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+
+        <h2 id="form-mode-label" class="admin-form-heading">Add a product</h2>
+        <form id="product-form" class="admin-listing-form">
+          <div class="scheduler-form__grid">
+            <div class="scheduler-field scheduler-field--wide">
+              <label for="fld-title">Title</label>
+              <input type="text" id="fld-title" required maxlength="200" />
+            </div>
+            <div class="scheduler-field">
+              <label for="fld-price">Price</label>
+              <input type="text" id="fld-price" required inputmode="decimal" placeholder="129.00" />
+            </div>
+            <div class="scheduler-field">
+              <label for="fld-qty">Quantity on hand</label>
+              <input type="number" id="fld-qty" required min="0" max="9999" step="1" value="0" />
+            </div>
+            <div class="scheduler-field">
+              <label for="fld-sku">SKU</label>
+              <input type="text" id="fld-sku" maxlength="80" />
+            </div>
+            <div class="scheduler-field">
+              <label for="fld-fitment">Fits</label>
+              <input type="text" id="fld-fitment" maxlength="500" />
+            </div>
+            <div class="scheduler-field scheduler-field--wide">
+              <label for="fld-lede">Short description</label>
+              <textarea id="fld-lede" rows="3" maxlength="2000"></textarea>
+            </div>
+            <div class="scheduler-field scheduler-field--wide">
+              <label for="fld-details">Details</label>
+              <textarea id="fld-details" rows="4" maxlength="4000"></textarea>
+            </div>
+            <div class="scheduler-field scheduler-field--wide">
+              <label for="fld-image-alt">Photo description</label>
+              <input type="text" id="fld-image-alt" maxlength="300" />
+            </div>
+            <div class="scheduler-field scheduler-field--wide">
+              <label for="fld-photos-upload">Photos</label>
+              <div class="admin-photo-upload">
+                <input type="file" id="fld-photos-upload" accept="image/*" multiple />
+                <button type="button" class="btn btn-ghost btn-sm" id="btn-upload-photos">Upload selected photos</button>
+              </div>
+              <p id="admin-upload-status" class="scheduler-form__status" role="status"></p>
+              <div id="admin-photo-list" class="admin-photo-list" aria-live="polite"></div>
+            </div>
+            <div class="scheduler-field scheduler-field--wide">
+              <label class="admin-checkbox"><input type="checkbox" id="fld-listed" checked /> Listed on the shop</label>
+            </div>
+          </div>
+          <p id="product-status" class="scheduler-form__status" role="status"></p>
+          <button type="submit" class="btn btn-primary">Save product</button>
+        </form>
+
+        <h2>Orders</h2>
+        <div class="admin-table-wrap">
+          <table class="admin-table" id="order-table">
+            <thead>
+              <tr>
+                <th scope="col">When</th>
+                <th scope="col">Customer</th>
+                <th scope="col">Items</th>
+                <th scope="col">Total</th>
+                <th scope="col">How</th>
+                <th scope="col">Status</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+    <footer class="site-footer">
+      <div class="footer-inner">
+        <p class="footer-legal">&copy; <span id="year"></span> 911 Auto Service Center. Staff page — not public.</p>
+      </div>
+    </footer>
+    <script>
+      document.getElementById("year").textContent = new Date().getFullYear();
+    </script>
+    <script src="js/admin-shop.js"></script>
+  </body>
+</html>

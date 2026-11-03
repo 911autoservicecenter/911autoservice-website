@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Staff | 911 Auto Service Center</title>
+    <meta name="theme-color" content="#0a0a0a" />
+    <link rel="icon" href="images/logo.png" type="image/png" />
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+
+    <header class="site-header">
+      <div class="header-inner">
+        <a class="brand" href="index.html">
+          <img src="images/logo.png" width="112" height="112" alt="" decoding="async" />
+          <span class="brand-text">
+            <span class="brand-name">911 Auto Service Center</span>
+            <span class="brand-tag">Staff</span>
+          </span>
+        </a>
+        <nav class="site-nav" aria-label="Main">
+          <a href="index.html">Home</a>
+          <a href="shop.html">Shop</a>
+          <a href="for-sale.html">For sale</a>
+          <a href="upcoming-auctions.html">Auctions</a>
+        </nav>
+        <div class="header-cta">
+          <a class="btn btn-ghost" href="index.html">Public site</a>
+        </div>
+      </div>
+    </header>
+
+    <main id="main">
+      <header class="page-hero">
+        <div class="page-hero-inner">
+          <h1>Staff</h1>
+          <p class="lead" id="staff-lead">Sign in, or create an admin login with an invite code from the owner.</p>
+        </div>
+      </header>
+
+      <section class="section" id="staff-auth">
+        <div class="staff-grid">
+          <form id="staff-login-form" class="staff-card">
+            <h2>Sign in</h2>
+            <div class="scheduler-field">
+              <label for="login-email">Work email</label>
+              <input type="email" id="login-email" autocomplete="username" required />
+            </div>
+            <div class="scheduler-field">
+              <label for="login-password">Password</label>
+              <input type="password" id="login-password" autocomplete="current-password" required />
+            </div>
+            <p id="login-error" class="booking-cal-error" hidden role="alert"></p>
+            <button type="submit" class="btn btn-primary">Sign in</button>
+          </form>
+
+          <form id="staff-register-form" class="staff-card">
+            <h2>Create a login</h2>
+            <p class="section-intro">
+              This works once, with an invite code from the owner. The new login can manage the shop, for-sale
+              listings, and auctions.
+            </p>
+            <div class="scheduler-field">
+              <label for="reg-email">Work email</label>
+              <input type="email" id="reg-email" autocomplete="username" required />
+            </div>
+            <div class="scheduler-field">
+              <label for="reg-password">Password</label>
+              <input type="password" id="reg-password" autocomplete="new-password" required minlength="10" />
+            </div>
+            <div class="scheduler-field">
+              <label for="reg-confirm">Confirm password</label>
+              <input type="password" id="reg-confirm" autocomplete="new-password" required minlength="10" />
+            </div>
+            <div class="scheduler-field">
+              <label for="reg-code">Invite code</label>
+              <input type="text" id="reg-code" autocomplete="off" required spellcheck="false" placeholder="XXXX-XXXX-XXXX" />
+            </div>
+            <p class="admin-photo-hint">At least 10 characters.</p>
+            <p id="reg-error" class="booking-cal-error" hidden role="alert"></p>
+            <button type="submit" class="btn btn-primary">Create login</button>
+          </form>
+        </div>
+      </section>
+
+      <section class="section" id="staff-home" hidden>
+        <p class="admin-session-meta" id="staff-session-meta">
+          Signed in as <strong id="staff-session-email"></strong>
+        </p>
+        <div class="admin-panel__head">
+          <h2>Tools</h2>
+          <div class="admin-panel__actions">
+            <button type="button" class="btn btn-ghost admin-btn-danger" id="staff-logout">Sign out</button>
+          </div>
+        </div>
+        <div class="staff-tools">
+          <article class="card">
+            <h3>Shop</h3>
+            <p>Add off-road and aftermarket parts, set pickup and shipping, and see paid orders.</p>
+            <a class="text-link" href="admin-shop.html">Manage the shop</a>
+          </article>
+          <article class="card">
+            <h3>For sale</h3>
+            <p>Tires, batteries, and other items people call about. Cash and pickup stay on that page.</p>
+            <a class="text-link" href="admin-for-sale.html">Manage listings</a>
+          </article>
+          <article class="card">
+            <h3>Auctions</h3>
+            <p>Set a date and add vehicles. The public page stays empty until you publish one.</p>
+            <a class="text-link" href="admin-auctions.html">Manage auctions</a>
+          </article>
+        </div>
+      </section>
+
+      <section class="section" id="staff-invites" hidden>
+        <div class="admin-panel__head">
+          <h2>Invite codes</h2>
+          <div class="admin-panel__actions">
+            <button type="button" class="btn btn-primary" id="btn-new-invite">New invite code</button>
+          </div>
+        </div>
+        <p class="section-intro">
+          Only the owner can create these. Each code works once, expires in 14 days, and creates an admin login.
+        </p>
+        <p id="invite-status" class="scheduler-form__status" role="status"></p>
+        <p id="invite-fresh" class="staff-fresh" hidden>
+          New code: <strong class="staff-code" id="invite-fresh-code"></strong>
+        </p>
+        <div class="admin-table-wrap">
+          <table class="admin-table" id="invite-table">
+            <thead>
+              <tr>
+                <th scope="col">Code</th>
+                <th scope="col">Status</th>
+                <th scope="col">Expires</th>
+                <th scope="col">Used by</th>
+                <th scope="col"></th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="footer-inner">
+        <p class="footer-legal">
+          &copy; <span id="year"></span> 911 Auto Service Center. Staff page — not public.
+        </p>
+      </div>
+    </footer>
+    <script>
+      document.getElementById("year").textContent = new Date().getFullYear();
+    </script>
+    <script src="js/staff.js"></script>
+  </body>
+</html>

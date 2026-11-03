@@ -5,6 +5,7 @@
  * GET  /api/for-sale/auth/session
  */
 const http = require("../../../lib/for-sale-http");
+const staff = require("../../../lib/staff-auth");
 
 function isConfigured() {
   var hasUsers = process.env.FOR_SALE_ADMIN_USERS_JSON && process.env.FOR_SALE_ADMIN_USERS_JSON.trim();
@@ -42,13 +43,13 @@ async function handleLogin(req, res) {
     var body = await http.readJsonBody(req);
     var email = body && body.email != null ? String(body.email) : "";
     var pw = body && body.password != null ? String(body.password) : "";
-    var result = http.checkAdminLogin(email, pw);
+    var result = await staff.authenticate(email, pw);
     if (!result.ok) {
       res.status(401).json({ ok: false, message: "Invalid email or password." });
       return;
     }
-    http.setSessionCookie(res, { email: result.email });
-    res.status(200).json({ ok: true, message: "Signed in." });
+    http.setSessionCookie(res, { email: result.email, owner: result.owner });
+    res.status(200).json({ ok: true, message: "Signed in.", owner: !!result.owner });
   } catch (e) {
     res.status(500).json({ ok: false, message: "Could not sign in." });
   }
@@ -74,6 +75,7 @@ function handleSession(req, res) {
     ok: true,
     loggedIn: ok,
     email: ok && p.email ? String(p.email) : null,
+    owner: ok && http.sessionIsOwner(p),
   });
 }
 
