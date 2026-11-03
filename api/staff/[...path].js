@@ -10,12 +10,10 @@
  */
 const http = require("../../lib/for-sale-http");
 const staff = require("../../lib/staff-auth");
+const apiPath = require("../../lib/api-path");
 
 function pathParts(req) {
-  var p = req.query && req.query.path;
-  if (Array.isArray(p)) return p.map(String);
-  if (p == null || p === "") return [];
-  return [String(p)];
+  return apiPath.segmentsAfter(req, "staff");
 }
 
 function isConfigured() {

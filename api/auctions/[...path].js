@@ -8,6 +8,7 @@
 const store = require("../../lib/auctions-store");
 const http = require("../../lib/for-sale-http");
 const photosLib = require("../../lib/for-sale-photos");
+const apiPath = require("../../lib/api-path");
 
 function sanitizeString(s, max) {
   if (s == null) return "";
@@ -17,10 +18,7 @@ function sanitizeString(s, max) {
 }
 
 function pathParts(req) {
-  var p = req.query && req.query.path;
-  if (Array.isArray(p)) return p.map(String);
-  if (p == null || p === "") return [];
-  return [String(p)];
+  return apiPath.segmentsAfter(req, "auctions");
 }
 
 function isUpcomingPublic(a) {

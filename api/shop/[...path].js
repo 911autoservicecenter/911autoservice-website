@@ -15,12 +15,10 @@ const http = require("../../lib/for-sale-http");
 const store = require("../../lib/shop-store");
 const money = require("../../lib/shop-money");
 const mail = require("../../lib/shop-mail");
+const apiPath = require("../../lib/api-path");
 
 function pathParts(req) {
-  var p = req.query && req.query.path;
-  if (Array.isArray(p)) return p.map(String);
-  if (p == null || p === "") return [];
-  return [String(p)];
+  return apiPath.segmentsAfter(req, "shop");
 }
 
 function kvMessage() {
