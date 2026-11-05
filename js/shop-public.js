@@ -34,7 +34,7 @@
 
   function card(item) {
     var photos = Array.isArray(item.photos) ? item.photos.filter(function (p) { return p && p.url; }) : [];
-    var img = photos.length ? photos[0].url : item.imageUrl || "images/logo.png";
+    var img = photos.length ? photos[0].url : item.imageUrl || "images/logo.png?v=2";
     var alt = (photos[0] && photos[0].alt) || item.imageAlt || item.title || "Product photo";
     var out = !item.qtyOnHand;
     var meta = [item.categoryLabel, item.brandLabel].filter(Boolean).join(" · ");

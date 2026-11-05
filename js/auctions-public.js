@@ -35,7 +35,7 @@
       ? String(photos[0].url).trim()
       : item.imageUrl && String(item.imageUrl).trim()
         ? item.imageUrl
-        : "images/logo.png";
+        : "images/logo.png?v=2";
     var title =
       [item.year, item.make, item.model].filter(Boolean).join(" ") || "Vehicle";
     var alt =

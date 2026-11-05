@@ -142,7 +142,7 @@
         return;
       }
       subtotal += product.priceCents * qty;
-      var img = product.photos && product.photos[0] && product.photos[0].url ? product.photos[0].url : product.imageUrl || "images/logo.png";
+      var img = product.photos && product.photos[0] && product.photos[0].url ? product.photos[0].url : product.imageUrl || "images/logo.png?v=2";
       html +=
         '<article class="cart-line"><img src="' +
         esc(img) +

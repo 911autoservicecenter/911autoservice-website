@@ -46,7 +46,7 @@
       ? String(photos[0].url).trim()
       : item.imageUrl && String(item.imageUrl).trim()
         ? item.imageUrl
-        : "images/logo.png";
+        : "images/logo.png?v=2";
     var alt = photos.length && photos[0].alt && String(photos[0].alt).trim()
       ? photos[0].alt
       : item.imageAlt && String(item.imageAlt).trim()
