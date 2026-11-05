@@ -189,7 +189,7 @@
         var url = shareBtn.getAttribute("data-share-url") || "";
         var title = shareBtn.getAttribute("data-share-title") || "";
         if (!url) return;
-        var text = (title ? title + " — " : "") + "911 Auto Service Center, Coldwater MI";
+        var text = (title ? title + " — " : "") + "911 Towing & Repair, Coldwater MI";
         if (navigator.share) {
           navigator
             .share({ title: title || "For sale", text: text, url: url })

@@ -1,5 +1,5 @@
 /**
- * POST multipart — 911 Auto Service Center job application.
+ * POST multipart — 911 Towing & Repair job application.
  * Emails a PDF of the application to HIRING_NOTIFY_EMAIL (default jimmy5489@gmail.com).
  * Uses SMTP when SMTP_HOST, SMTP_USER, and SMTP_PASS are set. Otherwise FormSubmit.
  */
@@ -275,7 +275,7 @@ module.exports = async function handler(req, res) {
     await sendMail(application, resume);
     res.status(200).json({
       ok: true,
-      message: "Application sent. 911 Auto Service Center will review it.",
+      message: "Application sent. 911 Towing & Repair will review it.",
     });
   } catch (e) {
     if (e && e.code === "MAIL_FAILED") {
