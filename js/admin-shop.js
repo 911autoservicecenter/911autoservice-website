@@ -92,6 +92,8 @@
     document.getElementById("fld-details").value = item.details || "";
     document.getElementById("fld-image-alt").value = item.imageAlt || "";
     document.getElementById("fld-listed").checked = item.listed !== false;
+    document.getElementById("fld-install").checked = item.canInstall !== false;
+    document.getElementById("fld-ship").checked = item.canShip === true;
     currentPhotos = Array.isArray(item.photos) ? item.photos.map(function (p) { return { url: p.url, alt: p.alt || "" }; }) : [];
     renderPhotos();
     var heading = document.getElementById("form-mode-label");
@@ -177,7 +179,7 @@
           "</td><td>" +
           money(order.totalCents) +
           "</td><td>" +
-          esc(order.fulfillment === "ship" ? "Ship" : "Pickup") +
+          esc(order.fulfillment === "ship" ? "Ship" : "Install") +
           "</td><td>" +
           esc(order.status || "") +
           "</td>";
@@ -224,6 +226,8 @@
         details: document.getElementById("fld-details").value,
         imageAlt: document.getElementById("fld-image-alt").value,
         listed: document.getElementById("fld-listed").checked,
+        canInstall: document.getElementById("fld-install").checked,
+        canShip: document.getElementById("fld-ship").checked,
         photos: currentPhotos,
       };
       api(editingId ? "/api/shop/admin/products" : "/api/shop/admin/products", {

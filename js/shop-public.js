@@ -18,6 +18,14 @@
     return "$" + (n / 100).toFixed(2);
   }
 
+  function offerLabel(item) {
+    var install = item.canInstall !== false;
+    var ship = item.canShip === true;
+    if (install && ship) return "Ships to you, or installed at the shop.";
+    if (ship) return "Ships to you.";
+    return "Installed at the shop.";
+  }
+
   function stockLabel(qty) {
     if (!qty) return "Out of stock";
     if (qty <= 5) return qty === 1 ? "1 left" : qty + " left";
@@ -45,6 +53,9 @@
       esc(item.title) +
       '</h3><p class="sale-card__price">' +
       money(item.priceCents) +
+      "</p>" +
+      '<p class="sale-card__lede">' +
+      esc(offerLabel(item)) +
       "</p>" +
       (item.lede ? '<p class="sale-card__lede">' + esc(item.lede) + "</p>" : "") +
       (item.details ? '<p class="sale-card__fineprint">' + esc(item.details) + "</p>" : "") +

@@ -162,37 +162,48 @@
     });
     html += "</div>";
 
-    var pickup = settings.pickupEnabled !== false;
-    var shipping = !!settings.shippingEnabled;
+    var installOk = settings.pickupEnabled !== false && items.every(function (row) {
+      var product = byId[row.id];
+      return product && product.canInstall !== false;
+    });
+    var shipOk = !!settings.shippingEnabled && items.every(function (row) {
+      var product = byId[row.id];
+      return product && product.canShip === true;
+    });
     var shipCents = parseInt(settings.flatShippingCents, 10) || 0;
-    if (pickup || shipping) {
+    if (installOk || shipOk) {
       html += '<fieldset class="shop-fulfillment"><legend>How do you want it?</legend>';
-      if (pickup) {
+      if (installOk) {
         html +=
-          '<label><input type="radio" name="fulfillment" value="pickup" checked /> Pick up at 22 S Clay St, Coldwater</label>';
+          '<label><input type="radio" name="fulfillment" value="pickup" checked /> Install at the shop, 22 S Clay St, Coldwater</label>';
       }
-      if (shipping) {
+      if (shipOk) {
         html +=
           '<label><input type="radio" name="fulfillment" value="ship"' +
-          (pickup ? "" : " checked") +
-          " /> Ship to me — " +
+          (installOk ? "" : " checked") +
+          " /> Ship it to me — " +
           (shipCents > 0 ? money(shipCents) + " flat rate" : "free shipping") +
           "</label>";
       }
       html += "</fieldset>";
+    } else {
+      html +=
+        '<p class="sale-empty">Call the shop at <a href="tel:+15172792010">517-279-2010</a> and press 2 so we can set up shipping or installation for this order.</p>';
     }
     html +=
       '<div class="shop-totals"><div><span>Subtotal</span><span id="cart-subtotal">' +
       money(subtotal) +
       "</span></div>" +
-      (shipping
+      (shipOk
         ? '<div><span>Shipping</span><span id="cart-shipping">' + money(0) + "</span></div>"
         : "") +
       '<div class="shop-total"><span>Total</span><span id="cart-total">' +
       money(subtotal) +
       "</span></div></div>";
     html += '<p id="cart-error" class="booking-cal-error" hidden role="alert"></p>';
-    html += '<button type="button" class="btn btn-primary" id="cart-checkout">Checkout</button>';
+    if (installOk || shipOk) {
+      html += '<button type="button" class="btn btn-primary" id="cart-checkout">Checkout</button>';
+    }
     root.innerHTML = html;
 
     function selectedFulfillment() {
@@ -250,7 +261,7 @@
         if (!fulfillment) {
           if (err) {
             err.hidden = false;
-            err.textContent = "Choose pickup or shipping.";
+            err.textContent = "Choose shipping or installation.";
           }
           return;
         }

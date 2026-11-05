@@ -158,16 +158,19 @@ async function handleCheckout(req, res) {
   }
   var fulfillment = body && body.fulfillment === "ship" ? "ship" : body && body.fulfillment === "pickup" ? "pickup" : "";
   if (!fulfillment) {
-    res.status(400).json({ ok: false, message: "Choose pickup or shipping." });
+    res.status(400).json({ ok: false, message: "Choose shipping or installation." });
     return;
   }
   var settings = await store.getSettings();
   if (fulfillment === "pickup" && !settings.pickupEnabled) {
-    res.status(400).json({ ok: false, message: "Pickup is not available right now." });
+    res.status(400).json({ ok: false, message: "Installation is not available right now. Call the shop at 517-279-2010." });
     return;
   }
   if (fulfillment === "ship" && !settings.shippingEnabled) {
-    res.status(400).json({ ok: false, message: "Shipping is not offered right now. Pick up at the shop, or call 517-279-2010." });
+    res.status(400).json({
+      ok: false,
+      message: "Shipping is not available for this order. Choose installation at the shop, or call 517-279-2010.",
+    });
     return;
   }
 
@@ -189,6 +192,20 @@ async function handleCheckout(req, res) {
       res.status(400).json({
         ok: false,
         message: have < 1 ? product.title + " is out of stock." : "Only " + have + " of " + product.title + " are in stock.",
+      });
+      return;
+    }
+    if (fulfillment === "ship" && product.canShip !== true) {
+      res.status(400).json({
+        ok: false,
+        message: product.title + " is installed at the shop. Remove it to ship the rest, or choose installation.",
+      });
+      return;
+    }
+    if (fulfillment === "pickup" && product.canInstall === false) {
+      res.status(400).json({
+        ok: false,
+        message: product.title + " is shipped to you and is not installed at the shop.",
       });
       return;
     }
@@ -265,8 +282,8 @@ async function handleCheckout(req, res) {
       submit: {
         message:
           fulfillment === "ship"
-            ? "Shipping is a flat rate for this order. We ship from Coldwater, MI."
-            : "Pickup at 22 S Clay St, Coldwater, MI. Shop hours are Monday–Thursday, 8am–5pm.",
+            ? "We ship this order to the address you enter."
+            : "We’ll install this at 22 S Clay St, Coldwater, MI. Shop hours are Monday–Thursday, 8am–5pm.",
       },
     },
   };

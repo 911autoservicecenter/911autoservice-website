@@ -47,7 +47,7 @@
         lead.textContent =
           order.fulfillment === "ship"
             ? "Payment received. We will ship this order to the address you entered."
-            : "Payment received. Pick it up at 22 S Clay St, Monday–Thursday, 8am–5pm.";
+            : "Payment received. We’ll install it at 22 S Clay St. Shop hours are Monday–Thursday, 8am–5pm. Call 517-279-2010 and press 2 to set a time.";
       }
     } else if (order.status === "failed" || order.status === "canceled") {
       if (lead) lead.textContent = "This payment did not go through. You can return to the shop and try again, or call 517-279-2010.";
