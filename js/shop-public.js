@@ -68,7 +68,7 @@
   function render(list) {
     if (loading) loading.remove();
     if (!list.length) {
-      root.innerHTML = '<p class="sale-empty">There is nothing in the online shop right now.</p>';
+      root.innerHTML = '<p class="sale-empty">New items will be posted here.</p>';
       return;
     }
     root.innerHTML = list.map(card).join("");
@@ -98,6 +98,6 @@
     })
     .catch(function () {
       if (loading) loading.remove();
-      root.innerHTML = '<p class="sale-empty">There is nothing in the online shop right now.</p>';
+      root.innerHTML = '<p class="sale-empty">New items will be posted here.</p>';
     });
 })();

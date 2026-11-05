@@ -165,27 +165,30 @@
     var pickup = settings.pickupEnabled !== false;
     var shipping = !!settings.shippingEnabled;
     var shipCents = parseInt(settings.flatShippingCents, 10) || 0;
-    html += '<fieldset class="shop-fulfillment"><legend>How do you want it?</legend>';
-    html +=
-      '<label><input type="radio" name="fulfillment" value="pickup"' +
-      (pickup ? " checked" : " disabled") +
-      " /> Pick up at 22 S Clay St, Coldwater" +
-      (pickup ? "" : " (not available)") +
-      "</label>";
-    html +=
-      '<label><input type="radio" name="fulfillment" value="ship"' +
-      (shipping ? "" : " disabled") +
-      (!pickup && shipping ? " checked" : "") +
-      " /> Ship to me" +
-      (shipping ? " — " + (shipCents > 0 ? money(shipCents) + " flat rate" : "free shipping") : " (not offered yet)") +
-      "</label></fieldset>";
+    if (pickup || shipping) {
+      html += '<fieldset class="shop-fulfillment"><legend>How do you want it?</legend>';
+      if (pickup) {
+        html +=
+          '<label><input type="radio" name="fulfillment" value="pickup" checked /> Pick up at 22 S Clay St, Coldwater</label>';
+      }
+      if (shipping) {
+        html +=
+          '<label><input type="radio" name="fulfillment" value="ship"' +
+          (pickup ? "" : " checked") +
+          " /> Ship to me — " +
+          (shipCents > 0 ? money(shipCents) + " flat rate" : "free shipping") +
+          "</label>";
+      }
+      html += "</fieldset>";
+    }
     html +=
       '<div class="shop-totals"><div><span>Subtotal</span><span id="cart-subtotal">' +
       money(subtotal) +
       "</span></div>" +
-      '<div><span>Shipping</span><span id="cart-shipping">' +
-      money(0) +
-      '</span></div><div class="shop-total"><span>Total</span><span id="cart-total">' +
+      (shipping
+        ? '<div><span>Shipping</span><span id="cart-shipping">' + money(0) + "</span></div>"
+        : "") +
+      '<div class="shop-total"><span>Total</span><span id="cart-total">' +
       money(subtotal) +
       "</span></div></div>";
     html += '<p id="cart-error" class="booking-cal-error" hidden role="alert"></p>';

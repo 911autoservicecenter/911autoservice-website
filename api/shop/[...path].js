@@ -144,7 +144,10 @@ async function handleCheckout(req, res) {
     return;
   }
   if (!store.redisConfigured()) {
-    res.status(503).json({ ok: false, message: kvMessage() });
+    res.status(503).json({
+      ok: false,
+      message: "The shop is not available right now. Call the shop at 517-279-2010.",
+    });
     return;
   }
   var body = await http.readJsonBody(req);
@@ -647,7 +650,13 @@ module.exports = async function handler(req, res) {
     res.status(404).json({ ok: false, message: "Not found." });
   } catch (e) {
     if (e && e.code === "KV_NOT_CONFIGURED") {
-      res.status(503).json({ ok: false, message: kvMessage() });
+      res.status(503).json({
+        ok: false,
+        message:
+          head === "admin"
+            ? kvMessage()
+            : "The shop is not available right now. Call the shop at 517-279-2010.",
+      });
       return;
     }
     if (e && e.code === "FULFILL_BUSY") {
