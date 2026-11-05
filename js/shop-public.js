@@ -37,6 +37,7 @@
     var img = photos.length ? photos[0].url : item.imageUrl || "images/logo.png";
     var alt = (photos[0] && photos[0].alt) || item.imageAlt || item.title || "Product photo";
     var out = !item.qtyOnHand;
+    var meta = [item.categoryLabel, item.brandLabel].filter(Boolean).join(" · ");
     var specs =
       (item.sku ? "<div><dt>SKU</dt><dd>" + esc(item.sku) + "</dd></div>" : "") +
       (item.fitment ? "<div><dt>Fits</dt><dd>" + esc(item.fitment) + "</dd></div>" : "");
@@ -51,7 +52,9 @@
       '" loading="lazy" decoding="async" /></figure>' +
       '<div class="sale-card__body"><h3 class="sale-card__title">' +
       esc(item.title) +
-      '</h3><p class="sale-card__price">' +
+      "</h3>" +
+      (meta ? '<p class="shop-card__meta">' + esc(meta) + "</p>" : "") +
+      '<p class="sale-card__price">' +
       money(item.priceCents) +
       "</p>" +
       '<p class="sale-card__lede">' +
@@ -76,10 +79,24 @@
     );
   }
 
-  function render(list) {
+  var activeCategory = "all";
+  var products = [];
+
+  function visibleProducts() {
+    if (activeCategory === "all") return products;
+    return products.filter(function (item) {
+      return item.category === activeCategory;
+    });
+  }
+
+  function render() {
     if (loading) loading.remove();
+    var list = visibleProducts();
     if (!list.length) {
-      root.innerHTML = '<p class="sale-empty">New items will be posted here.</p>';
+      root.innerHTML =
+        '<p class="sale-empty">' +
+        (activeCategory === "all" ? "New items will be posted here." : "Nothing listed in this category yet.") +
+        "</p>";
       return;
     }
     root.innerHTML = list.map(card).join("");
@@ -100,15 +117,26 @@
     });
   }
 
+  document.querySelectorAll("[data-shop-category]").forEach(function (button) {
+    button.addEventListener("click", function () {
+      activeCategory = button.getAttribute("data-shop-category") || "all";
+      document.querySelectorAll("[data-shop-category]").forEach(function (other) {
+        other.setAttribute("aria-pressed", other === button ? "true" : "false");
+      });
+      render();
+    });
+  });
+
   fetch("/api/shop/catalog", { credentials: "same-origin" })
     .then(function (r) {
       return r.json();
     })
     .then(function (data) {
-      render(data && data.ok && Array.isArray(data.products) ? data.products : []);
+      products = data && data.ok && Array.isArray(data.products) ? data.products : [];
+      render();
     })
     .catch(function () {
-      if (loading) loading.remove();
-      root.innerHTML = '<p class="sale-empty">New items will be posted here.</p>';
+      products = [];
+      render();
     });
 })();

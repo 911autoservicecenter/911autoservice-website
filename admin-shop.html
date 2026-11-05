@@ -83,6 +83,7 @@
             <thead>
               <tr>
                 <th scope="col">Title</th>
+                <th scope="col">Category</th>
                 <th scope="col">Price</th>
                 <th scope="col">On hand</th>
                 <th scope="col">Listed</th>
@@ -107,6 +108,30 @@
             <div class="scheduler-field">
               <label for="fld-qty">Quantity on hand</label>
               <input type="number" id="fld-qty" required min="0" max="9999" step="1" value="0" />
+            </div>
+            <div class="scheduler-field">
+              <label for="fld-category">Category</label>
+              <select id="fld-category" required>
+                <option value="">Choose one</option>
+                <option value="lighting">Lighting</option>
+                <option value="lift-kits">Lift kits</option>
+                <option value="install-kits">Install kits</option>
+                <option value="bumpers">Bumpers</option>
+                <option value="armor">Armor</option>
+                <option value="racks-steps">Racks and steps</option>
+                <option value="recovery">Recovery</option>
+                <option value="accessories">Accessories</option>
+              </select>
+            </div>
+            <div class="scheduler-field">
+              <label for="fld-brand">Brand</label>
+              <select id="fld-brand" required>
+                <option value="">Choose one</option>
+                <option value="auxbeam">Auxbeam</option>
+                <option value="dv8">DV8 Offroad</option>
+                <option value="add">Addictive Desert Designs</option>
+                <option value="other">Other</option>
+              </select>
             </div>
             <div class="scheduler-field">
               <label for="fld-sku">SKU</label>

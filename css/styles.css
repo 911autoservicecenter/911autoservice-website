@@ -2140,6 +2140,44 @@ html.schedule-promo-dismissed .schedule-promo,
   margin: 0;
 }
 
+.shop-cats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin: 0 0 1.25rem;
+}
+
+.shop-cats button {
+  background: transparent;
+  color: var(--white);
+  border: 1px solid var(--gray-700);
+  border-radius: 999px;
+  padding: 0.4rem 0.85rem;
+  font: inherit;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.shop-cats button:hover,
+.shop-cats button:focus-visible {
+  border-color: var(--red);
+  color: var(--white);
+}
+
+.shop-cats button[aria-pressed="true"] {
+  background: var(--red);
+  border-color: var(--red);
+  color: var(--white);
+}
+
+.shop-card__meta {
+  margin: 0.2rem 0 0;
+  color: var(--gray-400);
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
 .shop-card__stock {
   margin: 0.35rem 0 0;
   color: var(--gray-400);

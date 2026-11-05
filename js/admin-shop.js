@@ -87,6 +87,8 @@
     document.getElementById("fld-price").value = ((item.priceCents || 0) / 100).toFixed(2);
     document.getElementById("fld-qty").value = item.qtyOnHand || 0;
     document.getElementById("fld-sku").value = item.sku || "";
+    document.getElementById("fld-category").value = item.category || "";
+    document.getElementById("fld-brand").value = item.brand || "";
     document.getElementById("fld-fitment").value = item.fitment || "";
     document.getElementById("fld-lede").value = item.lede || "";
     document.getElementById("fld-details").value = item.details || "";
@@ -107,7 +109,7 @@
       var list = (res.data && res.data.products) || [];
       productBody.innerHTML = "";
       if (!list.length) {
-        productBody.innerHTML = '<tr><td colspan="5">No products yet. The public shop stays empty until you save one.</td></tr>';
+        productBody.innerHTML = '<tr><td colspan="6">No products yet. The public shop stays empty until you save one.</td></tr>';
         return;
       }
       list.forEach(function (item) {
@@ -115,6 +117,8 @@
         tr.innerHTML =
           "<td>" +
           esc(item.title) +
+          "</td><td>" +
+          esc(item.categoryLabel || "—") +
           "</td><td>" +
           money(item.priceCents) +
           "</td><td>" +
@@ -221,6 +225,8 @@
         price: document.getElementById("fld-price").value,
         qtyOnHand: document.getElementById("fld-qty").value,
         sku: document.getElementById("fld-sku").value,
+        category: document.getElementById("fld-category").value,
+        brand: document.getElementById("fld-brand").value,
         fitment: document.getElementById("fld-fitment").value,
         lede: document.getElementById("fld-lede").value,
         details: document.getElementById("fld-details").value,

@@ -13,6 +13,7 @@
  */
 const http = require("../../lib/for-sale-http");
 const store = require("../../lib/shop-store");
+const catalog = require("../../lib/shop-categories");
 const money = require("../../lib/shop-money");
 const mail = require("../../lib/shop-mail");
 const apiPath = require("../../lib/api-path");
@@ -132,6 +133,8 @@ async function handleCatalog(res) {
     ok: true,
     products: listed.map(store.publicProduct),
     settings: settings,
+    categories: catalog.CATEGORIES,
+    brands: catalog.BRANDS,
   });
 }
 
