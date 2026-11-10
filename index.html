@@ -44,7 +44,7 @@
 
     <link rel="icon" href="images/logo.png?v=2" type="image/png" />
     <link rel="apple-touch-icon" href="images/logo.png?v=2" />
-    <link rel="stylesheet" href="css/styles.css?v=4" />
+    <link rel="stylesheet" href="css/styles.css?v=5" />
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
@@ -188,22 +188,59 @@
           <h2 id="listings-heading">In the shop</h2>
           <a class="btn btn-ghost" href="cart.html" id="shop-cart-link">Cart</a>
         </div>
-        <p id="shop-status" class="scheduler-form__status" role="status"></p>
-        <div class="shop-cats" role="group" aria-label="Shop categories">
-          <button type="button" data-shop-category="all" aria-pressed="true">All</button>
-          <button type="button" data-shop-category="lighting" aria-pressed="false">Lighting</button>
-          <button type="button" data-shop-category="lift-kits" aria-pressed="false">Lift kits</button>
-          <button type="button" data-shop-category="install-kits" aria-pressed="false">Install kits</button>
-          <button type="button" data-shop-category="bumpers" aria-pressed="false">Bumpers</button>
-          <button type="button" data-shop-category="armor" aria-pressed="false">Armor</button>
-          <button type="button" data-shop-category="racks-steps" aria-pressed="false">Racks and steps</button>
-          <button type="button" data-shop-category="recovery" aria-pressed="false">Recovery</button>
-          <button type="button" data-shop-category="accessories" aria-pressed="false">Accessories</button>
+        <div class="shop-brands">
+          <p class="shop-brands__label">Brands we carry</p>
+          <div class="shop-brands__row">
+            <button type="button" class="shop-brand-logo" data-brand-logo="auxbeam" aria-pressed="false">
+              <img src="images/brands/auxbeam.png" width="200" height="200" alt="Auxbeam" />
+            </button>
+            <button type="button" class="shop-brand-logo" data-brand-logo="dv8" aria-pressed="false">
+              <img src="images/brands/dv8.png" width="500" height="184" alt="DV8 Offroad" />
+            </button>
+          </div>
         </div>
-        <div class="sale-grid" id="shop-grid" aria-live="polite">
-          <p class="sale-loading" id="shop-loading">Loading the shop…</p>
+        <div class="shop-layout">
+          <form class="shop-filters" id="shop-filters">
+            <h3 class="shop-filters__title">Filter</h3>
+            <fieldset>
+              <legend>Category</legend>
+              <div class="shop-cats" role="group" aria-label="Shop categories">
+                <button type="button" data-shop-category="all" aria-pressed="true">All</button>
+                <button type="button" data-shop-category="lighting" aria-pressed="false">Lighting</button>
+                <button type="button" data-shop-category="lift-kits" aria-pressed="false">Lift kits</button>
+                <button type="button" data-shop-category="install-kits" aria-pressed="false">Install kits</button>
+                <button type="button" data-shop-category="bumpers" aria-pressed="false">Bumpers</button>
+                <button type="button" data-shop-category="armor" aria-pressed="false">Armor</button>
+                <button type="button" data-shop-category="racks-steps" aria-pressed="false">Racks and steps</button>
+                <button type="button" data-shop-category="recovery" aria-pressed="false">Recovery</button>
+                <button type="button" data-shop-category="accessories" aria-pressed="false">Accessories</button>
+              </div>
+            </fieldset>
+            <fieldset>
+              <legend>Brand</legend>
+              <label class="shop-check"><input type="checkbox" data-shop-brand="auxbeam" /> Auxbeam</label>
+              <label class="shop-check"><input type="checkbox" data-shop-brand="dv8" /> DV8 Offroad</label>
+              <label class="shop-check"><input type="checkbox" data-shop-brand="add" /> Addictive Desert Designs</label>
+              <label class="shop-check"><input type="checkbox" data-shop-brand="other" /> Other</label>
+            </fieldset>
+            <fieldset>
+              <legend>Price</legend>
+              <div class="shop-price">
+                <label>Min <input type="number" id="shop-price-min" min="0" step="1" inputmode="decimal" /></label>
+                <label>Max <input type="number" id="shop-price-max" min="0" step="1" inputmode="decimal" /></label>
+              </div>
+            </fieldset>
+            <label class="shop-check"><input type="checkbox" id="shop-instock" /> In stock</label>
+            <button type="button" class="btn btn-ghost btn-sm" id="shop-filter-clear">Clear filters</button>
+          </form>
+          <div class="shop-results">
+            <p id="shop-status" class="scheduler-form__status" role="status"></p>
+            <div class="sale-grid" id="shop-grid" aria-live="polite">
+              <p class="sale-loading" id="shop-loading">Loading the shop…</p>
+            </div>
+            <nav class="shop-pages" id="shop-pages" aria-label="Shop pages" hidden></nav>
+          </div>
         </div>
-        <nav class="shop-pages" id="shop-pages" aria-label="Shop pages" hidden></nav>
         <p class="sale-staff-link sale-staff-link--after-listings">
           <a href="staff.html?next=admin-shop.html">Staff sign in</a>
         </p>
@@ -234,6 +271,6 @@
       document.getElementById("year").textContent = new Date().getFullYear();
     </script>
     <script src="js/shop-cart.js"></script>
-    <script src="js/shop-public.js?v=4"></script>
+    <script src="js/shop-public.js?v=5"></script>
   </body>
 </html>

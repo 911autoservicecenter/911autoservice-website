@@ -88,11 +88,46 @@
   var page = 1;
   var products = [];
   var pager = document.getElementById("shop-pages");
+  var priceMin = document.getElementById("shop-price-min");
+  var priceMax = document.getElementById("shop-price-max");
+  var inStock = document.getElementById("shop-instock");
+
+  function selectedBrands() {
+    var picked = [];
+    document.querySelectorAll("[data-shop-brand]").forEach(function (box) {
+      if (box.checked) picked.push(box.getAttribute("data-shop-brand"));
+    });
+    return picked;
+  }
+
+  function dollar(input) {
+    if (!input || String(input.value).trim() === "") return null;
+    var n = Number(input.value);
+    return isFinite(n) ? n : null;
+  }
+
+  function filtersActive() {
+    return (
+      activeCategory !== "all" ||
+      selectedBrands().length > 0 ||
+      dollar(priceMin) != null ||
+      dollar(priceMax) != null ||
+      (inStock && inStock.checked)
+    );
+  }
 
   function visibleProducts() {
-    if (activeCategory === "all") return products;
+    var brands = selectedBrands();
+    var min = dollar(priceMin);
+    var max = dollar(priceMax);
     return products.filter(function (item) {
-      return item.category === activeCategory;
+      if (activeCategory !== "all" && item.category !== activeCategory) return false;
+      if (brands.length && brands.indexOf(item.brand) === -1) return false;
+      var price = (parseInt(item.priceCents, 10) || 0) / 100;
+      if (min != null && price < min) return false;
+      if (max != null && price > max) return false;
+      if (inStock && inStock.checked && !item.qtyOnHand) return false;
+      return true;
     });
   }
 
@@ -127,7 +162,11 @@
     if (!list.length) {
       root.innerHTML =
         '<p class="sale-empty">' +
-        (activeCategory === "all" ? "New items will be posted here." : "Nothing listed in this category yet.") +
+        (!products.length
+          ? "New items will be posted here."
+          : filtersActive()
+            ? "Nothing matches those filters."
+            : "Nothing listed in this category yet.") +
         "</p>";
       renderPager(1);
       return;
@@ -165,6 +204,61 @@
       render();
     });
   });
+
+  function syncBrandLogos() {
+    document.querySelectorAll("[data-brand-logo]").forEach(function (btn) {
+      var id = btn.getAttribute("data-brand-logo");
+      var box = document.querySelector('[data-shop-brand="' + id + '"]');
+      btn.setAttribute("aria-pressed", box && box.checked ? "true" : "false");
+    });
+  }
+
+  function onFilterChange() {
+    page = 1;
+    syncBrandLogos();
+    render();
+  }
+
+  document.querySelectorAll("[data-shop-brand]").forEach(function (box) {
+    box.addEventListener("change", onFilterChange);
+  });
+  if (priceMin) priceMin.addEventListener("input", onFilterChange);
+  if (priceMax) priceMax.addEventListener("input", onFilterChange);
+  if (inStock) inStock.addEventListener("change", onFilterChange);
+
+  document.querySelectorAll("[data-brand-logo]").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var id = btn.getAttribute("data-brand-logo");
+      var box = document.querySelector('[data-shop-brand="' + id + '"]');
+      if (!box) return;
+      box.checked = !box.checked;
+      onFilterChange();
+    });
+  });
+
+  var filterForm = document.getElementById("shop-filters");
+  if (filterForm) {
+    filterForm.addEventListener("submit", function (e) {
+      e.preventDefault();
+    });
+  }
+
+  var clearBtn = document.getElementById("shop-filter-clear");
+  if (clearBtn) {
+    clearBtn.addEventListener("click", function () {
+      activeCategory = "all";
+      document.querySelectorAll("[data-shop-category]").forEach(function (button) {
+        button.setAttribute("aria-pressed", button.getAttribute("data-shop-category") === "all" ? "true" : "false");
+      });
+      document.querySelectorAll("[data-shop-brand]").forEach(function (box) {
+        box.checked = false;
+      });
+      if (priceMin) priceMin.value = "";
+      if (priceMax) priceMax.value = "";
+      if (inStock) inStock.checked = false;
+      onFilterChange();
+    });
+  }
 
   if (pager) {
     pager.addEventListener("click", function (e) {
