@@ -150,7 +150,11 @@
         esc(product.title) +
         '</h2><p class="cart-line__price">' +
         money(product.priceCents) +
-        ' each</p><div class="shop-card__actions"><label class="shop-qty">Qty <input type="number" min="1" max="' +
+        " each</p>" +
+        (product.brand === "dv8"
+          ? '<p class="shop-card__ship-note">Advertised price does not include shipping.</p>'
+          : "") +
+        '<div class="shop-card__actions"><label class="shop-qty">Qty <input type="number" min="1" max="' +
         (product.qtyOnHand || 1) +
         '" value="' +
         qty +

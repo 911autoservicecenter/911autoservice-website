@@ -58,6 +58,9 @@
       '<p class="sale-card__price">' +
       money(item.priceCents) +
       "</p>" +
+      (item.brand === "dv8"
+        ? '<p class="shop-card__ship-note">Advertised price does not include shipping.</p>'
+        : "") +
       '<details class="shop-card__more"><summary>More</summary>' +
       (meta ? '<p class="shop-card__meta">' + esc(meta) + "</p>" : "") +
       '<p class="sale-card__lede">' +
@@ -90,6 +93,52 @@
   var priceMin = document.getElementById("shop-price-min");
   var priceMax = document.getElementById("shop-price-max");
   var inStock = document.getElementById("shop-instock");
+  var vehicleMake = document.getElementById("shop-vehicle-make");
+  var vehicleModel = document.getElementById("shop-vehicle-model");
+  var vehicleYear = document.getElementById("shop-vehicle-year");
+  var vehicleOptions = {};
+
+  function selectedVehicle() {
+    return {
+      make: vehicleMake ? vehicleMake.value : "",
+      model: vehicleModel ? vehicleModel.value : "",
+      year: vehicleYear ? vehicleYear.value : "",
+    };
+  }
+
+  function fillSelect(select, values, placeholder, disabled) {
+    if (!select) return;
+    var current = select.value;
+    select.innerHTML = "";
+    var first = document.createElement("option");
+    first.value = "";
+    first.textContent = placeholder;
+    select.appendChild(first);
+    values.forEach(function (value) {
+      var opt = document.createElement("option");
+      opt.value = value;
+      opt.textContent = value;
+      select.appendChild(opt);
+    });
+    select.disabled = !!disabled;
+    select.value = values.indexOf(current) !== -1 ? current : "";
+  }
+
+  function refreshVehicleChoices() {
+    var makes = Object.keys(vehicleOptions).sort();
+    fillSelect(vehicleMake, makes, "Any vehicle", false);
+    var make = vehicleMake ? vehicleMake.value : "";
+    var models = make && vehicleOptions[make] ? Object.keys(vehicleOptions[make]).sort() : [];
+    fillSelect(vehicleModel, models, "Any model", !make);
+    var model = vehicleModel ? vehicleModel.value : "";
+    var years = [];
+    if (make && model && vehicleOptions[make] && vehicleOptions[make][model]) {
+      years = Object.keys(vehicleOptions[make][model]).sort(function (a, b) {
+        return +b - +a;
+      });
+    }
+    fillSelect(vehicleYear, years, "Any year", !model);
+  }
 
   function selectedBrands() {
     var picked = [];
@@ -106,12 +155,14 @@
   }
 
   function filtersActive() {
+    var vehicle = selectedVehicle();
     return (
       activeCategory !== "all" ||
       selectedBrands().length > 0 ||
       dollar(priceMin) != null ||
       dollar(priceMax) != null ||
-      (inStock && inStock.checked)
+      (inStock && inStock.checked) ||
+      !!vehicle.make
     );
   }
 
@@ -126,6 +177,7 @@
       if (min != null && price < min) return false;
       if (max != null && price > max) return false;
       if (inStock && inStock.checked && !item.qtyOnHand) return false;
+      if (window.ShopVehicles && !window.ShopVehicles.matches(item, selectedVehicle())) return false;
       return true;
     });
   }
@@ -224,6 +276,22 @@
   if (priceMin) priceMin.addEventListener("input", onFilterChange);
   if (priceMax) priceMax.addEventListener("input", onFilterChange);
   if (inStock) inStock.addEventListener("change", onFilterChange);
+  if (vehicleMake) {
+    vehicleMake.addEventListener("change", function () {
+      if (vehicleModel) vehicleModel.value = "";
+      if (vehicleYear) vehicleYear.value = "";
+      refreshVehicleChoices();
+      onFilterChange();
+    });
+  }
+  if (vehicleModel) {
+    vehicleModel.addEventListener("change", function () {
+      if (vehicleYear) vehicleYear.value = "";
+      refreshVehicleChoices();
+      onFilterChange();
+    });
+  }
+  if (vehicleYear) vehicleYear.addEventListener("change", onFilterChange);
 
   document.querySelectorAll("[data-brand-logo]").forEach(function (btn) {
     btn.addEventListener("click", function () {
@@ -255,6 +323,10 @@
       if (priceMin) priceMin.value = "";
       if (priceMax) priceMax.value = "";
       if (inStock) inStock.checked = false;
+      if (vehicleMake) vehicleMake.value = "";
+      if (vehicleModel) vehicleModel.value = "";
+      if (vehicleYear) vehicleYear.value = "";
+      refreshVehicleChoices();
       onFilterChange();
     });
   }
@@ -278,6 +350,8 @@
     })
     .then(function (data) {
       products = data && data.ok && Array.isArray(data.products) ? data.products : [];
+      vehicleOptions = window.ShopVehicles ? window.ShopVehicles.options(products) : {};
+      refreshVehicleChoices();
       render();
     })
     .catch(function () {

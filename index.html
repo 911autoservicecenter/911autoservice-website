@@ -44,7 +44,7 @@
 
     <link rel="icon" href="images/logo.png?v=2" type="image/png" />
     <link rel="apple-touch-icon" href="images/logo.png?v=2" />
-    <link rel="stylesheet" href="css/styles.css?v=7" />
+    <link rel="stylesheet" href="css/styles.css?v=9" />
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
@@ -206,6 +206,27 @@
           <form class="shop-filters" id="shop-filters">
             <h3 class="shop-filters__title">Filter</h3>
             <fieldset>
+              <legend>Vehicle</legend>
+              <div class="shop-vehicle">
+                <label>Make
+                  <select id="shop-vehicle-make">
+                    <option value="">Any vehicle</option>
+                  </select>
+                </label>
+                <label>Model
+                  <select id="shop-vehicle-model" disabled>
+                    <option value="">Any model</option>
+                  </select>
+                </label>
+                <label>Year
+                  <select id="shop-vehicle-year" disabled>
+                    <option value="">Any year</option>
+                  </select>
+                </label>
+                <p class="shop-vehicle__hint">Universal parts stay in the list for every vehicle.</p>
+              </div>
+            </fieldset>
+            <fieldset>
               <legend>Category</legend>
               <div class="shop-cats" role="group" aria-label="Shop categories">
                 <button type="button" data-shop-category="all" aria-pressed="true">All</button>
@@ -273,7 +294,8 @@
     <script>
       document.getElementById("year").textContent = new Date().getFullYear();
     </script>
-    <script src="js/shop-cart.js"></script>
-    <script src="js/shop-public.js?v=6"></script>
+    <script src="js/shop-cart.js?v=2"></script>
+    <script src="js/shop-vehicles.js?v=2"></script>
+    <script src="js/shop-public.js?v=8"></script>
   </body>
 </html>
