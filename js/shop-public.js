@@ -39,9 +39,7 @@
       '<p class="sale-card__price">' +
       money(item.priceCents) +
       "</p>" +
-      (item.brand === "dv8"
-        ? '<p class="shop-card__ship-note">Advertised price does not include shipping.</p>'
-        : "") +
+      '<p class="shop-card__ship-note">Advertised price does not include shipping.</p>' +
       "</div></a></article>"
     );
   }
