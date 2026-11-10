@@ -106,76 +106,100 @@ a:focus-visible {
   order: 3;
   flex: 1 1 100%;
   width: 100%;
-  gap: 0.45rem 1.05rem;
+  gap: 0.45rem;
   padding-top: 0.65rem;
   border-top: 1px solid var(--gray-700);
   font-size: 0.92rem;
   font-weight: 600;
 }
 
-.site-nav a {
+.site-nav a,
+.shop-cats button {
+  position: relative;
+  isolation: isolate;
+  display: inline-block;
+  padding: 0.38rem 0.72rem;
   color: var(--white);
+  background: transparent;
   text-decoration: none;
+  border: 0;
+  border-radius: 3px;
+  line-height: 1.3;
+  overflow: hidden;
+}
+
+.shop-cats button {
+  font: inherit;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.site-nav a::before,
+.shop-cats button::before {
+  content: "";
+  position: absolute;
+  z-index: -2;
+  left: 50%;
+  top: 50%;
+  width: 220%;
+  height: 500%;
+  background: conic-gradient(
+    from 0deg,
+    var(--red) 0deg,
+    var(--red) 250deg,
+    #fff 292deg,
+    #ffd2d0 328deg,
+    var(--red) 360deg
+  );
+  transform: translate(-50%, -50%) rotate(0deg);
+  animation: nav-chase 2.8s linear infinite;
+}
+
+.site-nav a::after,
+.shop-cats button::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 2px;
+  border-radius: 2px;
+  background: #000;
 }
 
 .site-nav a:hover,
-.site-nav a:focus-visible {
+.site-nav a:focus-visible,
+.shop-cats button:hover,
+.shop-cats button:focus-visible {
+  color: var(--white);
+  text-decoration: none;
+}
+
+.site-nav a:hover::before,
+.site-nav a:focus-visible::before,
+.shop-cats button:hover::before,
+.shop-cats button:focus-visible::before {
+  animation-duration: 1.15s;
+}
+
+.site-nav a[aria-current="page"],
+.shop-cats button[aria-pressed="true"] {
   color: var(--red);
   text-decoration: none;
 }
 
-.site-nav a[aria-current="page"] {
-  color: var(--red);
-  text-decoration: underline;
-  text-underline-offset: 0.2em;
+@keyframes nav-chase {
+  to {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
 }
 
-.shop-soon {
-  background: var(--red);
-  color: var(--white);
-}
-
-.shop-soon-inner {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 1.15rem 1.25rem;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.9rem 1.5rem;
-}
-
-.shop-soon__label {
-  margin: 0;
-  font-size: 1.45rem;
-  font-weight: 800;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-}
-
-.shop-soon__text {
-  margin: 0.2rem 0 0;
-  max-width: 40rem;
-}
-
-.shop-soon__actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.55rem;
-}
-
-.shop-soon__btn {
-  background: var(--white);
-  color: var(--black);
-  border-color: var(--white);
-}
-
-.shop-soon__btn:hover,
-.shop-soon__btn:focus-visible {
-  background: var(--black);
-  color: var(--white);
-  border-color: var(--black);
+@media (prefers-reduced-motion: reduce) {
+  .site-nav a::before,
+  .shop-cats button::before {
+    animation: none;
+    transform: translate(-50%, -50%);
+    background: var(--red);
+  }
 }
 
 .brand {
@@ -2145,30 +2169,6 @@ html.schedule-promo-dismissed .schedule-promo,
   flex-wrap: wrap;
   gap: 0.45rem;
   margin: 0 0 1.25rem;
-}
-
-.shop-cats button {
-  background: transparent;
-  color: var(--white);
-  border: 1px solid var(--gray-700);
-  border-radius: 999px;
-  padding: 0.4rem 0.85rem;
-  font: inherit;
-  font-size: 0.9rem;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-.shop-cats button:hover,
-.shop-cats button:focus-visible {
-  border-color: var(--red);
-  color: var(--white);
-}
-
-.shop-cats button[aria-pressed="true"] {
-  background: var(--red);
-  border-color: var(--red);
-  color: var(--white);
 }
 
 .shop-card__meta {
