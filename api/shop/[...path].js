@@ -4,12 +4,12 @@
  * POST /api/shop/checkout
  * POST /api/shop/webhook
  * GET  /api/shop/order?session_id=
- * GET/POST /api/shop/admin/products
- * PUT    /api/shop/admin/products
- * DELETE /api/shop/admin/products?id=
- * GET    /api/shop/admin/orders
- * GET/POST /api/shop/admin/settings
- * GET    /api/shop/admin/status
+ * GET/POST /api/shop/products
+ * PUT    /api/shop/products
+ * DELETE /api/shop/products?id=
+ * GET    /api/shop/orders
+ * GET/POST /api/shop/settings
+ * GET    /api/shop/status
  */
 const http = require("../../lib/for-sale-http");
 const store = require("../../lib/shop-store");
@@ -582,7 +582,7 @@ module.exports = async function handler(req, res) {
       await handleOrderStatus(req, res);
       return;
     }
-    if (head === "admin" && sub === "status" && req.method === "GET") {
+    if ((head === "status" || (head === "admin" && sub === "status")) && req.method === "GET") {
       if (!http.requireAuth(req, res)) return;
       res.status(200).json({
         ok: true,
@@ -592,7 +592,7 @@ module.exports = async function handler(req, res) {
       });
       return;
     }
-    if (head === "admin" && sub === "products" && req.method === "GET") {
+    if ((head === "products" || (head === "admin" && sub === "products")) && req.method === "GET") {
       if (!http.requireAuth(req, res)) return;
       var products = await store.getProducts();
       products.sort(function (a, b) {
@@ -601,17 +601,17 @@ module.exports = async function handler(req, res) {
       res.status(200).json({ ok: true, products: products.map(store.staffProduct) });
       return;
     }
-    if (head === "admin" && sub === "products" && req.method === "POST") {
+    if ((head === "products" || (head === "admin" && sub === "products")) && req.method === "POST") {
       if (!http.requireAuth(req, res)) return;
       await handleSaveProduct(req, res, true);
       return;
     }
-    if (head === "admin" && sub === "products" && req.method === "PUT") {
+    if ((head === "products" || (head === "admin" && sub === "products")) && req.method === "PUT") {
       if (!http.requireAuth(req, res)) return;
       await handleSaveProduct(req, res, false);
       return;
     }
-    if (head === "admin" && sub === "products" && req.method === "DELETE") {
+    if ((head === "products" || (head === "admin" && sub === "products")) && req.method === "DELETE") {
       if (!http.requireAuth(req, res)) return;
       var id = req.query && req.query.id ? String(req.query.id) : "";
       var list = await store.getProducts();
@@ -626,7 +626,7 @@ module.exports = async function handler(req, res) {
       res.status(200).json({ ok: true });
       return;
     }
-    if (head === "admin" && sub === "orders" && req.method === "GET") {
+    if ((head === "orders" || (head === "admin" && sub === "orders")) && req.method === "GET") {
       if (!http.requireAuth(req, res)) return;
       var orders = await store.getOrders();
       res.status(200).json({
@@ -650,12 +650,12 @@ module.exports = async function handler(req, res) {
       });
       return;
     }
-    if (head === "admin" && sub === "settings" && req.method === "GET") {
+    if ((head === "settings" || (head === "admin" && sub === "settings")) && req.method === "GET") {
       if (!http.requireAuth(req, res)) return;
       res.status(200).json({ ok: true, settings: await store.getSettings() });
       return;
     }
-    if (head === "admin" && sub === "settings" && req.method === "POST") {
+    if ((head === "settings" || (head === "admin" && sub === "settings")) && req.method === "POST") {
       if (!http.requireAuth(req, res)) return;
       var body = await http.readJsonBody(req);
       var validated = store.validateSettings(body || {});
@@ -673,7 +673,7 @@ module.exports = async function handler(req, res) {
       res.status(503).json({
         ok: false,
         message:
-          head === "admin"
+          head === "admin" || head === "products" || head === "orders" || head === "settings" || head === "status"
             ? kvMessage()
             : "The shop is not available right now. Call the shop at 517-279-2010.",
       });

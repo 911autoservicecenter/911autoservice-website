@@ -104,7 +104,7 @@
   }
 
   function loadProducts() {
-    return api("/api/shop/admin/products").then(function (res) {
+    return api("/api/shop/products").then(function (res) {
       if (!productBody) return;
       var list = (res.data && res.data.products) || [];
       productBody.innerHTML = "";
@@ -139,7 +139,7 @@
         del.textContent = "Delete";
         del.addEventListener("click", function () {
           if (!window.confirm("Remove this product from the shop?")) return;
-          api("/api/shop/admin/products?id=" + encodeURIComponent(item.id), { method: "DELETE" }).then(function () {
+          api("/api/shop/products?id=" + encodeURIComponent(item.id), { method: "DELETE" }).then(function () {
             if (editingId === item.id) resetForm();
             loadProducts();
           });
@@ -153,7 +153,7 @@
   }
 
   function loadOrders() {
-    return api("/api/shop/admin/orders").then(function (res) {
+    return api("/api/shop/orders").then(function (res) {
       if (!orderBody) return;
       var list = (res.data && res.data.orders) || [];
       orderBody.innerHTML = "";
@@ -193,7 +193,7 @@
   }
 
   function loadSettings() {
-    return api("/api/shop/admin/settings").then(function (res) {
+    return api("/api/shop/settings").then(function (res) {
       var settings = (res.data && res.data.settings) || {};
       var pickup = document.getElementById("set-pickup");
       var shipping = document.getElementById("set-shipping");
@@ -205,7 +205,7 @@
   }
 
   function loadStatus() {
-    return api("/api/shop/admin/status").then(function (res) {
+    return api("/api/shop/status").then(function (res) {
       if (!setup || !res.data) return;
       var bits = [];
       if (!res.data.redis) bits.push("Redis is not connected, so products cannot be saved yet.");
@@ -236,7 +236,7 @@
         canShip: document.getElementById("fld-ship").checked,
         photos: currentPhotos,
       };
-      api(editingId ? "/api/shop/admin/products" : "/api/shop/admin/products", {
+      api(editingId ? "/api/shop/products" : "/api/shop/products", {
         method: editingId ? "PUT" : "POST",
         body: body,
       }).then(function (res) {
@@ -254,7 +254,7 @@
   if (settingsForm) {
     settingsForm.addEventListener("submit", function (e) {
       e.preventDefault();
-      api("/api/shop/admin/settings", {
+      api("/api/shop/settings", {
         method: "POST",
         body: {
           pickupEnabled: document.getElementById("set-pickup").checked,
