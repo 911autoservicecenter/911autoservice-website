@@ -44,7 +44,7 @@
 
     <link rel="icon" href="images/logo.png?v=2" type="image/png" />
     <link rel="apple-touch-icon" href="images/logo.png?v=2" />
-    <link rel="stylesheet" href="css/styles.css" />
+    <link rel="stylesheet" href="css/styles.css?v=4" />
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
@@ -183,7 +183,7 @@
         </div>
       </header>
 
-      <section class="section" aria-labelledby="listings-heading">
+      <section class="section shop-listings" aria-labelledby="listings-heading">
         <div class="shop-toolbar">
           <h2 id="listings-heading">In the shop</h2>
           <a class="btn btn-ghost" href="cart.html" id="shop-cart-link">Cart</a>
@@ -203,6 +203,7 @@
         <div class="sale-grid" id="shop-grid" aria-live="polite">
           <p class="sale-loading" id="shop-loading">Loading the shop…</p>
         </div>
+        <nav class="shop-pages" id="shop-pages" aria-label="Shop pages" hidden></nav>
         <p class="sale-staff-link sale-staff-link--after-listings">
           <a href="staff.html?next=admin-shop.html">Staff sign in</a>
         </p>
@@ -233,6 +234,6 @@
       document.getElementById("year").textContent = new Date().getFullYear();
     </script>
     <script src="js/shop-cart.js"></script>
-    <script src="js/shop-public.js"></script>
+    <script src="js/shop-public.js?v=4"></script>
   </body>
 </html>

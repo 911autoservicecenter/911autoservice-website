@@ -50,7 +50,9 @@
       '" width="640" height="480" alt="' +
       esc(alt) +
       '" loading="lazy" decoding="async" /></figure>' +
-      '<div class="sale-card__body"><h3 class="sale-card__title">' +
+      '<div class="sale-card__body"><h3 class="sale-card__title" title="' +
+      esc(item.title) +
+      '">' +
       esc(item.title) +
       "</h3>" +
       (meta ? '<p class="shop-card__meta">' + esc(meta) + "</p>" : "") +
@@ -61,7 +63,9 @@
       esc(offerLabel(item)) +
       "</p>" +
       (item.lede ? '<p class="sale-card__lede">' + esc(item.lede) + "</p>" : "") +
-      (item.details ? '<p class="sale-card__fineprint">' + esc(item.details) + "</p>" : "") +
+      (item.details
+        ? '<details class="shop-card__details"><summary>Details</summary><p>' + esc(item.details) + "</p></details>"
+        : "") +
       (specs ? '<dl class="sale-card__specs">' + specs + "</dl>" : "") +
       '<p class="shop-card__stock">' +
       esc(stockLabel(item.qtyOnHand || 0)) +
@@ -79,14 +83,42 @@
     );
   }
 
+  var PAGE_SIZE = 20;
   var activeCategory = "all";
+  var page = 1;
   var products = [];
+  var pager = document.getElementById("shop-pages");
 
   function visibleProducts() {
     if (activeCategory === "all") return products;
     return products.filter(function (item) {
       return item.category === activeCategory;
     });
+  }
+
+  function renderPager(pages) {
+    if (!pager) return;
+    if (pages < 2) {
+      pager.hidden = true;
+      pager.innerHTML = "";
+      return;
+    }
+    pager.hidden = false;
+    var html =
+      '<button type="button" data-shop-page="prev"' + (page <= 1 ? " disabled" : "") + ">Previous</button>";
+    for (var i = 1; i <= pages; i++) {
+      html +=
+        '<button type="button" data-shop-page="' +
+        i +
+        '"' +
+        (i === page ? ' aria-current="page"' : "") +
+        ">" +
+        i +
+        "</button>";
+    }
+    html +=
+      '<button type="button" data-shop-page="next"' + (page >= pages ? " disabled" : "") + ">Next</button>";
+    pager.innerHTML = html;
   }
 
   function render() {
@@ -97,9 +129,15 @@
         '<p class="sale-empty">' +
         (activeCategory === "all" ? "New items will be posted here." : "Nothing listed in this category yet.") +
         "</p>";
+      renderPager(1);
       return;
     }
-    root.innerHTML = list.map(card).join("");
+    var pages = Math.ceil(list.length / PAGE_SIZE);
+    if (page > pages) page = pages;
+    if (page < 1) page = 1;
+    var start = (page - 1) * PAGE_SIZE;
+    root.innerHTML = list.slice(start, start + PAGE_SIZE).map(card).join("");
+    renderPager(pages);
     root.querySelectorAll("[data-add]").forEach(function (btn) {
       btn.addEventListener("click", function () {
         var id = btn.getAttribute("data-add");
@@ -120,12 +158,26 @@
   document.querySelectorAll("[data-shop-category]").forEach(function (button) {
     button.addEventListener("click", function () {
       activeCategory = button.getAttribute("data-shop-category") || "all";
+      page = 1;
       document.querySelectorAll("[data-shop-category]").forEach(function (other) {
         other.setAttribute("aria-pressed", other === button ? "true" : "false");
       });
       render();
     });
   });
+
+  if (pager) {
+    pager.addEventListener("click", function (e) {
+      var btn = e.target && e.target.closest ? e.target.closest("[data-shop-page]") : null;
+      if (!btn || btn.disabled) return;
+      var which = btn.getAttribute("data-shop-page");
+      if (which === "prev") page -= 1;
+      else if (which === "next") page += 1;
+      else page = parseInt(which, 10) || 1;
+      render();
+      root.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  }
 
   fetch("/api/shop/catalog", { credentials: "same-origin" })
     .then(function (r) {
