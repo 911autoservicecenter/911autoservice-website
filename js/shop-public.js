@@ -141,6 +141,8 @@
     });
   }
 
+  var PAGE_BUTTONS = 10;
+
   function renderPager(pages) {
     if (!pager) return;
     if (pages < 2) {
@@ -149,9 +151,17 @@
       return;
     }
     pager.hidden = false;
-    var html =
-      '<button type="button" data-shop-page="prev"' + (page <= 1 ? " disabled" : "") + ">Previous</button>";
-    for (var i = 1; i <= pages; i++) {
+    var block = Math.floor((page - 1) / PAGE_BUTTONS);
+    var first = block * PAGE_BUTTONS + 1;
+    var last = Math.min(pages, first + PAGE_BUTTONS - 1);
+    var html = "";
+    if (pages > PAGE_BUTTONS) {
+      html +=
+        '<button type="button" data-shop-page="prev10"' +
+        (first <= 1 ? " disabled" : "") +
+        ">Previous 10</button>";
+    }
+    for (var i = first; i <= last; i++) {
       html +=
         '<button type="button" data-shop-page="' +
         i +
@@ -161,8 +171,12 @@
         i +
         "</button>";
     }
-    html +=
-      '<button type="button" data-shop-page="next"' + (page >= pages ? " disabled" : "") + ">Next</button>";
+    if (pages > PAGE_BUTTONS) {
+      html +=
+        '<button type="button" data-shop-page="next10"' +
+        (last >= pages ? " disabled" : "") +
+        ">Next 10</button>";
+    }
     pager.innerHTML = html;
   }
 
@@ -280,8 +294,9 @@
       var btn = e.target && e.target.closest ? e.target.closest("[data-shop-page]") : null;
       if (!btn || btn.disabled) return;
       var which = btn.getAttribute("data-shop-page");
-      if (which === "prev") page -= 1;
-      else if (which === "next") page += 1;
+      var pages = Math.ceil(visibleProducts().length / PAGE_SIZE) || 1;
+      if (which === "prev10") page = Math.max(1, (Math.floor((page - 1) / PAGE_BUTTONS) - 1) * PAGE_BUTTONS + 1);
+      else if (which === "next10") page = Math.min(pages, (Math.floor((page - 1) / PAGE_BUTTONS) + 1) * PAGE_BUTTONS + 1);
       else page = parseInt(which, 10) || 1;
       render();
       root.scrollIntoView({ behavior: "smooth", block: "start" });
