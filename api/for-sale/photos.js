@@ -60,11 +60,10 @@ module.exports = async function handler(req, res) {
       res.status(413).json({ ok: false, message: "Each photo must be 10MB or smaller." });
       return;
     }
-    var em = e && e.message ? String(e.message) : "";
     var msg =
-      em && em.toLowerCase().indexOf("blob") !== -1
-        ? "Photo storage is not configured. Add BLOB_READ_WRITE_TOKEN in Vercel and redeploy."
+      e && e.code === "PHOTO_STORAGE"
+        ? "Photo storage is not available right now."
         : "Could not upload photo(s).";
-    res.status(500).json({ ok: false, message: msg });
+    res.status(e && e.code === "PHOTO_STORAGE" ? 503 : 500).json({ ok: false, message: msg });
   }
 };
