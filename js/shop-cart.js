@@ -203,6 +203,8 @@
       money(subtotal) +
       "</span></div></div>";
     html += '<p id="cart-error" class="booking-cal-error" hidden role="alert"></p>';
+    html +=
+      '<p class="shop-card__meta">Refunds and exchanges require an RMA from the shop. No refund is issued without one. <a href="returns.html">Returns and exchanges</a>.</p>';
     if (installOk || shipOk) {
       html += '<button type="button" class="btn btn-primary" id="cart-checkout">Checkout</button>';
     }

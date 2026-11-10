@@ -124,6 +124,7 @@
           (item.qtyOnHand || 1) +
           '" value="1" /></label><button type="button" class="btn btn-primary" id="product-add">Add to cart</button></div>') +
       '<p id="product-status" class="scheduler-form__status" role="status"></p>' +
+      '<p class="shop-card__meta">Refunds and exchanges require an RMA from the shop. No refund is issued without one. <a href="returns.html">Returns and exchanges</a>.</p>' +
       "</div></article>";
 
     var main = document.getElementById("product-photo");
