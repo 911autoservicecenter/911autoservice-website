@@ -55,17 +55,16 @@
       '">' +
       esc(item.title) +
       "</h3>" +
-      (meta ? '<p class="shop-card__meta">' + esc(meta) + "</p>" : "") +
       '<p class="sale-card__price">' +
       money(item.priceCents) +
       "</p>" +
+      '<details class="shop-card__more"><summary>More</summary>' +
+      (meta ? '<p class="shop-card__meta">' + esc(meta) + "</p>" : "") +
       '<p class="sale-card__lede">' +
       esc(offerLabel(item)) +
       "</p>" +
       (item.lede ? '<p class="sale-card__lede">' + esc(item.lede) + "</p>" : "") +
-      (item.details
-        ? '<details class="shop-card__details"><summary>Details</summary><p>' + esc(item.details) + "</p></details>"
-        : "") +
+      (item.details ? '<p class="shop-card__details">' + esc(item.details) + "</p>" : "") +
       (specs ? '<dl class="sale-card__specs">' + specs + "</dl>" : "") +
       '<p class="shop-card__stock">' +
       esc(stockLabel(item.qtyOnHand || 0)) +
@@ -79,7 +78,7 @@
           '" /></label><button type="button" class="btn btn-primary" data-add="' +
           esc(item.id) +
           '">Add to cart</button></div>') +
-      "</div></article>"
+      "</details></div></article>"
     );
   }
 

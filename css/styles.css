@@ -2399,19 +2399,23 @@ html.schedule-promo-dismissed .schedule-promo,
   font-size: 0.82rem;
 }
 
-.shop-card__details {
+.shop-card__more {
   font-size: 0.82rem;
   color: var(--gray-400);
 }
 
-.shop-card__details summary {
+.shop-card__more summary {
   cursor: pointer;
   color: var(--gray-300);
   font-weight: 600;
 }
 
-.shop-card__details p {
-  margin: 0.4rem 0 0;
+.shop-card__more > :not(summary) {
+  margin-top: 0.45rem;
+}
+
+.shop-card__details {
+  margin: 0.45rem 0 0;
   white-space: pre-wrap;
   line-height: 1.45;
 }
