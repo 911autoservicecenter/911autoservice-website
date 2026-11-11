@@ -17,6 +17,17 @@
     return "$" + (n / 100).toFixed(2);
   }
 
+  function priceLabel(item) {
+    var variants = item && Array.isArray(item.variants) ? item.variants : [];
+    if (variants.length > 1) {
+      var prices = variants.map(function (variant) { return parseInt(variant.priceCents, 10) || 0; });
+      var low = Math.min.apply(null, prices);
+      var high = Math.max.apply(null, prices);
+      if (low !== high) return "From " + money(low);
+    }
+    return money(item.priceCents);
+  }
+
   function card(item) {
     var photos = Array.isArray(item.photos) ? item.photos.filter(function (p) { return p && p.url; }) : [];
     var img = photos.length ? photos[0].url : item.imageUrl || "images/logo.png?v=2";
@@ -37,7 +48,7 @@
       esc(item.title) +
       "</h3>" +
       '<p class="sale-card__price">' +
-      money(item.priceCents) +
+      priceLabel(item) +
       "</p>" +
       '<p class="shop-card__ship-note">Advertised price does not include shipping.</p>' +
       "</div></a></article>"
@@ -56,6 +67,7 @@
   var vehicleModel = document.getElementById("shop-vehicle-model");
   var vehicleYear = document.getElementById("shop-vehicle-year");
   var vehicleOptions = {};
+  var searchBox = document.getElementById("shop-search");
 
   function selectedVehicle() {
     return {
@@ -121,8 +133,23 @@
       dollar(priceMin) != null ||
       dollar(priceMax) != null ||
       (inStock && inStock.checked) ||
-      !!vehicle.make
+      !!vehicle.make ||
+      !!(searchBox && searchBox.value.trim())
     );
+  }
+
+  function searchWords() {
+    if (!searchBox) return [];
+    return searchBox.value.toLowerCase().split(/\s+/).filter(Boolean);
+  }
+
+  function searchable(item) {
+    var parts = [item.title, item.sku, item.brandLabel, item.categoryLabel, item.fitment, item.lede];
+    (item.variants || []).forEach(function (variant) {
+      parts.push(variant.sku);
+      (variant.choices || []).forEach(function (choice) { parts.push(choice); });
+    });
+    return parts.filter(Boolean).join(" ").toLowerCase();
   }
 
   function visibleProducts() {
@@ -137,6 +164,13 @@
       if (max != null && price > max) return false;
       if (inStock && inStock.checked && !item.qtyOnHand) return false;
       if (window.ShopVehicles && !window.ShopVehicles.matches(item, selectedVehicle())) return false;
+      var words = searchWords();
+      if (words.length) {
+        var hay = searchable(item);
+        for (var w = 0; w < words.length; w++) {
+          if (hay.indexOf(words[w]) === -1) return false;
+        }
+      }
       return true;
     });
   }
@@ -250,6 +284,14 @@
     });
   }
   if (vehicleYear) vehicleYear.addEventListener("change", onFilterChange);
+  if (searchBox) searchBox.addEventListener("input", onFilterChange);
+  var searchForm = document.getElementById("shop-search-form");
+  if (searchForm) {
+    searchForm.addEventListener("submit", function (e) {
+      e.preventDefault();
+      onFilterChange();
+    });
+  }
 
   document.querySelectorAll("[data-brand-logo]").forEach(function (btn) {
     btn.addEventListener("click", function () {

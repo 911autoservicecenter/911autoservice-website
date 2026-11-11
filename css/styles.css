@@ -2156,12 +2156,54 @@ html.schedule-promo-dismissed .schedule-promo,
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-wrap: wrap;
   gap: 1rem;
   margin-bottom: 1.25rem;
 }
 
+.shop-toolbar h1,
 .shop-toolbar h2 {
   margin: 0;
+  font-size: 1.5rem;
+}
+
+.shop-search {
+  flex: 1 1 16rem;
+  margin: 0;
+}
+
+.shop-search input {
+  width: 100%;
+  padding: 0.6rem 0.75rem;
+  border-radius: 6px;
+  border: 1px solid var(--gray-700);
+  background: var(--black);
+  color: var(--white);
+  font: inherit;
+}
+
+.product-options {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  margin-top: 0.85rem;
+}
+
+.product-options label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.product-options select {
+  padding: 0.5rem 0.6rem;
+  border-radius: 6px;
+  border: 1px solid var(--gray-700);
+  background: var(--black);
+  color: var(--white);
+  font: inherit;
 }
 
 .shop-cats {
@@ -2186,6 +2228,7 @@ html.schedule-promo-dismissed .schedule-promo,
 
 .shop-listings {
   max-width: 1440px;
+  padding-top: 1.25rem;
 }
 
 .shop-brands {

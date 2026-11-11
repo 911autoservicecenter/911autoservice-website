@@ -90,6 +90,10 @@ function readRawBody(req) {
   });
 }
 
+function cleanSku(value) {
+  return String(value || "").trim().slice(0, 80);
+}
+
 function parseCart(body) {
   var items = body && body.items;
   if (!Array.isArray(items) || !items.length) return { error: "Your cart is empty." };
@@ -99,21 +103,60 @@ function parseCart(body) {
   for (var i = 0; i < items.length; i++) {
     var row = items[i] || {};
     var id = row.id != null ? String(row.id).trim() : "";
+    var sku = cleanSku(row.sku);
     var qty = parseInt(row.qty, 10);
     if (!id) return { error: "A cart item is missing." };
     if (!isFinite(qty) || qty < 1 || qty > 99) return { error: "Quantity must be between 1 and 99." };
-    if (!merged[id]) {
-      merged[id] = 0;
-      order.push(id);
+    var key = id + "\n" + sku;
+    if (!merged[key]) {
+      merged[key] = { id: id, sku: sku, qty: 0 };
+      order.push(key);
     }
-    merged[id] += qty;
-    if (merged[id] > 99) return { error: "Quantity must be between 1 and 99." };
+    merged[key].qty += qty;
+    if (merged[key].qty > 99) return { error: "Quantity must be between 1 and 99." };
   }
   return {
     ok: true,
-    items: order.map(function (id) {
-      return { id: id, qty: merged[id] };
+    items: order.map(function (key) {
+      return merged[key];
     }),
+  };
+}
+
+function purchaseLine(product, want) {
+  var variants = Array.isArray(product.variants) ? product.variants : [];
+  if (variants.length > 1) {
+    var sku = cleanSku(want.sku) || cleanSku(product.sku);
+    var variant = null;
+    for (var i = 0; i < variants.length; i++) {
+      if (variants[i] && cleanSku(variants[i].sku) === sku) variant = variants[i];
+    }
+    if (!variant) return { error: "Choose an option for " + product.title + "." };
+    var price = parseInt(variant.priceCents, 10);
+    if (!isFinite(price) || price < 50) return { error: product.title + " cannot be checked out right now." };
+    var choices = Array.isArray(variant.choices) ? variant.choices.filter(Boolean) : [];
+    var title = product.title;
+    if (choices.length) title = (product.title + " — " + choices.join(" / ")).slice(0, 200);
+    return {
+      productId: product.id,
+      sku: sku,
+      title: title,
+      qty: want.qty,
+      unitAmount: price,
+      qtyOnHand: parseInt(variant.qtyOnHand, 10) || 0,
+      imageUrl: variant.imageUrl || product.imageUrl || (product.photos && product.photos[0] && product.photos[0].url) || "",
+      lede: product.lede || "",
+    };
+  }
+  return {
+    productId: product.id,
+    sku: cleanSku(product.sku),
+    title: product.title,
+    qty: want.qty,
+    unitAmount: product.priceCents,
+    qtyOnHand: parseInt(product.qtyOnHand, 10) || 0,
+    imageUrl: product.imageUrl || (product.photos && product.photos[0] && product.photos[0].url) || "",
+    lede: product.lede || "",
   };
 }
 
@@ -190,11 +233,16 @@ async function handleCheckout(req, res) {
       res.status(400).json({ ok: false, message: "Something in your cart is no longer listed." });
       return;
     }
-    var have = parseInt(product.qtyOnHand, 10) || 0;
+    var bought = purchaseLine(product, want);
+    if (bought.error) {
+      res.status(400).json({ ok: false, message: bought.error });
+      return;
+    }
+    var have = bought.qtyOnHand;
     if (want.qty > have) {
       res.status(400).json({
         ok: false,
-        message: have < 1 ? product.title + " is out of stock." : "Only " + have + " of " + product.title + " are in stock.",
+        message: have < 1 ? bought.title + " is out of stock." : "Only " + have + " of " + bought.title + " are in stock.",
       });
       return;
     }
@@ -212,14 +260,7 @@ async function handleCheckout(req, res) {
       });
       return;
     }
-    lines.push({
-      productId: product.id,
-      title: product.title,
-      qty: want.qty,
-      unitAmount: product.priceCents,
-      imageUrl: product.imageUrl || (product.photos && product.photos[0] && product.photos[0].url) || "",
-      lede: product.lede || "",
-    });
+    lines.push(bought);
   }
 
   var subtotal = lines.reduce(function (sum, line) {
@@ -233,6 +274,7 @@ async function handleCheckout(req, res) {
     items: lines.map(function (line) {
       return {
         productId: line.productId,
+        sku: line.sku || "",
         title: line.title,
         qty: line.qty,
         unitAmount: line.unitAmount,
@@ -357,15 +399,33 @@ async function adjustStock(order) {
     }
     if (!Array.isArray(product.stockAppliedOrders)) product.stockAppliedOrders = [];
     if (product.stockAppliedOrders.indexOf(order.id) !== -1) return;
-    var have = parseInt(product.qtyOnHand, 10) || 0;
+    var mark = order.id + ":" + (line.sku || "");
+    if (product.stockAppliedOrders.indexOf(mark) !== -1) return;
+    var variants = Array.isArray(product.variants) ? product.variants : [];
+    var variant = null;
+    if (variants.length > 1 && line.sku) {
+      for (var v = 0; v < variants.length; v++) {
+        if (variants[v] && String(variants[v].sku || "") === line.sku) variant = variants[v];
+      }
+    }
+    var have = variant ? parseInt(variant.qtyOnHand, 10) || 0 : parseInt(product.qtyOnHand, 10) || 0;
     var next = have - line.qty;
     if (next < 0) {
       notes.push(line.title + " sold past the quantity on hand (" + have + " on hand, " + line.qty + " sold).");
-      product.qtyOnHand = 0;
+      next = 0;
+    }
+    if (variant) {
+      variant.qtyOnHand = next;
+      var most = 0;
+      variants.forEach(function (item) {
+        var qty = parseInt(item && item.qtyOnHand, 10) || 0;
+        if (qty > most) most = qty;
+      });
+      product.qtyOnHand = most;
     } else {
       product.qtyOnHand = next;
     }
-    product.stockAppliedOrders.push(order.id);
+    product.stockAppliedOrders.push(mark);
     if (product.stockAppliedOrders.length > 50) {
       product.stockAppliedOrders = product.stockAppliedOrders.slice(-50);
     }
@@ -546,6 +606,16 @@ async function handleSaveProduct(req, res, creating) {
     stockAppliedOrders: existing.stockAppliedOrders || [],
     updatedAt: now,
   });
+  if (Array.isArray(existing.variants) && existing.variants.length > 1) {
+    updated.variants = existing.variants.map(function (variant) {
+      if (!variant || String(variant.sku || "") !== String(existing.sku || "")) return variant;
+      return Object.assign({}, variant, {
+        priceCents: updated.priceCents,
+        qtyOnHand: updated.qtyOnHand,
+      });
+    });
+    updated.optionNames = existing.optionNames || [];
+  }
   for (var j = 0; j < products.length; j++) {
     if (products[j] && products[j].id === id) products[j] = updated;
   }

@@ -12,6 +12,7 @@
         .map(function (row) {
           return {
             id: row && row.id ? String(row.id) : "",
+            sku: row && row.sku ? String(row.sku).slice(0, 80) : "",
             qty: parseInt(row && row.qty, 10) || 0,
           };
         })
@@ -41,17 +42,22 @@
     if (link) link.textContent = label;
   }
 
-  function add(id, qty) {
+  function sameLine(row, id, sku) {
+    return row.id === id && (row.sku || "") === (sku || "");
+  }
+
+  function add(id, qty, sku) {
     qty = parseInt(qty, 10) || 1;
+    sku = sku ? String(sku).slice(0, 80) : "";
     var items = read();
     var found = false;
     items.forEach(function (row) {
-      if (row.id === id) {
+      if (sameLine(row, id, sku)) {
         row.qty += qty;
         found = true;
       }
     });
-    if (!found) items.push({ id: id, qty: qty });
+    if (!found) items.push({ id: id, sku: sku, qty: qty });
     write(items);
     return count();
   }
@@ -92,6 +98,36 @@
       root.innerHTML = '<p class="sale-empty">The cart could not be loaded. Call 517-279-2010.</p>';
     });
 
+  function chosenVariant(product, sku) {
+    var variants = product && Array.isArray(product.variants) ? product.variants : [];
+    if (variants.length < 2) return null;
+    var want = sku || product.sku || "";
+    var found = null;
+    variants.forEach(function (variant) {
+      if (variant && variant.sku === want) found = variant;
+    });
+    return found;
+  }
+
+  function lineOffer(product, row) {
+    var variant = chosenVariant(product, row.sku);
+    if (!variant) {
+      return {
+        title: product.title,
+        priceCents: product.priceCents,
+        qtyOnHand: product.qtyOnHand || 0,
+        imageUrl: product.photos && product.photos[0] && product.photos[0].url ? product.photos[0].url : product.imageUrl || "images/logo.png?v=2",
+      };
+    }
+    var choices = Array.isArray(variant.choices) ? variant.choices.filter(Boolean) : [];
+    return {
+      title: choices.length ? product.title + " — " + choices.join(" / ") : product.title,
+      priceCents: variant.priceCents,
+      qtyOnHand: variant.qtyOnHand || 0,
+      imageUrl: variant.imageUrl || (product.photos && product.photos[0] && product.photos[0].url) || product.imageUrl || "images/logo.png?v=2",
+    };
+  }
+
   function render(products, settings) {
     var items = read();
     var clamped = false;
@@ -100,8 +136,9 @@
       products.forEach(function (p) {
         if (p.id === row.id) product = p;
       });
-      if (product && row.qty > (product.qtyOnHand || 0)) {
-        row.qty = product.qtyOnHand || 0;
+      var offer = product ? lineOffer(product, row) : null;
+      if (offer && row.qty > offer.qtyOnHand) {
+        row.qty = offer.qtyOnHand;
         clamped = true;
       }
     });
@@ -122,44 +159,45 @@
     var html = '<div class="cart-list">';
     items.forEach(function (row) {
       var product = byId[row.id];
+      var lineAttr = encodeURIComponent(row.id + "\n" + (row.sku || ""));
       if (!product) {
         html +=
           '<article class="cart-line"><div><h2 class="cart-line__title">This item is no longer listed</h2>' +
           '<button type="button" class="btn btn-ghost btn-sm" data-remove="' +
-          esc(row.id) +
+          lineAttr +
           '">Remove</button></div></article>';
         return;
       }
-      var qty = Math.min(row.qty, product.qtyOnHand || 0);
+      var offer = lineOffer(product, row);
+      var qty = Math.min(row.qty, offer.qtyOnHand || 0);
       if (qty < 1) {
         html +=
           '<article class="cart-line"><div><h2 class="cart-line__title">' +
-          esc(product.title) +
+          esc(offer.title) +
           '</h2><p class="shop-note">Out of stock.</p>' +
           '<button type="button" class="btn btn-ghost btn-sm" data-remove="' +
-          esc(product.id) +
+          lineAttr +
           '">Remove</button></div></article>';
         return;
       }
-      subtotal += product.priceCents * qty;
-      var img = product.photos && product.photos[0] && product.photos[0].url ? product.photos[0].url : product.imageUrl || "images/logo.png?v=2";
+      subtotal += offer.priceCents * qty;
       html +=
         '<article class="cart-line"><img src="' +
-        esc(img) +
+        esc(offer.imageUrl) +
         '" alt="" /><div><h2 class="cart-line__title">' +
-        esc(product.title) +
+        esc(offer.title) +
         '</h2><p class="cart-line__price">' +
-        money(product.priceCents) +
+        money(offer.priceCents) +
         " each</p>" +
         '<p class="shop-card__ship-note">Advertised price does not include shipping.</p>' +
         '<div class="shop-card__actions"><label class="shop-qty">Qty <input type="number" min="1" max="' +
-        (product.qtyOnHand || 1) +
+        (offer.qtyOnHand || 1) +
         '" value="' +
         qty +
         '" data-qty="' +
-        esc(product.id) +
+        lineAttr +
         '" /></label><button type="button" class="btn btn-ghost btn-sm" data-remove="' +
-        esc(product.id) +
+        lineAttr +
         '">Remove</button></div></div></article>';
     });
     html += "</div>";
@@ -229,12 +267,23 @@
       input.addEventListener("change", paintTotals);
     });
 
+    function matchesLine(row, token) {
+      var decoded = "";
+      try {
+        decoded = decodeURIComponent(token || "");
+      } catch (e) {
+        decoded = token || "";
+      }
+      var parts = decoded.split("\n");
+      return sameLine(row, parts[0] || "", parts[1] || "");
+    }
+
     root.querySelectorAll("[data-qty]").forEach(function (input) {
       input.addEventListener("change", function () {
-        var id = input.getAttribute("data-qty");
+        var token = input.getAttribute("data-qty");
         var qty = parseInt(input.value, 10) || 1;
         var next = read().map(function (row) {
-          if (row.id === id) row.qty = qty;
+          if (matchesLine(row, token)) row.qty = qty;
           return row;
         });
         write(next);
@@ -243,10 +292,10 @@
     });
     root.querySelectorAll("[data-remove]").forEach(function (btn) {
       btn.addEventListener("click", function () {
-        var id = btn.getAttribute("data-remove");
+        var token = btn.getAttribute("data-remove");
         write(
           read().filter(function (row) {
-            return row.id !== id;
+            return !matchesLine(row, token);
           })
         );
         render(products, settings);
